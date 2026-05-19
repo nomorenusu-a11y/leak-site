@@ -15,23 +15,32 @@
   --color-brand-900: #002a4f;
   --color-brand-950: #001833;
 
-  /* ---------- Accent: Urgent Orange (#ff6a3d = 500) ---------- */
-  --color-accent-50: #fff4f0;
-  --color-accent-100: #ffe3d8;
-  --color-accent-200: #ffc4ad;
-  --color-accent-300: #ff9d77;
-  --color-accent-400: #ff8559;
-  --color-accent-500: #ff6a3d;
-  --color-accent-600: #ed4d1f;
-  --color-accent-700: #c43d18;
+  /* ---------- Accent: Urgent Orange (긴급 전화만 사용. 블루 위 컨트라스트 위해 톤 한 단계 깊게) ---------- */
+  --color-accent-50: #fff1ec;
+  --color-accent-100: #ffd8c8;
+  --color-accent-200: #ffb499;
+  --color-accent-300: #ff8a63;
+  --color-accent-400: #f7693a;
+  --color-accent-500: #f55c2a; /* P0-05 보강: 기존 #ff6a3d → #f55c2a */
+  --color-accent-600: #dd4a1e;
+  --color-accent-700: #b53c19;
   --color-accent-800: #8a2a10;
   --color-accent-900: #5c1c0a;
 
-  /* ---------- Status palette for board cards ---------- */
-  --color-status-pending: #94a3b8;
-  --color-status-quote: #2563eb;
-  --color-status-active: #f59e0b;
-  --color-status-done: #16a34a;
+  /* ---------- Semantic (status badges, alerts) ---------- */
+  --color-success: #10b981;
+  --color-success-bg: #ecfdf5;
+  --color-warning: #f59e0b;
+  --color-warning-bg: #fffbeb;
+  --color-info: #0ea5e9;
+  --color-info-bg: #f0f9ff;
+  --color-danger: #e11d48;
+  --color-danger-bg: #fff1f2;
+
+  /* ---------- Form input tokens ---------- */
+  --color-input-border: #cbd5e1;
+  --color-input-border-focus: #0060ad;
+  --color-input-border-error: #e11d48;
 
   /* ---------- Typography ---------- */
   --font-sans:
@@ -46,7 +55,9 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #0f172a;
+  /* P2-01: 본문 색을 slate-900(#0f172a)에서 slate-800(#1e293b)로 한 단계 부드럽게.
+     대비비는 흰색 위 12.6:1로 WCAG AA/AAA 모두 통과 유지. */
+  --foreground: #1e293b;
   --muted: #64748b;
   --surface: #f8fafc;
   --border: #e2e8f0;

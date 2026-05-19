@@ -1,19 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { Phone, MessageCircle, FileText } from "@/components/icons";
 import { getContactInfo } from "@/lib/contact";
 import { EVENTS, trackEvent } from "@/lib/analytics";
 
 /**
- * 게시글 상세 본문 끝 전환 CTA. 글만 읽고 나가는 트래픽을 잡는다.
- * 브랜드 파랑 그라데이션 + 흰 텍스트로 본문과 시각적 분리.
- * phone/kakao 가용성에 따라 1~3개 CTA. "견적 신청하기"는 항상 노출.
+ * 글 본문 끝 전환 블록. 브랜드 파랑 그라데이션 + 흰 텍스트.
+ * phone/kakao 가용성에 따라 1~3개 CTA. "견적 신청"은 항상 노출.
+ * OS 이모지 → lucide SVG.
  */
 export function PostCTABlock({ slug }: { slug: string }) {
   const { phone, kakao } = getContactInfo();
 
   const btnBase =
-    "inline-flex min-h-[48px] items-center justify-center gap-2 rounded-lg px-5 text-base font-bold transition-colors";
+    "inline-flex min-h-[48px] items-center justify-center gap-2 rounded-lg px-5 text-base font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-700";
 
   return (
     <aside
@@ -31,9 +32,9 @@ export function PostCTABlock({ slug }: { slug: string }) {
             onClick={() =>
               trackEvent(EVENTS.CLICK_POST_CTA, { slug, button_type: "phone" })
             }
-            className={`${btnBase} bg-white text-brand-700 hover:bg-slate-100`}
+            className={`${btnBase} bg-white text-brand-700 hover:bg-slate-100 focus-visible:ring-white`}
           >
-            <span aria-hidden>📞</span>
+            <Phone aria-hidden className="size-5" strokeWidth={2.25} />
             <span>{phone.display}</span>
           </a>
         )}
@@ -45,9 +46,9 @@ export function PostCTABlock({ slug }: { slug: string }) {
             onClick={() =>
               trackEvent(EVENTS.CLICK_POST_CTA, { slug, button_type: "kakao" })
             }
-            className={`${btnBase} bg-[#FEE500] text-[#191600] hover:brightness-95`}
+            className={`${btnBase} bg-[#FEE500] text-[#191600] hover:brightness-95 focus-visible:ring-yellow-300`}
           >
-            <span aria-hidden>💬</span>
+            <MessageCircle aria-hidden className="size-5" strokeWidth={2.25} />
             <span>카카오톡 상담</span>
           </a>
         )}
@@ -56,9 +57,9 @@ export function PostCTABlock({ slug }: { slug: string }) {
           onClick={() =>
             trackEvent(EVENTS.CLICK_POST_CTA, { slug, button_type: "quote" })
           }
-          className={`${btnBase} border-2 border-white/40 bg-transparent text-white hover:bg-white/10`}
+          className={`${btnBase} border-2 border-white/40 bg-transparent text-white hover:bg-white/10 focus-visible:ring-white`}
         >
-          <span aria-hidden>📝</span>
+          <FileText aria-hidden className="size-5" strokeWidth={2.25} />
           <span>견적 신청하기</span>
         </Link>
       </div>

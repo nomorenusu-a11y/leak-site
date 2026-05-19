@@ -16,7 +16,7 @@ export function QuoteFormSection({ utmSource, utmCampaign, cityCode }: Props) {
     <section
       id="quote-form"
       aria-labelledby="quote-form-title"
-      className="scroll-mt-20 bg-slate-50 py-12 sm:py-16"
+      className="scroll-mt-20 bg-slate-50 py-16 md:py-24"
     >
       <Container>
         <div className="mx-auto max-w-2xl">

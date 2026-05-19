@@ -1,17 +1,31 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import {
+  useActionState,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ChangeEvent,
+} from "react";
 import {
   submitQuote,
   type SubmitQuoteState,
 } from "@/app/actions/submit-quote";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
+import { Field } from "@/components/ui/Field";
+import { Camera, Upload, X, Check } from "@/components/icons";
 import { EVENTS, trackEvent } from "@/lib/analytics";
 import { readStoredUtm } from "@/lib/utm";
+import { ALL_CITY_CODES, CITY_REGION_TAGS } from "@/lib/city";
 
 const MAX_IMAGES = 3;
 const SYMPTOM_MAX = 500;
 const SYMPTOM_MIN = 10;
-
+const MAX_BYTES = 5 * 1024 * 1024;
 const ACCEPT = "image/jpeg,image/png,image/webp";
 
 type Props = {
@@ -30,35 +44,39 @@ function formatPhone(raw: string): string {
   return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
 }
 
+// 지역 자동완성용 — city.ts와 동일 소스 (P2-07)
+const REGION_OPTIONS = ALL_CITY_CODES.map((c) => `서울 ${CITY_REGION_TAGS[c]}`).concat(
+  "성남시 분당구",
+);
+
 export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
-  // UTM/city 가 props로 비어 들어오면 sessionStorage(이전 광고 클릭 흔적)에서 fallback.
-  // SSR 시점은 props 그대로 사용 → 첫 렌더는 prop 값으로 hydration, mount 후 storage 보강.
-  const initialUtm = {
+  const [utmEff, setUtmEff] = useState({
     source: utmSource ?? "",
     campaign: utmCampaign ?? "",
     city: cityCode ?? "",
-  };
-  const [utmEff, setUtmEff] = useState(initialUtm);
+  });
   const [state, action, pending] = useActionState<SubmitQuoteState, FormData>(
     submitQuote,
     INITIAL,
   );
 
-  // 입력 상태 (제어): 전화 자동 하이픈, 글자 수 표시 등 클라이언트 UX 위함.
-  const [phone, setPhone] = useState("");
+  const [phoneValue, setPhoneValue] = useState("");
   const [symptom, setSymptom] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
+  const [agreed, setAgreed] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 미리보기 URL 정리
+  // 미리보기 URL revoke
   useEffect(() => {
     return () => {
       for (const url of previews) URL.revokeObjectURL(url);
     };
   }, [previews]);
 
-  // 성공 시 GA 이벤트
+  // 성공 시 GA
   useEffect(() => {
     if (state.status === "success") {
       trackEvent(EVENTS.SUBMIT_QUOTE, {
@@ -67,7 +85,7 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
     }
   }, [state, utmEff.source]);
 
-  // 마운트 후 1회: prop이 비었으면 sessionStorage utm 보강 (외부 storage 동기화)
+  // mount 후 1회 utm storage fallback
   useEffect(() => {
     if (utmSource || utmCampaign || cityCode) return;
     const stored = readStoredUtm();
@@ -78,24 +96,59 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
       campaign: stored.utm_campaign ?? "",
       city: stored.city_code ?? "",
     });
-    // 의도적으로 mount 1회만
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // 첫 에러 필드로 자동 focus
+  useEffect(() => {
+    if (state.status !== "error" || !state.fieldErrors) return;
+    const order = ["customer_name", "phone", "region", "apartment", "symptom"] as const;
+    const firstKey = order.find((k) => state.fieldErrors?.[k]);
+    if (!firstKey) return;
+    const el = document.getElementById(firstKey);
+    if (el) {
+      el.scrollIntoView({ block: "center", behavior: "smooth" });
+      (el as HTMLInputElement | HTMLTextAreaElement).focus({ preventScroll: true });
+    }
+  }, [state]);
 
   const fieldErrors =
     state.status === "error" ? state.fieldErrors : undefined;
 
-  function handleFilesChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const picked = Array.from(e.target.files ?? []);
-    const combined = [...files, ...picked].slice(0, MAX_IMAGES);
+  function addFiles(picked: File[]) {
+    setFileError(null);
+    const errors: string[] = [];
+    const accepted: File[] = [];
+    for (const f of picked) {
+      if (!["image/jpeg", "image/png", "image/webp"].includes(f.type)) {
+        errors.push(`${f.name}: 이미지 형식만`);
+        continue;
+      }
+      if (f.size > MAX_BYTES) {
+        errors.push(`${f.name}: 5MB 초과`);
+        continue;
+      }
+      accepted.push(f);
+    }
+    const combined = [...files, ...accepted].slice(0, MAX_IMAGES);
+    if (files.length + accepted.length > MAX_IMAGES) {
+      errors.push(`최대 ${MAX_IMAGES}장까지 첨부 가능`);
+    }
     setFiles(combined);
-
-    // revoke previous previews, generate new
     for (const url of previews) URL.revokeObjectURL(url);
     setPreviews(combined.map((f) => URL.createObjectURL(f)));
-
-    // 같은 파일 다시 고를 수 있게 input 비우기
+    if (errors.length) setFileError(errors.join(" · "));
     if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  function handleFilesChange(e: ChangeEvent<HTMLInputElement>) {
+    addFiles(Array.from(e.target.files ?? []));
+  }
+
+  function handleDrop(e: React.DragEvent<HTMLLabelElement>) {
+    e.preventDefault();
+    setDragOver(false);
+    addFiles(Array.from(e.dataTransfer.files ?? []));
   }
 
   function removeFile(idx: number) {
@@ -103,18 +156,33 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
     setFiles(nextFiles);
     for (const url of previews) URL.revokeObjectURL(url);
     setPreviews(nextFiles.map((f) => URL.createObjectURL(f)));
+    setFileError(null);
   }
+
+  // symptom 글자수 색상 단계 (P2-06)
+  const symptomCountColor = useMemo(() => {
+    const pct = (symptom.length / SYMPTOM_MAX) * 100;
+    if (symptom.length > SYMPTOM_MAX) return "text-danger";
+    if (pct >= 80) return "text-warning";
+    return "text-slate-500";
+  }, [symptom]);
 
   // 성공 카드
   if (state.status === "success") {
     return (
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 sm:p-8">
+      <div
+        role="status"
+        aria-live="polite"
+        className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 sm:p-8"
+      >
         <div className="flex items-start gap-3">
-          <span aria-hidden className="text-3xl">✅</span>
+          <Check
+            aria-hidden
+            className="size-7 shrink-0 text-emerald-600"
+            strokeWidth={2.5}
+          />
           <div>
-            <h3 className="text-lg font-extrabold text-emerald-900">
-              신청 완료!
-            </h3>
+            <h3 className="text-lg font-extrabold text-emerald-900">신청 완료!</h3>
             <p className="mt-1 text-sm text-emerald-800">
               영업일 기준 1시간 안에 전화 또는 카톡으로 연락드릴게요.
               <br />
@@ -131,7 +199,6 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
   return (
     <form
       action={(formData) => {
-        // images는 controlled state(files)에서 채워서 보냄. file input의 name="images"는 빈 값이 함께 갈 수 있어 제거하고 다시 채움.
         formData.delete("images");
         for (const f of files) formData.append("images", f);
         return action(formData);
@@ -142,20 +209,19 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
       {isError && (
         <div
           role="alert"
-          className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+          className="mb-4 rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm font-semibold text-rose-800"
         >
           {state.message}
         </div>
       )}
 
-      {/* hidden — 광고 추적 (sessionStorage fallback 적용된 effective 값) */}
       <input type="hidden" name="utm_source" value={utmEff.source} readOnly />
       <input type="hidden" name="utm_campaign" value={utmEff.campaign} readOnly />
       <input type="hidden" name="city_code" value={utmEff.city} readOnly />
 
       <div className="space-y-4">
-        <Field label="이름" name="customer_name" required error={fieldErrors?.customer_name}>
-          <input
+        <Field htmlFor="customer_name" label="이름" required error={fieldErrors?.customer_name}>
+          <Input
             id="customer_name"
             name="customer_name"
             type="text"
@@ -164,12 +230,14 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
             maxLength={10}
             autoComplete="name"
             placeholder="홍길동"
-            className={inputClass(!!fieldErrors?.customer_name)}
+            invalid={!!fieldErrors?.customer_name}
+            aria-invalid={!!fieldErrors?.customer_name}
+            aria-describedby={fieldErrors?.customer_name ? "customer_name-error" : undefined}
           />
         </Field>
 
-        <Field label="연락처" name="phone" required error={fieldErrors?.phone}>
-          <input
+        <Field htmlFor="phone" label="연락처" required error={fieldErrors?.phone}>
+          <Input
             id="phone"
             name="phone"
             type="tel"
@@ -177,42 +245,62 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
             inputMode="numeric"
             autoComplete="tel"
             placeholder="010-1234-5678"
-            value={phone}
-            onChange={(e) => setPhone(formatPhone(e.target.value))}
-            className={inputClass(!!fieldErrors?.phone)}
+            value={phoneValue}
+            onChange={(e) => setPhoneValue(formatPhone(e.target.value))}
+            invalid={!!fieldErrors?.phone}
+            aria-invalid={!!fieldErrors?.phone}
+            aria-describedby={fieldErrors?.phone ? "phone-error" : undefined}
           />
         </Field>
 
-        <Field label="지역 (시·구)" name="region" error={fieldErrors?.region}>
-          <input
+        <Field htmlFor="region" label="지역 (시·구)" error={fieldErrors?.region}>
+          <Input
             id="region"
             name="region"
             type="text"
+            list="region-options"
             maxLength={50}
             placeholder="예) 서울 강남구"
-            className={inputClass(!!fieldErrors?.region)}
+            invalid={!!fieldErrors?.region}
+            aria-invalid={!!fieldErrors?.region}
+            aria-describedby={fieldErrors?.region ? "region-error" : undefined}
           />
+          <datalist id="region-options">
+            {REGION_OPTIONS.map((r) => (
+              <option key={r} value={r} />
+            ))}
+          </datalist>
         </Field>
 
-        <Field label="아파트명" name="apartment" error={fieldErrors?.apartment}>
-          <input
+        <Field htmlFor="apartment" label="아파트명" error={fieldErrors?.apartment}>
+          <Input
             id="apartment"
             name="apartment"
             type="text"
             maxLength={50}
             placeholder="예) 래미안아파트 101동"
-            className={inputClass(!!fieldErrors?.apartment)}
+            invalid={!!fieldErrors?.apartment}
+            aria-invalid={!!fieldErrors?.apartment}
+            aria-describedby={fieldErrors?.apartment ? "apartment-error" : undefined}
           />
         </Field>
 
         <Field
+          htmlFor="symptom"
           label="증상 설명"
-          name="symptom"
           required
           error={fieldErrors?.symptom}
-          hint={`${symptom.length}/${SYMPTOM_MAX}`}
+          trailing={
+            <span
+              className={`text-xs font-semibold ${symptomCountColor}`}
+              role="status"
+              aria-live="polite"
+            >
+              {symptom.length}/{SYMPTOM_MAX}
+            </span>
+          }
         >
-          <textarea
+          <Textarea
             id="symptom"
             name="symptom"
             required
@@ -222,24 +310,56 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
             placeholder="예) 안방 천장에서 물이 떨어집니다. 어제부터 흔적이 점점 커지고 있어요."
             value={symptom}
             onChange={(e) => setSymptom(e.target.value)}
-            className={`${inputClass(!!fieldErrors?.symptom)} resize-y`}
+            invalid={!!fieldErrors?.symptom}
+            aria-invalid={!!fieldErrors?.symptom}
+            aria-describedby={fieldErrors?.symptom ? "symptom-error" : undefined}
           />
         </Field>
 
-        {/* 사진 첨부 */}
+        {/* 파일 드롭존 (P1-09) */}
         <div>
-          <label className="mb-1.5 block text-sm font-bold text-slate-800">
-            사진 첨부 <span className="font-normal text-slate-500">(선택 · 최대 {MAX_IMAGES}장 · 5MB 이내)</span>
+          <p className="mb-1.5 text-sm font-bold text-slate-800">
+            사진 첨부{" "}
+            <span className="font-normal text-slate-500">
+              (선택 · 최대 {MAX_IMAGES}장 · 5MB 이내)
+            </span>
+          </p>
+          <label
+            htmlFor="images"
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOver(true);
+            }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={handleDrop}
+            className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-6 text-center transition-colors ${
+              dragOver
+                ? "border-brand-500 bg-brand-50"
+                : "border-slate-300 bg-slate-50 hover:bg-slate-100"
+            } ${files.length >= MAX_IMAGES ? "pointer-events-none opacity-60" : ""}`}
+          >
+            <Upload aria-hidden className="size-5 text-slate-500" />
+            <span className="text-sm font-semibold text-slate-700">
+              파일 선택 또는 끌어 놓기
+            </span>
+            <span className="text-xs text-slate-500">
+              모바일은 카메라로 바로 촬영 가능
+            </span>
           </label>
           <input
+            id="images"
             ref={fileInputRef}
             type="file"
             accept={ACCEPT}
             multiple
+            capture="environment"
             onChange={handleFilesChange}
             disabled={files.length >= MAX_IMAGES}
-            className="block w-full text-sm text-slate-700 file:mr-3 file:rounded-md file:border-0 file:bg-brand-50 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-brand-700 hover:file:bg-brand-100 disabled:opacity-50"
+            className="sr-only"
           />
+          {fileError && (
+            <p className="mt-1.5 text-xs font-semibold text-danger">{fileError}</p>
+          )}
           {previews.length > 0 && (
             <ul className="mt-3 grid grid-cols-3 gap-2">
               {previews.map((src, i) => (
@@ -256,64 +376,58 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
                   <button
                     type="button"
                     onClick={() => removeFile(i)}
-                    className="absolute right-1 top-1 rounded-full bg-black/70 px-2 py-0.5 text-xs font-bold text-white hover:bg-black"
+                    className="absolute right-1 top-1 inline-flex size-6 items-center justify-center rounded-full bg-black/70 text-white hover:bg-black"
                     aria-label={`사진 ${i + 1} 삭제`}
                   >
-                    삭제
+                    <X aria-hidden className="size-3.5" />
                   </button>
                 </li>
               ))}
             </ul>
           )}
+          {/* 시각적 hint icon — 카메라 직촬영 (스크린리더에는 위 라벨 텍스트로 충분) */}
+          {previews.length === 0 && (
+            <p className="mt-2 hidden text-xs text-slate-500 sm:block">
+              <Camera aria-hidden className="mb-0.5 mr-1 inline size-3.5" />
+              증상 부위가 잘 보이도록 가까이에서 촬영해 주세요.
+            </p>
+          )}
         </div>
 
-        <button
+        {/* 개인정보 동의 (P0-03) */}
+        <label className="flex cursor-pointer items-start gap-2 rounded-lg bg-slate-50 p-3 text-sm text-slate-700">
+          <input
+            type="checkbox"
+            name="agree"
+            required
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+            className="mt-0.5 size-4 rounded border-slate-400 accent-brand-600"
+          />
+          <span>
+            <Link
+              href="/privacy"
+              target="_blank"
+              className="font-semibold text-brand-700 hover:underline"
+            >
+              개인정보 수집·이용
+            </Link>
+            에 동의합니다.
+            <span className="text-danger">*</span>
+          </span>
+        </label>
+
+        <Button
           type="submit"
-          disabled={pending}
-          className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-brand-600 px-6 py-3.5 text-base font-extrabold text-white shadow-md shadow-brand-600/20 transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:bg-slate-400 disabled:shadow-none"
+          variant="primary"
+          size="lg"
+          block
+          loading={pending}
+          disabled={!agreed}
         >
-          {pending ? "전송 중..." : "무료 견적 신청하기"}
-        </button>
-        <p className="text-center text-xs text-slate-500">
-          제출하시면 상담 목적의 연락에 동의하신 것으로 간주됩니다.
-        </p>
+          {pending ? "전송 중..." : "30분 안에 회신 받기"}
+        </Button>
       </div>
     </form>
-  );
-}
-
-function inputClass(error: boolean) {
-  return `w-full rounded-lg border ${
-    error ? "border-red-400 bg-red-50" : "border-slate-300 bg-white"
-  } px-3.5 py-2.5 text-base text-slate-900 placeholder:text-slate-400 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-200`;
-}
-
-function Field({
-  label,
-  name,
-  required,
-  error,
-  hint,
-  children,
-}: {
-  label: string;
-  name: string;
-  required?: boolean;
-  error?: string;
-  hint?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <div className="mb-1.5 flex items-baseline justify-between gap-2">
-        <label htmlFor={name} className="block text-sm font-bold text-slate-800">
-          {label}
-          {required && <span className="ml-0.5 text-red-500">*</span>}
-        </label>
-        {hint && <span className="text-xs text-slate-500">{hint}</span>}
-      </div>
-      {children}
-      {error && <p className="mt-1 text-xs font-semibold text-red-600">{error}</p>}
-    </div>
   );
 }

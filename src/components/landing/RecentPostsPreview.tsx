@@ -12,7 +12,7 @@ export async function RecentPostsPreview() {
   if (posts.length === 0) return null;
 
   return (
-    <section className="bg-slate-50 py-12 sm:py-16">
+    <section className="bg-slate-50 py-16 md:py-24">
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>

@@ -1,5 +1,6 @@
 import { Container } from "@/components/ui/Container";
 import { ContactCTA } from "./CtaButtons";
+import { Zap, Check } from "@/components/icons";
 import { BUSINESS } from "@/lib/business";
 
 export function Hero({ cityLabel }: { cityLabel: string }) {
@@ -9,7 +10,7 @@ export function Hero({ cityLabel }: { cityLabel: string }) {
     : `${BUSINESS.serviceArea} 출동. 정밀 장비로 누수 위치를 정확히 진단하고, 꼭 필요한 부분만 시공합니다. 상담은 24시간 가능.`;
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-brand-700 via-brand-600 to-brand-500 text-white">
+    <section className="relative overflow-hidden bg-gradient-to-br from-brand-700 via-brand-700 to-brand-800 text-white">
       {/* subtle pattern */}
       <div
         aria-hidden
@@ -18,31 +19,28 @@ export function Hero({ cityLabel }: { cityLabel: string }) {
       <Container className="relative py-14 sm:py-20 lg:py-24">
         <div className="max-w-2xl">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold tracking-wide ring-1 ring-inset ring-white/25">
-            <span aria-hidden>⚡</span> 24시간 상담 · {BUSINESS.responseTime} 출동
+            <Zap aria-hidden className="size-3.5" strokeWidth={2.25} />
+            24시간 상담 · {BUSINESS.responseTime} 출동
           </span>
-          <h1 className="mt-4 text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+          <h1 className="mt-4 text-4xl font-black leading-[1.15] tracking-tight sm:text-5xl lg:text-6xl">
             {headline}
           </h1>
-          <p className="mt-4 text-base text-white/85 sm:text-lg sm:leading-relaxed">
+          <p className="mt-4 max-w-xl text-base text-white/90 sm:text-lg sm:leading-relaxed">
             {sub}
           </p>
 
-          <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-white/90 sm:max-w-md">
-            <li className="flex items-center gap-1.5">
-              <span aria-hidden className="text-accent-300">✓</span> 비파괴 정밀 탐지
-            </li>
-            <li className="flex items-center gap-1.5">
-              <span aria-hidden className="text-accent-300">✓</span> 시공 전 사진 견적
-            </li>
-            <li className="flex items-center gap-1.5">
-              <span aria-hidden className="text-accent-300">✓</span> {BUSINESS.warranty}
-            </li>
-            <li className="flex items-center gap-1.5">
-              <span aria-hidden className="text-accent-300">✓</span> {BUSINESS.pricing}
-            </li>
+          <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-white/95 sm:max-w-md">
+            {["비파괴 정밀 탐지", "시공 전 사진 견적", BUSINESS.warranty, BUSINESS.pricing].map(
+              (item) => (
+                <li key={item} className="flex items-center gap-1.5">
+                  <Check aria-hidden className="size-4 text-accent-300" strokeWidth={3} />
+                  {item}
+                </li>
+              ),
+            )}
           </ul>
 
-          <div className="mt-8">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
             <ContactCTA variant="primary" layout="row" />
           </div>
         </div>

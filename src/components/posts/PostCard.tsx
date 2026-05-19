@@ -3,26 +3,32 @@ import Link from "next/link";
 import type { Post } from "@/types/database";
 import { formatDateYMD } from "@/lib/time";
 
+const PLACEHOLDER = "/placeholder-post.svg";
+
+/** 외부 placehold.co URL이나 빈 값이면 자체 SVG placeholder로 대체. */
+function resolveCover(url: string | null | undefined): { src: string; isPlaceholder: boolean } {
+  if (!url || url.includes("placehold.co")) {
+    return { src: PLACEHOLDER, isPlaceholder: true };
+  }
+  return { src: url, isPlaceholder: false };
+}
+
 export function PostCard({ post }: { post: Post }) {
+  const cover = resolveCover(post.cover_image_url);
   return (
     <Link
       href={`/posts/${post.slug}`}
-      className="group block overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+      className="group block overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md focus-visible:-translate-y-1 focus-visible:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
     >
-      <div className="relative aspect-[4/3] w-full bg-slate-100">
-        {post.cover_image_url ? (
-          <Image
-            src={post.cover_image_url}
-            alt=""
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center text-sm text-slate-400">
-            이미지 없음
-          </div>
-        )}
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
+        <Image
+          src={cover.src}
+          alt=""
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          unoptimized={cover.isPlaceholder /* SVG는 그대로 서빙 */}
+        />
       </div>
       <div className="p-4 sm:p-5">
         <div className="flex flex-wrap items-center gap-1.5">

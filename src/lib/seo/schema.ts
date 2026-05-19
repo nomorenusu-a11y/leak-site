@@ -77,7 +77,11 @@ export function localBusinessJsonLd() {
 export function articleJsonLd(post: Post) {
   const url = `${siteConfig.url}/posts/${post.slug}`;
   const businessRef = { "@type": "Organization", name: siteConfig.name } as const;
-  const image = post.cover_image_url ? [post.cover_image_url] : undefined;
+  // broken placeholder URL 방어 — 외부 placehold.co는 OG·schema에서 제외
+  const isValidCover =
+    post.cover_image_url &&
+    !/placehold\.co/i.test(post.cover_image_url);
+  const image = isValidCover ? [post.cover_image_url as string] : undefined;
   const place = post.region_tags[0]
     ? { "@type": "Place", name: post.region_tags[0] }
     : undefined;

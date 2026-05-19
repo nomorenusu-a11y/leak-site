@@ -1,23 +1,67 @@
+import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { Logo } from "@/components/ui/Logo";
 import { BUSINESS } from "@/lib/business";
 
+/**
+ * 푸터. 사업자 정보는 BUSINESS에서 가져오며, 빈 값이면 해당 줄 자체를 미렌더.
+ * "추후 입력" 같은 placeholder 텍스트 절대 노출하지 않음.
+ */
 export function Footer() {
+  const lines: { label: string; value: string }[] = [];
+  if (BUSINESS.ownerName) lines.push({ label: "대표", value: BUSINESS.ownerName });
+  if (BUSINESS.businessRegNo)
+    lines.push({ label: "사업자등록번호", value: BUSINESS.businessRegNo });
+  if (BUSINESS.address) lines.push({ label: "주소", value: BUSINESS.address });
+  if (BUSINESS.email) lines.push({ label: "이메일", value: BUSINESS.email });
+
   return (
     <footer className="border-t border-slate-200 bg-slate-900 text-slate-300">
       <Container className="py-10">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+        <div className="grid gap-6 sm:grid-cols-3">
+          {/* 1. 브랜드 + 짧은 한 줄 */}
           <div>
-            <p className="text-base font-bold text-white">{BUSINESS.name}</p>
-            <p className="mt-1 text-sm text-slate-400">
+            <div className="text-white">
+              <Logo />
+            </div>
+            <p className="mt-3 text-sm text-slate-400">
               누수 탐지·시공 · {BUSINESS.serviceArea} · 24시간 상담
             </p>
+            <p className="mt-1 text-xs text-slate-500">
+              {BUSINESS.warranty} · {BUSINESS.pricing}
+            </p>
           </div>
-          <div className="text-sm leading-relaxed text-slate-400">
-            <p>{BUSINESS.warranty} · {BUSINESS.pricing}</p>
-            <p>사업자 정보: 추후 입력</p>
+
+          {/* 2. 메뉴 */}
+          <nav aria-label="푸터 메뉴" className="text-sm">
+            <p className="mb-2 font-semibold text-slate-200">메뉴</p>
+            <ul className="space-y-1.5 text-slate-400">
+              <li><Link href="/" className="hover:text-white">홈</Link></li>
+              <li><Link href="/posts" className="hover:text-white">시공 사례</Link></li>
+              <li><Link href="/#quote-form" className="hover:text-white">견적 신청</Link></li>
+              <li><Link href="/privacy" className="hover:text-white">개인정보처리방침</Link></li>
+              <li><Link href="/terms" className="hover:text-white">이용약관</Link></li>
+            </ul>
+          </nav>
+
+          {/* 3. 사업자 정보 */}
+          <div className="text-sm text-slate-400">
+            <p className="mb-2 font-semibold text-slate-200">사업자 정보</p>
+            {lines.length === 0 ? (
+              <p className="text-xs text-slate-500">사업자 정보는 운영 시작 후 등록됩니다.</p>
+            ) : (
+              <dl className="space-y-1">
+                {lines.map((l) => (
+                  <div key={l.label} className="flex gap-2">
+                    <dt className="shrink-0 text-slate-500">{l.label}</dt>
+                    <dd className="text-slate-300">{l.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
           </div>
         </div>
-        <p className="mt-8 text-xs text-slate-500">
+        <p className="mt-8 border-t border-slate-800 pt-5 text-xs text-slate-500">
           © {new Date().getFullYear()} {BUSINESS.name}. All rights reserved.
         </p>
       </Container>

@@ -13,6 +13,12 @@ const SERVICE_AREA = process.env.NEXT_PUBLIC_SERVICE_AREA?.trim() || "서울·�
 const RESPONSE_TIME = process.env.NEXT_PUBLIC_RESPONSE_TIME?.trim() || "30분 이내";
 const EXPERIENCE = process.env.NEXT_PUBLIC_EXPERIENCE?.trim() || "오랜 경력의";
 
+// 사업자 정보 (Footer + privacy/terms). 빈 값이면 해당 줄 미렌더.
+const OWNER = process.env.NEXT_PUBLIC_BUSINESS_OWNER?.trim() || undefined;
+const REG_NO = process.env.NEXT_PUBLIC_BUSINESS_REG_NO?.trim() || undefined;
+const ADDRESS = process.env.NEXT_PUBLIC_BUSINESS_ADDRESS?.trim() || undefined;
+const EMAIL = process.env.NEXT_PUBLIC_BUSINESS_EMAIL?.trim() || undefined;
+
 export const BUSINESS = {
   name: siteConfig.name,
   url: siteConfig.url,
@@ -32,4 +38,10 @@ export const BUSINESS = {
   /** 고정 메시지 — 운영 정책 변경 시 여기만 수정 */
   warranty: "1년 무상 A/S",
   pricing: "가격 정찰제",
+
+  /** 사업자 정보 (Phase 3에서 privacy/terms 페이지에서도 사용). 빈 값이면 표기 영역 자체 미렌더. */
+  ownerName: OWNER,
+  businessRegNo: REG_NO,
+  address: ADDRESS,
+  email: EMAIL,
 } as const;

@@ -14,18 +14,18 @@ import { StatsBar } from "./StatsBar";
 export async function LiveBoardSection() {
   const initial = await getRecentBoardItems(10);
 
-  // 빈 데이터 → 섹션 자체 미렌더 (TrustPoints + RecentPostsPreview만으로 신뢰 영역 채움)
+  // 빈 데이터 → 섹션 자체 미렌더
   if (initial.length === 0) return null;
 
   return (
-    <section className="py-12 sm:py-16">
+    <section className="py-16 md:py-24">
       <Container>
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">
+            <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
               실시간 작업 현황
             </h2>
-            <p className="mt-2 text-slate-600">최근 들어온 신청과 진행 상태를 실시간으로 보여드려요.</p>
+            <p className="mt-2 text-slate-600">최근 들어온 신청과 진행 상태를 보여드려요.</p>
           </div>
           <span className="hidden items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 sm:inline-flex">
             <span aria-hidden className="size-1.5 rounded-full bg-emerald-500" />

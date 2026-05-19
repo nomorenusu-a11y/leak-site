@@ -48,12 +48,24 @@ export async function getPublishedPosts({
   }
   const total = count ?? 0;
   return {
-    posts: data ?? [],
+    posts: (data ?? []).map((p) => sanitizePost(p) as Post),
     total,
     page,
     perPage,
     totalPages: Math.max(1, Math.ceil(total / perPage)),
   };
+}
+
+/**
+ * 외부 broken placeholder(예: placehold.co) URL을 null로 정규화.
+ * 시드·캐시에 외부 도메인이 남아있어도 OG·메타·Schema에서 자동 제거.
+ */
+function sanitizePost(p: Post | null): Post | null {
+  if (!p) return p;
+  if (p.cover_image_url && /placehold\.co/i.test(p.cover_image_url)) {
+    return { ...p, cover_image_url: null };
+  }
+  return p;
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
@@ -68,7 +80,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     console.warn("[posts] getPostBySlug:", error.message);
     return null;
   }
-  return data;
+  return sanitizePost(data);
 }
 
 export async function getPostImages(postId: string): Promise<PostImage[]> {
@@ -104,7 +116,7 @@ export async function getPostsByRegionTag(
   }
   const total = count ?? 0;
   return {
-    posts: data ?? [],
+    posts: (data ?? []).map((p) => sanitizePost(p) as Post),
     total,
     page,
     perPage,
@@ -127,7 +139,30 @@ export async function getRelatedPosts(post: Post, limit = 3): Promise<Post[]> {
     console.warn("[posts] getRelatedPosts:", error.message);
     return [];
   }
-  return data ?? [];
+  return (data ?? []).map((p) => sanitizePost(p) as Post);
+}
+
+/**
+ * 발행일 기준 인접한 글 prev/next.
+ * published_at desc 순서에서 현재 글 위치 기준.
+ */
+export async function getAdjacentPosts(
+  currentSlug: string,
+): Promise<{ prev: Pick<Post, "slug" | "title"> | null; next: Pick<Post, "slug" | "title"> | null }> {
+  const supabase = createSupabaseAnonClient();
+  const { data, error } = await supabase
+    .from("posts")
+    .select("slug, title, published_at")
+    .eq("published", true)
+    .order("published_at", { ascending: false });
+  if (error || !data) return { prev: null, next: null };
+  const idx = data.findIndex((p) => p.slug === currentSlug);
+  if (idx < 0) return { prev: null, next: null };
+  return {
+    // 시각적 prev/next 의미: 시간순으로 더 최근 글이 prev, 더 오래된 글이 next
+    prev: idx > 0 ? { slug: data[idx - 1].slug, title: data[idx - 1].title } : null,
+    next: idx < data.length - 1 ? { slug: data[idx + 1].slug, title: data[idx + 1].title } : null,
+  };
 }
 
 export async function getAllPublishedSlugs(): Promise<
