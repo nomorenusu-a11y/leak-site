@@ -47,8 +47,8 @@ const publicSchema = z.object({
 
 const serverSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: optionalSecret(20),
-  ADMIN_PASSWORD: optionalString,
-  SESSION_SECRET: optionalString,
+  ADMIN_PASSWORD: optionalSecret(8),
+  SESSION_SECRET: optionalSecret(32),
 });
 
 function readPublicEnv() {
@@ -136,4 +136,21 @@ export function getSupabaseAdminConfig() {
     );
   }
   return { url, serviceRole };
+}
+
+/**
+ * 관리자 페이지 인증용 비밀번호 + HMAC 서명 시크릿. 둘 다 server-only.
+ * 사용처: `src/lib/auth.ts` (Server Action / proxy).
+ */
+export function getAdminCredentials() {
+  const env = serverEnv();
+  const password = env.ADMIN_PASSWORD;
+  const secret = env.SESSION_SECRET;
+  if (!password || !secret) {
+    throw new Error(
+      "관리자 인증 정보가 누락됐습니다. .env.local의 ADMIN_PASSWORD(min 8) / SESSION_SECRET(min 32)을 채워주세요. " +
+        "임시 dev 값 자동 생성: `npx tsx scripts/seed-admin-env.ts`",
+    );
+  }
+  return { password, secret };
 }
