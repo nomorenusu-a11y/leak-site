@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @theme {
   /* ---------- Brand: Trust Blue (#0060ad = 600) ---------- */
@@ -64,6 +65,21 @@ body {
   font-family: var(--font-sans);
   font-feature-settings: "ss06"; /* nicer Pretendard digits */
   letter-spacing: -0.01em;
+}
+
+/* Live board: new row fade-in (CSS only, no motion lib) */
+@keyframes board-row-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+[data-just-added="true"] {
+  animation: board-row-in 0.3s ease-out;
 }
 
 /* Respect users who reduce motion */

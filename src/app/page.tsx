@@ -3,6 +3,7 @@ import { Header } from "@/components/landing/Header";
 import { Hero } from "@/components/landing/Hero";
 import { TrustSection } from "@/components/landing/TrustSection";
 import { QuoteFormSection } from "@/components/landing/QuoteFormSection";
+import { LiveBoardSection } from "@/components/landing/LiveBoardSection";
 import { CasesPreviewSkeleton } from "@/components/landing/CasesPreviewSkeleton";
 import { StickyCTA } from "@/components/landing/StickyCTA";
 import { Footer } from "@/components/landing/Footer";
@@ -54,6 +55,7 @@ export default async function HomePage({
           utmCampaign={utmCampaign}
           cityCode={code ?? undefined}
         />
+        <LiveBoardSection />
         <TrustSection />
         <CasesPreviewSkeleton />
       </main>

@@ -42,8 +42,9 @@ export type LeakRequest = {
   visible_on_board: boolean;
 };
 
-/** 사용자 견적 폼이 직접 채우는 필드만. */
+/** Insert 가능 필드. 폼은 user-facing 필드만 채우고, admin/seed는 status·visible 등도 덮어쓴다. */
 export type LeakRequestInsert = {
+  // user-facing (폼)
   customer_name: string;
   phone: string;
   symptom: string;
@@ -52,6 +53,10 @@ export type LeakRequestInsert = {
   utm_source?: string | null;
   utm_campaign?: string | null;
   city_code?: string | null;
+  // admin override
+  status?: RequestStatus;
+  admin_memo?: string | null;
+  visible_on_board?: boolean;
 };
 
 /** 공개 보드 SELECT 시 필요한 컬럼만. RLS가 customer_name·phone 등 노출은 막지 못하므로
