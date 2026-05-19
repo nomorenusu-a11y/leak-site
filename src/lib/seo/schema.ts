@@ -55,7 +55,18 @@ export function localBusinessJsonLd() {
       bestRating: "5",
       worstRating: "1",
     },
-    sameAs: siteConfig.kakao ? [siteConfig.kakao] : [],
+    // 정규화된 카카오 URL만 (잘못된 형식이면 빈 배열)
+    sameAs: ((): string[] => {
+      // 동적 import 회피 — siteConfig.kakao은 이미 신·구 변수 fallback 처리됨 (env.ts)
+      const k = siteConfig.kakao;
+      if (!k || k === "#") return [];
+      try {
+        const u = new URL(k);
+        return u.protocol === "https:" ? [u.toString()] : [];
+      } catch {
+        return [];
+      }
+    })(),
   };
 }
 

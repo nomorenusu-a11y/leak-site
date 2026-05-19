@@ -1,10 +1,16 @@
-import { PhoneButton, KakaoButton } from "./CtaButtons";
+import { getContactInfo } from "@/lib/contact";
+import { PhoneButton, KakaoButton, QuoteFallbackButton } from "./CtaButtons";
 
 /**
- * 모바일 화면 하단 고정 CTA. md 이상에서는 숨김.
- * pb-[env(safe-area-inset-bottom)]로 iOS 홈 인디케이터 영역 보호.
+ * 모바일 하단 sticky CTA. 환경변수 상태에 따라 1~2개 버튼 노출.
+ * phone·kakao 둘 다 null이면 견적 폼 fallback 1개.
  */
 export function StickyCTA() {
+  const { phone, kakao } = getContactInfo();
+  const both = !!phone && !!kakao;
+  const single = (!!phone) !== (!!kakao);
+  const none = !phone && !kakao;
+
   return (
     <div
       role="region"
@@ -12,9 +18,24 @@ export function StickyCTA() {
       className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur md:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="grid grid-cols-2 gap-2 p-3">
-        <PhoneButton block />
-        <KakaoButton block />
+      <div
+        className={`grid gap-2 p-3 ${
+          both ? "grid-cols-2" : single || none ? "grid-cols-1" : "grid-cols-2"
+        }`}
+      >
+        {both ? (
+          <>
+            <PhoneButton block />
+            <KakaoButton block />
+          </>
+        ) : single ? (
+          <>
+            {phone && <PhoneButton block />}
+            {kakao && <KakaoButton block />}
+          </>
+        ) : (
+          <QuoteFallbackButton block label="빠른 견적 신청하기" />
+        )}
       </div>
     </div>
   );

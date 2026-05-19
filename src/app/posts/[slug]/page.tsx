@@ -7,6 +7,7 @@ import { PostBody } from "@/components/posts/PostBody";
 import { PostGallery } from "@/components/posts/PostGallery";
 import { RelatedPosts } from "@/components/posts/RelatedPosts";
 import { PostViewTracker } from "@/components/posts/PostViewTracker";
+import { PostCTABlock } from "@/components/posts/PostCTABlock";
 import {
   getAllPublishedSlugs,
   getPostBySlug,
@@ -108,6 +109,7 @@ export default async function PostDetailPage({
           <Container className="py-10 max-w-3xl">
             <PostBody content={post.content} />
             <PostGallery images={images} />
+            <PostCTABlock slug={post.slug} />
           </Container>
         </article>
         <Container className="max-w-3xl">

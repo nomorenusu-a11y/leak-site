@@ -112,8 +112,11 @@ Dashboard에서 다음이 보이면 성공:
 |---|---|---|---|
 | `NEXT_PUBLIC_SITE_URL` | 사이트 절대 URL (sitemap·canonical·OG) | 필수 | `https://leak-site.com` |
 | `NEXT_PUBLIC_SITE_NAME` | 상호명 (Hero·Footer·메타) | 필수 | `"누수 시공"` |
-| `NEXT_PUBLIC_PHONE` | 전화 CTA (`tel:` 링크) | 권장 | 숫자만, 예: `01012345678` |
-| `NEXT_PUBLIC_KAKAO_CHANNEL` | 카카오 채널 URL | 권장 | `https://pf.kakao.com/_xxx` |
+| `NEXT_PUBLIC_PHONE` | 전화 CTA (`tel:` 링크, E.164 자동 변환) | 권장 | 형식 무관, 예: `01012345678` / `010-1234-5678` — 잘못된 형식이면 버튼 미렌더 |
+| `NEXT_PUBLIC_KAKAO_CHANNEL_URL` | 카카오 채널 URL (옛 `NEXT_PUBLIC_KAKAO_CHANNEL`도 fallback 인식) | 권장 | `https://pf.kakao.com/_xxx` |
+| `NEXT_PUBLIC_SERVICE_AREA` | 운영 가능 지역 카피 (Hero·Footer·TrustPoints) | 선택 | 기본 `"서울·경기 일부 지역"` |
+| `NEXT_PUBLIC_RESPONSE_TIME` | 평균 출동 시간 카피 (Hero·StatsBar) | 선택 | 기본 `"30분 이내"` |
+| `NEXT_PUBLIC_EXPERIENCE` | 경력 카피 (TrustPoints 4번째 카드) | 선택 | 기본 `"오랜 경력의"` — 운영자 받으면 `"20년 경력의"` 등 |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase 프로젝트 URL | 필수 | Project Settings > API > Project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | 공개 read·realtime용 anon 키 | 필수 | Project Settings > API > anon public |
 | `SUPABASE_SERVICE_ROLE_KEY` | 서버 전용 admin 키 (RLS 우회) | 필수 | Project Settings > API > service_role (Reveal) |

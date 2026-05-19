@@ -1,15 +1,16 @@
 import { getBoardStats } from "@/lib/posts";
+import { BUSINESS } from "@/lib/business";
 
 /**
- * 누적 통계 3종. 페이지 dynamic 렌더 시 매번 카운트 쿼리 (가벼움).
- * 글이 많이 쌓이면 unstable_cache로 15분 ISR 캐시 도입.
+ * 누적 통계 3종. 페이지 dynamic 렌더 시 매번 카운트 쿼리.
+ * "평균 출동 시간"은 BUSINESS.responseTime을 사용 — 운영 정책 변경 시 env로 즉시 교체.
  */
 export async function StatsBar() {
   const stats = await getBoardStats();
   const items: { label: string; value: string }[] = [
     { label: "누적 요청", value: `${stats.totalRequests.toLocaleString("ko-KR")}건` },
     { label: "이번 달 작업 완료", value: `${stats.doneThisMonth.toLocaleString("ko-KR")}건` },
-    { label: "평균 출동 시간", value: "24분" }, // 데이터 쌓이면 동적 계산
+    { label: "평균 출동 시간", value: BUSINESS.responseTime },
   ];
 
   return (

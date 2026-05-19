@@ -5,12 +5,18 @@ import { StatsBar } from "./StatsBar";
 
 /**
  * 실시간 작업 보드 섹션.
- * - 서버에서 초기 10건을 SSR (anon 클라이언트, RLS로 visible 행만)
- * - 클라이언트가 마운트 후 Realtime 구독해 INSERT/UPDATE 반영
- * - 위에 StatsBar 함께 노출
+ *
+ * **0건이면 섹션 자체를 미렌더** — "휴면 업체" 인상 방지.
+ * 1건 이상 들어와야 LIVE 뱃지와 StatsBar가 의미 있다.
+ *
+ * 신규 행이 들어와도 페이지 ISR로 1분 안에 노출 (page.tsx의 revalidate=60).
  */
 export async function LiveBoardSection() {
   const initial = await getRecentBoardItems(10);
+
+  // 빈 데이터 → 섹션 자체 미렌더 (TrustPoints + RecentPostsPreview만으로 신뢰 영역 채움)
+  if (initial.length === 0) return null;
+
   return (
     <section className="py-12 sm:py-16">
       <Container>

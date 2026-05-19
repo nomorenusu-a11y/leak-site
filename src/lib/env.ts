@@ -35,7 +35,14 @@ const publicSchema = z.object({
     .or(z.literal(""))
     .optional()
     .transform((v) => (v ? v : undefined)),
+  // 카카오 채널 — 신/구 이름 둘 다 허용 (UI에서 fallback 처리)
+  NEXT_PUBLIC_KAKAO_CHANNEL_URL: optionalUrl,
   NEXT_PUBLIC_KAKAO_CHANNEL: optionalUrl,
+
+  // 영업 정보 (모두 optional, 빈 값이면 business.ts fallback 사용)
+  NEXT_PUBLIC_SERVICE_AREA: optionalString,
+  NEXT_PUBLIC_RESPONSE_TIME: optionalString,
+  NEXT_PUBLIC_EXPERIENCE: optionalString,
 
   NEXT_PUBLIC_SUPABASE_URL: optionalUrl,
   NEXT_PUBLIC_SUPABASE_ANON_KEY: optionalSecret(20),
@@ -59,7 +66,11 @@ function readPublicEnv() {
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
     NEXT_PUBLIC_SITE_NAME: process.env.NEXT_PUBLIC_SITE_NAME,
     NEXT_PUBLIC_PHONE: process.env.NEXT_PUBLIC_PHONE,
+    NEXT_PUBLIC_KAKAO_CHANNEL_URL: process.env.NEXT_PUBLIC_KAKAO_CHANNEL_URL,
     NEXT_PUBLIC_KAKAO_CHANNEL: process.env.NEXT_PUBLIC_KAKAO_CHANNEL,
+    NEXT_PUBLIC_SERVICE_AREA: process.env.NEXT_PUBLIC_SERVICE_AREA,
+    NEXT_PUBLIC_RESPONSE_TIME: process.env.NEXT_PUBLIC_RESPONSE_TIME,
+    NEXT_PUBLIC_EXPERIENCE: process.env.NEXT_PUBLIC_EXPERIENCE,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     NEXT_PUBLIC_GA_ID: process.env.NEXT_PUBLIC_GA_ID,
@@ -108,8 +119,21 @@ export const siteConfig = {
   url: publicEnv.NEXT_PUBLIC_SITE_URL,
   name: publicEnv.NEXT_PUBLIC_SITE_NAME,
   phone: publicEnv.NEXT_PUBLIC_PHONE,
-  kakao: publicEnv.NEXT_PUBLIC_KAKAO_CHANNEL,
+  kakao:
+    publicEnv.NEXT_PUBLIC_KAKAO_CHANNEL_URL ?? publicEnv.NEXT_PUBLIC_KAKAO_CHANNEL,
 } as const;
+
+// production에서 phone/kakao 둘 다 비어 있으면 운영자에게 경고 (빌드 통과)
+if (
+  (process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production") &&
+  !siteConfig.phone &&
+  !siteConfig.kakao
+) {
+  console.warn(
+    "[env] WARNING: 운영 환경에 NEXT_PUBLIC_PHONE / NEXT_PUBLIC_KAKAO_CHANNEL_URL 둘 다 미설정. " +
+      "CTA 버튼이 모두 미렌더되고 견적 폼 fallback만 노출됩니다.",
+  );
+}
 
 /**
  * Supabase 브라우저·SSR용 키 묶음. 누락 시 명확한 에러.

@@ -15,6 +15,7 @@ export const EVENTS = {
   SCROLL_50: "scroll_50",
   SCROLL_90: "scroll_90",
   OUTBOUND_CLICK: "outbound_click",
+  CLICK_POST_CTA: "click_post_cta",
 } as const;
 
 export type EventName = (typeof EVENTS)[keyof typeof EVENTS];

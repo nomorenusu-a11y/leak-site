@@ -1,16 +1,22 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/landing/Header";
 import { Hero } from "@/components/landing/Hero";
-import { TrustSection } from "@/components/landing/TrustSection";
+import { TrustPoints } from "@/components/landing/TrustPoints";
 import { QuoteFormSection } from "@/components/landing/QuoteFormSection";
 import { LiveBoardSection } from "@/components/landing/LiveBoardSection";
-import { CasesPreviewSkeleton } from "@/components/landing/CasesPreviewSkeleton";
+import { RecentPostsPreview } from "@/components/landing/RecentPostsPreview";
 import { StickyCTA } from "@/components/landing/StickyCTA";
 import { Footer } from "@/components/landing/Footer";
 import { resolveCity } from "@/lib/city";
 import { landingMetadata } from "@/lib/seo/meta";
 import { localBusinessJsonLd } from "@/lib/seo/schema";
 import { faqPageJsonLd } from "@/lib/seo/faq";
+
+/**
+ * 1분 ISR — LiveBoardSection 조건부 미렌더와 호환되도록.
+ * 신규 leak_requests 행이 들어오면 1분 안에 홈 보드에 반영.
+ */
+export const revalidate = 60;
 
 type Search = { [key: string]: string | string[] | undefined };
 
@@ -58,14 +64,14 @@ export default async function HomePage({
       <Header />
       <main className="flex-1 pb-24 md:pb-0">
         <Hero cityLabel={label} />
+        <TrustPoints />
         <QuoteFormSection
           utmSource={utmSource}
           utmCampaign={utmCampaign}
           cityCode={code ?? undefined}
         />
         <LiveBoardSection />
-        <TrustSection />
-        <CasesPreviewSkeleton />
+        <RecentPostsPreview />
       </main>
       <Footer />
       <StickyCTA />

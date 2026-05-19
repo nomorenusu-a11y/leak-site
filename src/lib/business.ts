@@ -1,0 +1,35 @@
+/**
+ * 사이트 전반에서 사용하는 영업 정보 상수.
+ *
+ * - env가 비어 있으면 안전한 기본값 fallback (사이트 빌드 깨지지 않음)
+ * - 모든 영업 카피는 여기서 가져옴. 컴포넌트에 하드코딩 금지.
+ * - service_role 의존 0 (퍼블릭 데이터)
+ */
+
+import { getContactInfo } from "./contact";
+import { siteConfig } from "./env";
+
+const SERVICE_AREA = process.env.NEXT_PUBLIC_SERVICE_AREA?.trim() || "서울·경기 일부 지역";
+const RESPONSE_TIME = process.env.NEXT_PUBLIC_RESPONSE_TIME?.trim() || "30분 이내";
+const EXPERIENCE = process.env.NEXT_PUBLIC_EXPERIENCE?.trim() || "오랜 경력의";
+
+export const BUSINESS = {
+  name: siteConfig.name,
+  url: siteConfig.url,
+
+  /** 정규화된 연락처 (phone·kakao 둘 다 null일 수 있음 → UI는 그때 fallback) */
+  contact: getContactInfo(),
+
+  /** "서울·경기 일부 지역" 같은 운영 가능 지역 표기 */
+  serviceArea: SERVICE_AREA,
+
+  /** "30분 이내" 같은 출동·응답 시간 카피. "24분" 같은 cnsolution 우연 일치 금지 */
+  responseTime: RESPONSE_TIME,
+
+  /** "오랜 경력의" 같은 경력 카피. 운영자 정보 받으면 "20년 경력의" 등으로 교체 */
+  experience: EXPERIENCE,
+
+  /** 고정 메시지 — 운영 정책 변경 시 여기만 수정 */
+  warranty: "1년 무상 A/S",
+  pricing: "가격 정찰제",
+} as const;

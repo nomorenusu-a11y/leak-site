@@ -13,10 +13,14 @@ type Props = {
  */
 export function QuoteFormSection({ utmSource, utmCampaign, cityCode }: Props) {
   return (
-    <section id="quote" className="bg-slate-50 py-12 sm:py-16">
+    <section
+      id="quote-form"
+      aria-labelledby="quote-form-title"
+      className="scroll-mt-20 bg-slate-50 py-12 sm:py-16"
+    >
       <Container>
         <div className="mx-auto max-w-2xl">
-          <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">
+          <h2 id="quote-form-title" className="text-2xl font-extrabold text-slate-900 sm:text-3xl">
             무료 견적 신청
           </h2>
           <p className="mt-2 text-slate-600">
