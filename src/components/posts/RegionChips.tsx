@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   ALL_CITY_CODES,
@@ -5,6 +7,7 @@ import {
   cityCodeToSlug,
   type CityCode,
 } from "@/lib/city";
+import { EVENTS, trackEvent } from "@/lib/analytics";
 
 type Props = {
   /** 현재 활성 도시. 없으면 "전체"가 활성화. */
@@ -18,25 +21,35 @@ export function RegionChips({ activeCode, allHref }: Props) {
     "inline-flex items-center rounded-full border px-3 py-1.5 text-sm font-semibold transition-colors";
   const inactive = "border-slate-200 bg-white text-slate-700 hover:bg-slate-50";
   const active = "border-brand-600 bg-brand-600 text-white";
+
+  function onChipClick(slugOrAll: string) {
+    trackEvent(EVENTS.FILTER_REGION, { region: slugOrAll });
+  }
+
   return (
     <nav aria-label="지역별 시공 사례" className="flex flex-wrap gap-1.5">
       {allHref && (
         <Link
           href={allHref}
+          onClick={() => onChipClick("all")}
           className={`${baseClass} ${!activeCode ? active : inactive}`}
         >
           전체
         </Link>
       )}
-      {ALL_CITY_CODES.map((code) => (
-        <Link
-          key={code}
-          href={`/posts/region/${cityCodeToSlug(code)}`}
-          className={`${baseClass} ${activeCode === code ? active : inactive}`}
-        >
-          {CITY_REGION_TAGS[code]}
-        </Link>
-      ))}
+      {ALL_CITY_CODES.map((code) => {
+        const slug = cityCodeToSlug(code);
+        return (
+          <Link
+            key={code}
+            href={`/posts/region/${slug}`}
+            onClick={() => onChipClick(slug)}
+            className={`${baseClass} ${activeCode === code ? active : inactive}`}
+          >
+            {CITY_REGION_TAGS[code]}
+          </Link>
+        );
+      })}
     </nav>
   );
 }

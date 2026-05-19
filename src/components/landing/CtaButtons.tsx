@@ -1,16 +1,9 @@
 "use client";
 
 import { siteConfig } from "@/lib/env";
+import { EVENTS, trackEvent } from "@/lib/analytics";
 
 type Variant = "primary" | "ghost";
-
-function trackClick(label: string) {
-  if (typeof window === "undefined") return;
-  const w = window as Window & {
-    gtag?: (...args: unknown[]) => void;
-  };
-  w.gtag?.("event", "cta_click", { cta_label: label });
-}
 
 export function PhoneButton({
   variant = "primary",
@@ -32,7 +25,7 @@ export function PhoneButton({
   return (
     <a
       href={phone ? `tel:${phone}` : "#"}
-      onClick={() => trackClick("phone")}
+      onClick={() => trackEvent(EVENTS.CLICK_CALL, { cta_label: "phone" })}
       className={`${base} ${styles} ${block ? "w-full" : ""}`}
       aria-label="전화로 상담하기"
     >
@@ -61,7 +54,7 @@ export function KakaoButton({
       href={kakao || "#"}
       target="_blank"
       rel="noopener"
-      onClick={() => trackClick("kakao")}
+      onClick={() => trackEvent(EVENTS.CLICK_KAKAO, { cta_label: "kakao" })}
       className={`${base} ${styles} ${block ? "w-full" : ""}`}
       aria-label="카카오톡 채널로 상담하기"
     >

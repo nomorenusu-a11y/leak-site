@@ -5,6 +5,8 @@ import {
   submitQuote,
   type SubmitQuoteState,
 } from "@/app/actions/submit-quote";
+import { EVENTS, trackEvent } from "@/lib/analytics";
+import { readStoredUtm } from "@/lib/utm";
 
 const MAX_IMAGES = 3;
 const SYMPTOM_MAX = 500;
@@ -28,13 +30,15 @@ function formatPhone(raw: string): string {
   return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
 }
 
-declare global {
-  interface Window {
-    gtag?: (...args: unknown[]) => void;
-  }
-}
-
 export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
+  // UTM/city 가 props로 비어 들어오면 sessionStorage(이전 광고 클릭 흔적)에서 fallback.
+  // SSR 시점은 props 그대로 사용 → 첫 렌더는 prop 값으로 hydration, mount 후 storage 보강.
+  const initialUtm = {
+    source: utmSource ?? "",
+    campaign: utmCampaign ?? "",
+    city: cityCode ?? "",
+  };
+  const [utmEff, setUtmEff] = useState(initialUtm);
   const [state, action, pending] = useActionState<SubmitQuoteState, FormData>(
     submitQuote,
     INITIAL,
@@ -56,12 +60,27 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
 
   // 성공 시 GA 이벤트
   useEffect(() => {
-    if (state.status === "success" && typeof window !== "undefined") {
-      window.gtag?.("event", "submit_quote", {
-        utm_source: state.utmSource ?? utmSource ?? "(direct)",
+    if (state.status === "success") {
+      trackEvent(EVENTS.SUBMIT_QUOTE, {
+        utm_source: state.utmSource ?? utmEff.source ?? "(direct)",
       });
     }
-  }, [state, utmSource]);
+  }, [state, utmEff.source]);
+
+  // 마운트 후 1회: prop이 비었으면 sessionStorage utm 보강 (외부 storage 동기화)
+  useEffect(() => {
+    if (utmSource || utmCampaign || cityCode) return;
+    const stored = readStoredUtm();
+    if (!stored) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setUtmEff({
+      source: stored.utm_source ?? "",
+      campaign: stored.utm_campaign ?? "",
+      city: stored.city_code ?? "",
+    });
+    // 의도적으로 mount 1회만
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const fieldErrors =
     state.status === "error" ? state.fieldErrors : undefined;
@@ -129,14 +148,10 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
         </div>
       )}
 
-      {/* hidden — 광고 추적 */}
-      <input type="hidden" name="utm_source" defaultValue={utmSource ?? ""} />
-      <input
-        type="hidden"
-        name="utm_campaign"
-        defaultValue={utmCampaign ?? ""}
-      />
-      <input type="hidden" name="city_code" defaultValue={cityCode ?? ""} />
+      {/* hidden — 광고 추적 (sessionStorage fallback 적용된 effective 값) */}
+      <input type="hidden" name="utm_source" value={utmEff.source} readOnly />
+      <input type="hidden" name="utm_campaign" value={utmEff.campaign} readOnly />
+      <input type="hidden" name="city_code" value={utmEff.city} readOnly />
 
       <div className="space-y-4">
         <Field label="이름" name="customer_name" required error={fieldErrors?.customer_name}>

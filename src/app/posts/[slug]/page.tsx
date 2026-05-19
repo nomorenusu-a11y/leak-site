@@ -6,6 +6,7 @@ import { Footer } from "@/components/landing/Footer";
 import { PostBody } from "@/components/posts/PostBody";
 import { PostGallery } from "@/components/posts/PostGallery";
 import { RelatedPosts } from "@/components/posts/RelatedPosts";
+import { PostViewTracker } from "@/components/posts/PostViewTracker";
 import {
   getAllPublishedSlugs,
   getPostBySlug,
@@ -78,6 +79,7 @@ export default async function PostDetailPage({
         suppressHydrationWarning
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd(post)) }}
       />
+      <PostViewTracker slug={post.slug} regionTags={post.region_tags} />
       <Header />
       <main className="flex-1 pb-20">
         <article>

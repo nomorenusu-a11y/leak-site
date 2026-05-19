@@ -10,6 +10,7 @@ import { Footer } from "@/components/landing/Footer";
 import { resolveCity } from "@/lib/city";
 import { landingMetadata } from "@/lib/seo/meta";
 import { localBusinessJsonLd } from "@/lib/seo/schema";
+import { faqPageJsonLd } from "@/lib/seo/faq";
 
 type Search = { [key: string]: string | string[] | undefined };
 
@@ -45,6 +46,13 @@ export default async function HomePage({
         suppressHydrationWarning
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(localBusinessJsonLd()),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqPageJsonLd()),
         }}
       />
       <Header />

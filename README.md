@@ -172,6 +172,65 @@ supabase/
 
 ---
 
-## 배포
+## Vercel 배포
 
-Vercel 권장. 환경 변수를 Vercel Project Settings에 동일하게 넣고 push. **Production 배포 전 필수 작업** 섹션 반드시 확인.
+### 1. 프로젝트 연결
+
+1. [vercel.com](https://vercel.com) → GitHub로 가입
+2. New Project → 이 GitHub repo(`leak-site`) Import
+3. Framework Preset은 자동으로 **Next.js** 감지. Build Command·Output 기본값 그대로
+4. 첫 배포 직전 `Environment Variables` 섹션에서 아래 값들 등록 후 Deploy
+
+### 2. 환경변수 (Vercel Dashboard → Project Settings → Environment Variables)
+
+| 변수 | 등록 환경 | dev/prod 분리 | 비고 |
+|---|---|---|---|
+| `NEXT_PUBLIC_SITE_URL` | Production / Preview / Development | 분리 | prod는 본 도메인, preview는 `vercel.app` URL |
+| `NEXT_PUBLIC_SITE_NAME` | All | 동일 가능 | 상호명 |
+| `NEXT_PUBLIC_PHONE` | All | 동일 | tel 링크 숫자만 |
+| `NEXT_PUBLIC_KAKAO_CHANNEL` | All | 동일 | pf.kakao.com URL |
+| `NEXT_PUBLIC_SUPABASE_URL` | All | 동일 | Supabase Project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | All | 동일 | anon public 키 |
+| `SUPABASE_SERVICE_ROLE_KEY` | All | 동일 | **Sensitive** 체크 (Vercel UI) |
+| `ADMIN_PASSWORD` | Production | **반드시 분리** | dev/local 값 절대 금지. 새로 생성 |
+| `SESSION_SECRET` | Production | **반드시 분리** | `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"` |
+| `NEXT_PUBLIC_GA_ID` | Production | 보통 prod만 | G-XXXXXXXXXX |
+| `GOOGLE_SITE_VERIFICATION` | Production | prod만 | Google Search Console |
+| `NAVER_SITE_VERIFICATION` | Production | prod만 | Naver Webmaster Tools |
+
+> Vercel UI에서 `Sensitive` 토글: `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_PASSWORD`, `SESSION_SECRET`는 반드시 켜두기. 한 번 저장 후에는 값이 마스킹돼 다시 볼 수 없음.
+
+### 3. 도메인 연결 (가비아 등 외부 도메인)
+
+1. Vercel Dashboard → Domains → Add → 도메인 입력
+2. Vercel이 안내하는 DNS 레코드를 도메인 등록기관(가비아/후이즈 등)에 등록:
+   - **루트 도메인** (`example.com`): `A` 레코드 → Vercel이 제공하는 IP
+   - **www 서브도메인** (`www.example.com`): `CNAME` → `cname.vercel-dns.com`
+3. DNS 전파(보통 수 분~수 시간) 후 Vercel이 자동으로 SSL(Let's Encrypt) 발급
+4. `NEXT_PUBLIC_SITE_URL`을 새 도메인으로 교체 후 **재배포 트리거** (Vercel Dashboard → Deployments → Redeploy)
+
+### 4. 첫 배포 후 체크리스트
+
+- [ ] 도메인 접속 → 홈 정상 노출
+- [ ] `?city=Gangnam` 진입 → 헤드라인이 "강남 누수 전문"으로 변경
+- [ ] 견적 폼 제출 → Supabase Table Editor에서 행 생성 확인
+- [ ] `/admin/login` → 새 prod 비번으로 로그인 → 대시보드
+- [ ] 게시판에서 글 1건 작성·발행 → `/posts/{slug}` 접속 확인
+- [ ] `/sitemap.xml` 도메인 반영 (모든 URL이 `https://본도메인/...`)
+- [ ] `/robots.txt`에 sitemap URL 정확히 표시
+- [ ] [PageSpeed Insights](https://pagespeed.web.dev/)에서 모바일 LCP < 3s, CLS < 0.1
+- [ ] [Google Rich Results Test](https://search.google.com/test/rich-results)에서 LocalBusiness/Article/FAQ 모두 감지
+
+### 5. Google·Naver 검색 등록
+
+- **Google Search Console**: 속성 추가 → 도메인 또는 URL prefix → HTML 메타 태그 방법 → `GOOGLE_SITE_VERIFICATION` 등록
+- **Naver Webmaster Tools (서치어드바이저)**: 사이트 추가 → 메타 태그 → `NAVER_SITE_VERIFICATION` 등록
+- 두 곳 모두 `https://본도메인/sitemap.xml` 제출
+
+> 검증 메타 태그는 `NEXT_PUBLIC_*_VERIFICATION` 이름도 fallback으로 동작합니다.
+
+---
+
+## 클라이언트 운영 매뉴얼
+
+비전문가용 사용 안내는 별도 파일에 있습니다: [`docs/CLIENT_MANUAL.md`](./docs/CLIENT_MANUAL.md)

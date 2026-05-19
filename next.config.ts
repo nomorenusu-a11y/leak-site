@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "*.supabase.co" },
     ],
   },
+  compiler: {
+    // production 빌드에서만 console.log/info/debug 등 제거. console.error/warn은 유지.
+    removeConsole:
+      process.env.NODE_ENV === "production"
+        ? { exclude: ["error", "warn"] }
+        : false,
+  },
 };
 
 export default nextConfig;

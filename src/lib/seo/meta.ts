@@ -34,10 +34,18 @@ export const baseMetadata: Metadata = {
     follow: true,
   },
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION || undefined,
-    other: process.env.NEXT_PUBLIC_NAVER_VERIFICATION
-      ? { "naver-site-verification": process.env.NEXT_PUBLIC_NAVER_VERIFICATION }
-      : undefined,
+    // 신/구 변수 이름 모두 fallback. NEXT_PUBLIC_은 1단계부터 사용 중,
+    // 새 이름(NEXT_PUBLIC_ 없음)이 권장 — 메타 태그는 빌드 시 인라인되니 둘 다 동작.
+    google:
+      process.env.GOOGLE_SITE_VERIFICATION ||
+      process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION ||
+      undefined,
+    other: (() => {
+      const naver =
+        process.env.NAVER_SITE_VERIFICATION ||
+        process.env.NEXT_PUBLIC_NAVER_VERIFICATION;
+      return naver ? { "naver-site-verification": naver } : undefined;
+    })(),
   },
 };
 

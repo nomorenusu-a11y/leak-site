@@ -1,11 +1,20 @@
 import { siteConfig } from "@/lib/env";
+import { ALL_CITY_CODES, CITY_REGION_TAGS } from "@/lib/city";
 import type { Post } from "@/types/database";
 
 /**
  * Schema.org LocalBusiness JSON-LD.
- * 후속 단계에서 주소·서비스 지역·운영 시간 정보를 채운다.
+ *
+ * - 24시간 상담 + 출동 → openingHours가 "Mo-Su 00:00-23:59"
+ * - areaServed: city.ts의 모든 한글 지역명 (서울 25구 + 분당)
+ * - aggregateRating: 운영 초기 placeholder (5.0 / 0 review) — 데이터 쌓이면 동적 전환
  */
 export function localBusinessJsonLd() {
+  const placesServed = ALL_CITY_CODES.map((code) => ({
+    "@type": "Place",
+    name: CITY_REGION_TAGS[code],
+  }));
+
   return {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -15,15 +24,8 @@ export function localBusinessJsonLd() {
     image: `${siteConfig.url}/og.png`,
     telephone: siteConfig.phone ? `+82-${siteConfig.phone.slice(1)}` : undefined,
     priceRange: "₩₩",
-    areaServed: {
-      "@type": "AdministrativeArea",
-      name: "서울특별시",
-    },
-    address: {
-      "@type": "PostalAddress",
-      addressCountry: "KR",
-      addressRegion: "서울특별시",
-    },
+    // 사람이 읽기 쉬운 표현 (Schema.org 권장 형식 둘 다 지원)
+    openingHours: ["Mo-Su 00:00-23:59"],
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
@@ -40,6 +42,19 @@ export function localBusinessJsonLd() {
         closes: "23:59",
       },
     ],
+    areaServed: placesServed,
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "KR",
+      addressRegion: "서울특별시",
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "5.0",
+      reviewCount: "0",
+      bestRating: "5",
+      worstRating: "1",
+    },
     sameAs: siteConfig.kakao ? [siteConfig.kakao] : [],
   };
 }

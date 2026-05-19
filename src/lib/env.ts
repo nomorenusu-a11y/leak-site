@@ -49,6 +49,9 @@ const serverSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: optionalSecret(20),
   ADMIN_PASSWORD: optionalSecret(8),
   SESSION_SECRET: optionalSecret(32),
+  // 검색콘솔 verification — server 또는 NEXT_PUBLIC_ 모두 fallback (meta.ts 참고)
+  GOOGLE_SITE_VERIFICATION: optionalString,
+  NAVER_SITE_VERIFICATION: optionalString,
 });
 
 function readPublicEnv() {
@@ -87,6 +90,8 @@ export function serverEnv() {
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
     SESSION_SECRET: process.env.SESSION_SECRET,
+    GOOGLE_SITE_VERIFICATION: process.env.GOOGLE_SITE_VERIFICATION,
+    NAVER_SITE_VERIFICATION: process.env.NAVER_SITE_VERIFICATION,
   });
   if (!parsed.success) {
     console.error(
