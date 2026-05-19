@@ -1,0 +1,139 @@
+import { z } from "zod";
+
+const optionalUrl = z
+  .string()
+  .trim()
+  .url()
+  .or(z.literal(""))
+  .optional()
+  .transform((v) => (v ? v : undefined));
+
+const optionalString = z
+  .string()
+  .trim()
+  .min(1)
+  .or(z.literal(""))
+  .optional()
+  .transform((v) => (v ? v : undefined));
+
+/** Supabase 키처럼 "있을 때 최소 길이"가 의미 있는 값에 사용. 빈 값은 통과. */
+const optionalSecret = (min = 20) =>
+  z
+    .string()
+    .trim()
+    .min(min, `expected at least ${min} chars`)
+    .or(z.literal(""))
+    .optional()
+    .transform((v) => (v ? v : undefined));
+
+const publicSchema = z.object({
+  NEXT_PUBLIC_SITE_URL: z.string().url().default("http://localhost:3000"),
+  NEXT_PUBLIC_SITE_NAME: z.string().min(1).default("누수 시공"),
+  NEXT_PUBLIC_PHONE: z
+    .string()
+    .regex(/^\d{8,12}$/, "phone must be digits only")
+    .or(z.literal(""))
+    .optional()
+    .transform((v) => (v ? v : undefined)),
+  NEXT_PUBLIC_KAKAO_CHANNEL: optionalUrl,
+
+  NEXT_PUBLIC_SUPABASE_URL: optionalUrl,
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: optionalSecret(20),
+
+  NEXT_PUBLIC_GA_ID: optionalString,
+  NEXT_PUBLIC_NAVER_VERIFICATION: optionalString,
+  NEXT_PUBLIC_GOOGLE_VERIFICATION: optionalString,
+});
+
+const serverSchema = z.object({
+  SUPABASE_SERVICE_ROLE_KEY: optionalSecret(20),
+  ADMIN_PASSWORD: optionalString,
+  SESSION_SECRET: optionalString,
+});
+
+function readPublicEnv() {
+  return {
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+    NEXT_PUBLIC_SITE_NAME: process.env.NEXT_PUBLIC_SITE_NAME,
+    NEXT_PUBLIC_PHONE: process.env.NEXT_PUBLIC_PHONE,
+    NEXT_PUBLIC_KAKAO_CHANNEL: process.env.NEXT_PUBLIC_KAKAO_CHANNEL,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_GA_ID: process.env.NEXT_PUBLIC_GA_ID,
+    NEXT_PUBLIC_NAVER_VERIFICATION: process.env.NEXT_PUBLIC_NAVER_VERIFICATION,
+    NEXT_PUBLIC_GOOGLE_VERIFICATION:
+      process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
+  };
+}
+
+const parsedPublic = publicSchema.safeParse(readPublicEnv());
+if (!parsedPublic.success) {
+  console.error(
+    "[env] invalid public env:",
+    parsedPublic.error.flatten().fieldErrors,
+  );
+  throw new Error("Invalid NEXT_PUBLIC_* environment variables");
+}
+
+export const publicEnv = parsedPublic.data;
+
+let cachedServer: z.infer<typeof serverSchema> | null = null;
+export function serverEnv() {
+  if (cachedServer) return cachedServer;
+  if (typeof window !== "undefined") {
+    throw new Error("serverEnv() called in the browser");
+  }
+  const parsed = serverSchema.safeParse({
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
+    SESSION_SECRET: process.env.SESSION_SECRET,
+  });
+  if (!parsed.success) {
+    console.error(
+      "[env] invalid server env:",
+      parsed.error.flatten().fieldErrors,
+    );
+    throw new Error("Invalid server environment variables");
+  }
+  cachedServer = parsed.data;
+  return cachedServer;
+}
+
+export const siteConfig = {
+  url: publicEnv.NEXT_PUBLIC_SITE_URL,
+  name: publicEnv.NEXT_PUBLIC_SITE_NAME,
+  phone: publicEnv.NEXT_PUBLIC_PHONE,
+  kakao: publicEnv.NEXT_PUBLIC_KAKAO_CHANNEL,
+} as const;
+
+/**
+ * Supabase 브라우저·SSR용 키 묶음. 누락 시 명확한 에러.
+ * 사용처: `src/lib/supabase/client.ts`, `src/lib/supabase/server.ts`
+ */
+export function getSupabaseConfig() {
+  const url = publicEnv.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey) {
+    throw new Error(
+      "Supabase URL/anon key가 .env.local에 설정되지 않았습니다. " +
+        "Project Settings > API에서 Project URL과 anon public 키를 복사해 채워주세요.",
+    );
+  }
+  return { url, anonKey };
+}
+
+/**
+ * Supabase 관리자(service_role) 키 묶음. 서버 전용.
+ * 사용처: `src/lib/supabase/admin.ts`만 — 절대 클라이언트 컴포넌트에서 import 금지.
+ */
+export function getSupabaseAdminConfig() {
+  const url = publicEnv.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRole = serverEnv().SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !serviceRole) {
+    throw new Error(
+      "Supabase service_role 키 또는 URL이 누락되었습니다. " +
+        "Project Settings > API에서 service_role 키를 복사해 SUPABASE_SERVICE_ROLE_KEY에 채워주세요.",
+    );
+  }
+  return { url, serviceRole };
+}

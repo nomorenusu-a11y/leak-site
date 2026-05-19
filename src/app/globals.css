@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme {
+  /* ---------- Brand: Trust Blue (#0060ad = 600) ---------- */
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-200: #bfdbfe;
+  --color-brand-300: #93c5fd;
+  --color-brand-400: #4d9fe6;
+  --color-brand-500: #1a7fd1;
+  --color-brand-600: #0060ad;
+  --color-brand-700: #004f8f;
+  --color-brand-800: #003e72;
+  --color-brand-900: #002a4f;
+  --color-brand-950: #001833;
+
+  /* ---------- Accent: Urgent Orange (#ff6a3d = 500) ---------- */
+  --color-accent-50: #fff4f0;
+  --color-accent-100: #ffe3d8;
+  --color-accent-200: #ffc4ad;
+  --color-accent-300: #ff9d77;
+  --color-accent-400: #ff8559;
+  --color-accent-500: #ff6a3d;
+  --color-accent-600: #ed4d1f;
+  --color-accent-700: #c43d18;
+  --color-accent-800: #8a2a10;
+  --color-accent-900: #5c1c0a;
+
+  /* ---------- Status palette for board cards ---------- */
+  --color-status-pending: #94a3b8;
+  --color-status-quote: #2563eb;
+  --color-status-active: #f59e0b;
+  --color-status-done: #16a34a;
+
+  /* ---------- Typography ---------- */
+  --font-sans:
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    "system-ui", Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo",
+    "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji",
+    sans-serif;
+
+  /* ---------- Container ---------- */
+  --container-content: 76rem;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --muted: #64748b;
+  --surface: #f8fafc;
+  --border: #e2e8f0;
+}
+
+html {
+  /* Improves Korean rendering */
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  word-break: keep-all;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss06"; /* nicer Pretendard digits */
+  letter-spacing: -0.01em;
+}
+
+/* Respect users who reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
