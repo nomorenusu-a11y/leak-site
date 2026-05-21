@@ -14,9 +14,12 @@ const RESPONSE_TIME = process.env.NEXT_PUBLIC_RESPONSE_TIME?.trim() || "30분 �
 const EXPERIENCE = process.env.NEXT_PUBLIC_EXPERIENCE?.trim() || "오랜 경력의";
 
 // 사업자 정보 (Footer + privacy/terms). 빈 값이면 해당 줄 미렌더.
+const LEGAL_NAME = process.env.NEXT_PUBLIC_BUSINESS_LEGAL_NAME?.trim() || undefined;
 const OWNER = process.env.NEXT_PUBLIC_BUSINESS_OWNER?.trim() || undefined;
 const REG_NO = process.env.NEXT_PUBLIC_BUSINESS_REG_NO?.trim() || undefined;
 const ADDRESS = process.env.NEXT_PUBLIC_BUSINESS_ADDRESS?.trim() || undefined;
+const BIZ_TYPE = process.env.NEXT_PUBLIC_BUSINESS_BIZ_TYPE?.trim() || undefined;
+const BIZ_CATEGORY = process.env.NEXT_PUBLIC_BUSINESS_BIZ_CATEGORY?.trim() || undefined;
 const EMAIL = process.env.NEXT_PUBLIC_BUSINESS_EMAIL?.trim() || undefined;
 
 export const BUSINESS = {
@@ -40,8 +43,11 @@ export const BUSINESS = {
   pricing: "가격 정찰제",
 
   /** 사업자 정보 (Phase 3에서 privacy/terms 페이지에서도 사용). 빈 값이면 표기 영역 자체 미렌더. */
+  legalName: LEGAL_NAME,
   ownerName: OWNER,
   businessRegNo: REG_NO,
   address: ADDRESS,
+  bizType: BIZ_TYPE,
+  bizCategory: BIZ_CATEGORY,
   email: EMAIL,
 } as const;

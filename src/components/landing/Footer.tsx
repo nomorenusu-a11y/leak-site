@@ -9,10 +9,14 @@ import { BUSINESS } from "@/lib/business";
  */
 export function Footer() {
   const lines: { label: string; value: string }[] = [];
+  if (BUSINESS.legalName) lines.push({ label: "법인명", value: BUSINESS.legalName });
   if (BUSINESS.ownerName) lines.push({ label: "대표", value: BUSINESS.ownerName });
   if (BUSINESS.businessRegNo)
     lines.push({ label: "사업자등록번호", value: BUSINESS.businessRegNo });
   if (BUSINESS.address) lines.push({ label: "주소", value: BUSINESS.address });
+  if (BUSINESS.bizType) lines.push({ label: "업태", value: BUSINESS.bizType });
+  if (BUSINESS.bizCategory)
+    lines.push({ label: "종목", value: BUSINESS.bizCategory });
   if (BUSINESS.email) lines.push({ label: "이메일", value: BUSINESS.email });
 
   return (
