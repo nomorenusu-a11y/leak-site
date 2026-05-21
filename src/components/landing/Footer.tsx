@@ -25,9 +25,7 @@ export function Footer() {
         <div className="grid gap-6 sm:grid-cols-3">
           {/* 1. 브랜드 + 짧은 한 줄 */}
           <div>
-            <div className="text-white">
-              <Logo />
-            </div>
+            <Logo size="sm" textClass="text-white" />
             <p className="mt-3 text-sm text-slate-400">
               누수 탐지·시공 · {BUSINESS.serviceArea} · 24시간 상담
             </p>

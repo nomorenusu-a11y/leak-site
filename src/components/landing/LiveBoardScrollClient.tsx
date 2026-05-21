@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CategoryBadge } from "@/components/ui/CategoryBadge";
 import { ScrollTime } from "@/components/ui/ScrollTime";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import type { DemoCategory } from "@/data/live-board-demo";
 import type { ScrollItem } from "@/lib/live-board-scroll";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { RequestStatus } from "@/types/database";
@@ -22,36 +22,12 @@ type LeakRequestRow = {
   visible_on_board: boolean | null;
 };
 
-const CATEGORY_STYLE: Record<
-  DemoCategory,
-  { ko: string; cls: string }
-> = {
-  leak: { ko: "누수", cls: "bg-blue-50 text-blue-700 border-blue-200" },
-  sink: { ko: "싱크대", cls: "bg-cyan-50 text-cyan-700 border-cyan-200" },
-  toilet: { ko: "변기", cls: "bg-purple-50 text-purple-700 border-purple-200" },
-  heating: { ko: "난방", cls: "bg-orange-50 text-orange-700 border-orange-200" },
-  frozen: { ko: "동파", cls: "bg-slate-100 text-slate-700 border-slate-300" },
-};
-
-const ETC_STYLE = { ko: "기타", cls: "bg-slate-100 text-slate-600 border-slate-300" };
-
-function CategoryBadge({ category }: { category?: DemoCategory }) {
-  const s = category ? CATEGORY_STYLE[category] : ETC_STYLE;
-  return (
-    <span
-      className={`inline-flex shrink-0 items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold ${s.cls}`}
-    >
-      {s.ko}
-    </span>
-  );
-}
-
 function ScrollRow({ item }: { item: ScrollItem }) {
   return (
     <li
       className="flex h-16 items-center gap-3 border-b border-slate-100 px-4 sm:px-5"
     >
-      <CategoryBadge category={item.category} />
+      <CategoryBadge category={item.category} fallbackEtc />
       <div className="flex min-w-0 flex-1 items-center gap-2 text-sm">
         <span className="font-semibold text-slate-900">{item.masked_name || "고객"}</span>
         {item.region && (

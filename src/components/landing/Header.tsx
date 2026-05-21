@@ -16,7 +16,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur supports-[backdrop-filter]:bg-white/70">
       <Container className="flex h-14 items-center justify-between gap-3">
-        <Logo />
+        <Logo size="md" hideTextOnMobile />
         <nav aria-label="주요 메뉴" className="flex items-center gap-1">
           <ul className="hidden items-center gap-1 md:flex">
             {NAV.map((it) => (

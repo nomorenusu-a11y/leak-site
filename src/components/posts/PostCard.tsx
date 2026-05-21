@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CategoryBadge } from "@/components/ui/CategoryBadge";
 import type { Post } from "@/types/database";
 import { formatDateYMD } from "@/lib/time";
 
@@ -32,6 +33,7 @@ export function PostCard({ post }: { post: Post }) {
       </div>
       <div className="p-4 sm:p-5">
         <div className="flex flex-wrap items-center gap-1.5">
+          <CategoryBadge category={post.category} />
           {post.region_tags.slice(0, 3).map((tag) => (
             <span
               key={tag}

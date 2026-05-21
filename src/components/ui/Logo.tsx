@@ -1,26 +1,51 @@
+import Image from "next/image";
 import Link from "next/link";
-import { Droplet } from "@/components/icons";
 import { BUSINESS } from "@/lib/business";
 
+type Size = "sm" | "md" | "lg";
+
+const SIZES: Record<Size, { img: number; text: string }> = {
+  sm: { img: 24, text: "text-sm" },
+  md: { img: 36, text: "text-base" },
+  lg: { img: 48, text: "text-lg" },
+};
+
 /**
- * 사이트 로고 — Droplet SVG + 상호명. OS 이모지 💧 대신.
+ * 사이트 로고 — Image + 상호명.
+ *
+ * @param size  헤더(md) / 푸터(sm) / 랜딩 강조(lg)
+ * @param textClass  텍스트 색·강조 변형 (어두운 배경에선 brand-300 등)
+ * @param hideTextOnMobile  모바일에서 텍스트만 숨김 (로고 이미지는 노출)
  */
-export function Logo({ size = "md" }: { size?: "sm" | "md" }) {
-  const wrap = size === "sm" ? "size-7" : "size-8";
-  const icon = size === "sm" ? 16 : 18;
+export function Logo({
+  size = "md",
+  textClass = "text-brand-700",
+  hideTextOnMobile = false,
+}: {
+  size?: Size;
+  textClass?: string;
+  hideTextOnMobile?: boolean;
+}) {
+  const s = SIZES[size];
   return (
     <Link
       href="/"
-      className="inline-flex items-center gap-2 font-extrabold text-brand-700 hover:text-brand-800"
+      className="inline-flex items-center gap-2"
       aria-label={`${BUSINESS.name} 홈으로`}
     >
+      <Image
+        src="/logo.png"
+        alt=""
+        width={s.img}
+        height={s.img}
+        priority
+        className="rounded-md"
+      />
       <span
-        aria-hidden
-        className={`inline-flex ${wrap} items-center justify-center rounded-md bg-brand-600 text-white`}
+        className={`font-extrabold tracking-tight ${s.text} ${textClass} ${hideTextOnMobile ? "hidden sm:inline" : ""}`}
       >
-        <Droplet size={icon} strokeWidth={2} />
+        {BUSINESS.name}
       </span>
-      <span className="tracking-tight">{BUSINESS.name}</span>
     </Link>
   );
 }
