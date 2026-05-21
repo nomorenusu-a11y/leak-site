@@ -38,4 +38,8 @@ export {
   Upload,
   AlertCircle,
   Info,
+  // StatsBar (LiveBoard 위 한 줄 배지)
+  Clock,
+  MapPin,
+  Wallet,
 } from "lucide-react";

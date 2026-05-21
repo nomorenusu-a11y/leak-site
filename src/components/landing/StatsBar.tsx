@@ -1,36 +1,40 @@
+import { Clock, MapPin, ShieldCheck, Wallet } from "@/components/icons";
 import { BUSINESS } from "@/lib/business";
+import type { LucideIcon } from "lucide-react";
 
 /**
- * 운영 정보 3카드.
+ * LiveBoard 상단의 한 줄 운영 정보 배지.
  *
- * 이전에는 누적 요청 / 이번 달 작업 완료 등 숫자 카운터를 표시했지만,
- * 운영 초기에는 진짜 데이터가 적어 의미 없고, 더미와 섞으면 표시광고법
- * 회색지대 위험이 있어 사실 정보 카드로 교체.
- *
- * 운영 안정화 후 진짜 통계를 살리고 싶다면 git history에서 이전 버전 참고:
- *   - lib/posts.ts:getBoardStats()  ← 함수 자체는 보존됨
- *   - components/ui/AnimatedCount   ← 컴포넌트도 보존됨
+ * 무한 스크롤 보드가 메인 시각 요소라, 이 영역은 차분한 텍스트 라인으로 축소.
+ * 4개 항목 · 구분점 `·` · 모바일에서 자연 wrap.
  */
-export function StatsBar() {
-  const items: { label: string; value: string }[] = [
-    { label: "출동 지역", value: BUSINESS.serviceArea },
-    { label: "상담 시간", value: BUSINESS.responseTime },
-    { label: "A/S 보장", value: BUSINESS.warranty },
-  ];
-
+function Item({ Icon, text }: { Icon: LucideIcon; text: string }) {
   return (
-    <dl className="grid grid-cols-3 gap-3 sm:gap-4">
-      {items.map((it) => (
-        <div
-          key={it.label}
-          className="rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm"
-        >
-          <dt className="text-xs font-semibold text-slate-500 sm:text-sm">{it.label}</dt>
-          <dd className="mt-1 text-base font-extrabold text-brand-700 sm:text-lg">
-            {it.value}
-          </dd>
-        </div>
-      ))}
-    </dl>
+    <span className="inline-flex items-center gap-1.5 text-slate-600">
+      <Icon aria-hidden className="size-4 text-brand-600" strokeWidth={2} />
+      <span>{text}</span>
+    </span>
+  );
+}
+
+function Dot() {
+  return (
+    <span aria-hidden className="text-slate-300">
+      ·
+    </span>
+  );
+}
+
+export function StatsBar() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-sm font-medium">
+      <Item Icon={Clock} text={BUSINESS.responseTime} />
+      <Dot />
+      <Item Icon={MapPin} text={BUSINESS.serviceArea} />
+      <Dot />
+      <Item Icon={ShieldCheck} text={BUSINESS.warranty} />
+      <Dot />
+      <Item Icon={Wallet} text={BUSINESS.pricing} />
+    </div>
   );
 }
