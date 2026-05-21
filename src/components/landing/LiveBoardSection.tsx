@@ -1,20 +1,30 @@
 import { Container } from "@/components/ui/Container";
+import { LIVE_BOARD_DEMO_ON } from "@/lib/env";
+import { selectDemoItems } from "@/lib/live-board-selector";
 import { getRecentBoardItems } from "@/lib/posts";
 import { LiveBoardClient } from "./LiveBoardClient";
 import { StatsBar } from "./StatsBar";
 
+const BOARD_SLOTS = 8;
+
 /**
  * 실시간 작업 보드 섹션.
  *
- * **0건이면 섹션 자체를 미렌더** — "휴면 업체" 인상 방지.
- * 1건 이상 들어와야 LIVE 뱃지와 StatsBar가 의미 있다.
+ * 진짜 데이터 우선 하이브리드:
+ *   - 진짜 N건 (DB) 위로
+ *   - 부족분(8-N건)을 더미로 채움 (env OFF 시 0건)
+ *   - 둘 다 0건이면 섹션 자체 미렌더 (휴면 인상 방지)
  *
+ * Realtime INSERT 들어오면 LiveBoardClient가 slice(0, MAX_ITEMS)로 더미를 자동 밀어냄.
  * 신규 행이 들어와도 페이지 ISR로 1분 안에 노출 (page.tsx의 revalidate=60).
  */
 export async function LiveBoardSection() {
-  const initial = await getRecentBoardItems(10);
+  const real = await getRecentBoardItems(BOARD_SLOTS);
+  const demo = LIVE_BOARD_DEMO_ON
+    ? selectDemoItems(new Date(), BOARD_SLOTS - real.length)
+    : [];
+  const initial = [...real, ...demo].slice(0, BOARD_SLOTS);
 
-  // 빈 데이터 → 섹션 자체 미렌더
   if (initial.length === 0) return null;
 
   return (

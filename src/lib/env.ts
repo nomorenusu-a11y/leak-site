@@ -59,6 +59,9 @@ const publicSchema = z.object({
   NEXT_PUBLIC_GA_ID: optionalString,
   NEXT_PUBLIC_NAVER_VERIFICATION: optionalString,
   NEXT_PUBLIC_GOOGLE_VERIFICATION: optionalString,
+
+  // LiveBoard 더미 토글 ("true" | "false"). 미설정 시 기본 true.
+  NEXT_PUBLIC_LIVE_BOARD_DEMO: optionalString,
 });
 
 const serverSchema = z.object({
@@ -93,6 +96,7 @@ function readPublicEnv() {
     NEXT_PUBLIC_NAVER_VERIFICATION: process.env.NEXT_PUBLIC_NAVER_VERIFICATION,
     NEXT_PUBLIC_GOOGLE_VERIFICATION:
       process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
+    NEXT_PUBLIC_LIVE_BOARD_DEMO: process.env.NEXT_PUBLIC_LIVE_BOARD_DEMO,
   };
 }
 
@@ -138,6 +142,15 @@ export const siteConfig = {
   kakao:
     publicEnv.NEXT_PUBLIC_KAKAO_CHANNEL_URL ?? publicEnv.NEXT_PUBLIC_KAKAO_CHANNEL,
 } as const;
+
+/**
+ * LiveBoard 더미 데이터 사용 여부.
+ *   - 기본값: ON
+ *   - OFF: 환경변수 값이 정확히 "false" 일 때만
+ * (Vercel에서 "true"/"false" 문자열로 토글)
+ */
+export const LIVE_BOARD_DEMO_ON =
+  (publicEnv.NEXT_PUBLIC_LIVE_BOARD_DEMO ?? "true").trim().toLowerCase() !== "false";
 
 // production에서 phone/kakao 둘 다 비어 있으면 운영자에게 경고 (빌드 통과)
 if (
