@@ -64,13 +64,13 @@ export default async function HomePage({
       <Header />
       <main className="flex-1 pb-24 md:pb-0">
         <Hero cityLabel={label} />
+        <LiveBoardSection />
         <TrustPoints />
         <QuoteFormSection
           utmSource={utmSource}
           utmCampaign={utmCampaign}
           cityCode={code ?? undefined}
         />
-        <LiveBoardSection />
         <RecentPostsPreview />
       </main>
       <Footer />

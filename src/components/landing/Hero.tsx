@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { ContactCTA } from "./CtaButtons";
 import { Zap, Check } from "@/components/icons";
@@ -10,11 +11,25 @@ export function Hero({ cityLabel }: { cityLabel: string }) {
     : `${BUSINESS.serviceArea} 출동. 정밀 장비로 누수 위치를 정확히 진단하고, 꼭 필요한 부분만 시공합니다. 상담은 24시간 가능.`;
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-brand-700 via-brand-700 to-brand-800 text-white">
-      {/* subtle pattern */}
+    <section className="relative isolate overflow-hidden text-white">
+      {/* 배경 사진 */}
+      <Image
+        src="/hero-bg.jpg"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="-z-20 object-cover"
+      />
+      {/* brand 톤 그라데이션 오버레이 — 텍스트 가독성 확보 */}
       <div
         aria-hidden
-        className="absolute inset-0 opacity-[0.08] [background-image:radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:24px_24px]"
+        className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-900/85 via-brand-800/80 to-brand-700/70"
+      />
+      {/* 좌측 글자 영역에 더 어둡게 한 번 더 (모바일까지 가독성 안정) */}
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-gradient-to-r from-brand-950/45 via-transparent to-transparent"
       />
       <Container className="relative py-14 sm:py-20 lg:py-24">
         <div className="max-w-2xl">

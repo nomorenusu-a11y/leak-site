@@ -5,9 +5,9 @@ import { BUSINESS } from "@/lib/business";
 type Size = "sm" | "md" | "lg";
 
 const SIZES: Record<Size, { img: number; text: string }> = {
-  sm: { img: 24, text: "text-sm" },
-  md: { img: 36, text: "text-base" },
-  lg: { img: 48, text: "text-lg" },
+  sm: { img: 32, text: "text-sm" },
+  md: { img: 48, text: "text-base" },
+  lg: { img: 64, text: "text-xl" },
 };
 
 /**
