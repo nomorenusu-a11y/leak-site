@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/landing/Header";
-import { Hero } from "@/components/landing/Hero";
-import { TrustPoints } from "@/components/landing/TrustPoints";
-import { QuoteFormSection } from "@/components/landing/QuoteFormSection";
 import { LiveBoardSection } from "@/components/landing/LiveBoardSection";
-import { RecentPostsPreview } from "@/components/landing/RecentPostsPreview";
-import { StickyCTA } from "@/components/landing/StickyCTA";
 import { Footer } from "@/components/landing/Footer";
+import { HeroV2 } from "@/components/landing/v2/HeroV2";
+import { EmergencyBanner } from "@/components/landing/v2/EmergencyBanner";
+import { TimeEmphasis } from "@/components/landing/v2/TimeEmphasis";
+import { ServicesList } from "@/components/landing/v2/ServicesList";
+import { TestimonialsSection } from "@/components/landing/v2/TestimonialsSection";
+import { WorksGallery } from "@/components/landing/v2/WorksGallery";
+import { QuoteFormSectionV2 } from "@/components/landing/v2/QuoteFormSectionV2";
+import { MasterSection } from "@/components/landing/v2/MasterSection";
+import { MobileBottomBar } from "@/components/landing/v2/MobileBottomBar";
+import { FloatingDesktop } from "@/components/landing/v2/FloatingDesktop";
 import { resolveCity } from "@/lib/city";
 import { landingMetadata } from "@/lib/seo/meta";
 import { localBusinessJsonLd } from "@/lib/seo/schema";
@@ -63,18 +68,23 @@ export default async function HomePage({
       />
       <Header />
       <main className="flex-1 pb-24 md:pb-0">
-        <Hero cityLabel={label} />
+        <HeroV2 cityLabel={label} />
+        <EmergencyBanner />
+        <TimeEmphasis />
+        <ServicesList />
         <LiveBoardSection />
-        <TrustPoints />
-        <QuoteFormSection
+        <TestimonialsSection />
+        <WorksGallery />
+        <QuoteFormSectionV2
           utmSource={utmSource}
           utmCampaign={utmCampaign}
           cityCode={code ?? undefined}
         />
-        <RecentPostsPreview />
+        <MasterSection />
       </main>
       <Footer />
-      <StickyCTA />
+      <MobileBottomBar />
+      <FloatingDesktop />
     </>
   );
 }

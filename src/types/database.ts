@@ -17,9 +17,9 @@ export const STATUS_ORDER: readonly RequestStatus[] = [
 ] as const;
 
 export const STATUS_LABEL: Record<RequestStatus, string> = {
-  pending: "접수",
-  quote: "견적발송중",
-  active: "작업중",
+  pending: "작업접수",
+  quote: "상담진행",
+  active: "작업출동",
   done: "작업완료",
 };
 

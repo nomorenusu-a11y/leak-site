@@ -272,13 +272,13 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
           </datalist>
         </Field>
 
-        <Field htmlFor="apartment" label="아파트명" error={fieldErrors?.apartment}>
+        <Field htmlFor="apartment" label="상세주소" error={fieldErrors?.apartment}>
           <Input
             id="apartment"
             name="apartment"
             type="text"
             maxLength={50}
-            placeholder="예) 래미안아파트 101동"
+            placeholder="상세주소를 입력해주세요 (예: 래미안아파트 101동 1502호)"
             invalid={!!fieldErrors?.apartment}
             aria-invalid={!!fieldErrors?.apartment}
             aria-describedby={fieldErrors?.apartment ? "apartment-error" : undefined}

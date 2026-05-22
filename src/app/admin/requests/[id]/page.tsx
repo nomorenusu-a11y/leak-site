@@ -152,7 +152,7 @@ export default async function AdminRequestDetailPage({
               <Row label="마스킹" value={row.masked_name} />
               <Row label="연락처" value={row.phone} />
               <Row label="지역" value={row.region ?? "-"} />
-              <Row label="아파트" value={row.apartment ?? "-"} />
+              <Row label="상세주소" value={row.apartment ?? "-"} />
             </dl>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">

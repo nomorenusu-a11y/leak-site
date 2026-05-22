@@ -105,7 +105,7 @@ body {
 }
 .live-board-mask {
   position: relative;
-  height: 16rem; /* 4행 × 4rem (h-16) */
+  height: 21rem; /* 약 6행 × 3.5rem (h-14) — 장인케어 톤, 활성화 느낌 */
   overflow: hidden;
   -webkit-mask-image: linear-gradient(
     to bottom,

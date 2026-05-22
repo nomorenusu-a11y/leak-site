@@ -30,21 +30,24 @@ export async function LiveBoardSection() {
   if (initial.length === 0) return null;
 
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-12 md:py-16">
       <Container>
-        <div className="mb-6 flex items-end justify-between gap-4">
+        <div className="mb-4 flex items-end justify-between gap-4">
           <div>
-            <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-              실시간 작업 현황
+            <p className="text-sm font-bold tracking-wide text-brand-600">LIVE</p>
+            <h2 className="mt-1 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+              실시간 작업신청 현황
             </h2>
-            <p className="mt-2 text-slate-600">최근 들어온 신청과 진행 상태를 보여드려요.</p>
+            <p className="mt-1.5 text-sm text-slate-600 sm:text-base">
+              지금 들어오는 신청과 진행 상태입니다.
+            </p>
           </div>
-          <span className="hidden items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 sm:inline-flex">
+          <span className="hidden items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 sm:inline-flex">
             <span aria-hidden className="live-dot text-emerald-500" />
             LIVE
           </span>
         </div>
-        <div className="mb-5">
+        <div className="mb-4">
           <StatsBar />
         </div>
         <LiveBoardScrollClient initial={initial} />

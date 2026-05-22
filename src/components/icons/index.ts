@@ -42,4 +42,15 @@ export {
   Clock,
   MapPin,
   Wallet,
+  // 장인케어 톤 리뉴얼 (v2)
+  Droplets,
+  Bath,
+  Wrench,
+  Thermometer,
+  Snowflake,
+  Star,
+  ChevronUp,
+  ArrowUp,
+  MessageSquare,
+  Sparkles,
 } from "lucide-react";

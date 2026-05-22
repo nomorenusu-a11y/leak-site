@@ -25,19 +25,19 @@ type LeakRequestRow = {
 function ScrollRow({ item }: { item: ScrollItem }) {
   return (
     <li
-      className="flex h-16 items-center gap-3 border-b border-slate-100 px-4 sm:px-5"
+      className="flex h-14 items-center gap-3 border-b border-[#EFE5D2] bg-[#FDF8F1] px-4 sm:px-5"
     >
       <CategoryBadge category={item.category} fallbackEtc />
       <div className="flex min-w-0 flex-1 items-center gap-2 text-sm">
-        <span className="font-semibold text-slate-900">{item.masked_name || "고객"}</span>
+        <span className="font-bold text-slate-900">{item.masked_name || "고객"}</span>
         {item.region && (
           <>
             <span aria-hidden className="text-slate-300">·</span>
-            <span className="truncate text-slate-500">{item.region}</span>
+            <span className="truncate text-slate-600">{item.region}</span>
           </>
         )}
         <span aria-hidden className="text-slate-300">·</span>
-        <span className="shrink-0 text-xs text-slate-400">
+        <span className="shrink-0 text-xs text-slate-500">
           <ScrollTime date={item.created_at} variant={item.time_variant} />
         </span>
       </div>
@@ -125,9 +125,9 @@ export function LiveBoardScrollClient({ initial }: Props) {
     <div
       role="region"
       aria-label="실시간 작업 현황"
-      className="live-board-mask overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+      className="live-board-mask overflow-hidden rounded-2xl border border-[#E8D9BB] bg-[#FDF8F1] shadow-sm"
     >
-      <ul aria-live="off" className="live-board-track divide-y divide-slate-100">
+      <ul aria-live="off" className="live-board-track">
         {items.map((it) => (
           <ScrollRow key={`a:${it.id}`} item={it} />
         ))}
