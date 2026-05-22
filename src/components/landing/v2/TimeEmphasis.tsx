@@ -11,6 +11,10 @@ import { BUSINESS } from "@/lib/business";
  *   - 1년 무상 A/S 보장
  */
 export function TimeEmphasis() {
+  // 환경변수 값이 "30분 이내" 같은 시간이면 끝에 "출동!"을 붙이고,
+  // 이미 "24시간 출동 가능" 등 동사를 포함하면 그대로 사용. 어색한 중복 방지.
+  const rt = BUSINESS.responseTime;
+  const headline = /출동|상담|가능/.test(rt) ? rt : `${rt} 출동!`;
   return (
     <section className="bg-slate-50 py-16 md:py-24">
       <Container>
@@ -19,7 +23,7 @@ export function TimeEmphasis() {
             누수, 아직도 고민만 하고 계신가요?
           </p>
           <h2 className="mt-3 text-4xl font-black leading-tight tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-            <span className="text-brand-600">{BUSINESS.responseTime}</span> 출동!
+            <span className="text-brand-600">{headline}</span>
           </h2>
           <p className="mt-5 text-base text-slate-700 sm:text-lg">
             전화 한 통이면 충분합니다. 사진과 함께 증상을 보내주시면,
