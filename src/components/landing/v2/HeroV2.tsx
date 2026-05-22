@@ -45,13 +45,6 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
     .map((c) => c.cover_image_url)
     .filter((u): u is string => !!u);
 
-  // 시공사례 카운트 (실제 published 개수)
-  const { count: postCount } = await supabase
-    .from("posts")
-    .select("*", { count: "exact", head: true })
-    .eq("published", true);
-  const totalCases = postCount ?? 0;
-
   // LIVE 띠 — 가장 최근 보드 아이템 1건 (진짜 → 더미 fallback)
   const { data: realRows } = await supabase
     .from("leak_requests")
@@ -159,9 +152,9 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
               {BUSINESS.serviceArea} · {BUSINESS.responseTime}
             </span>
 
-            {/* LIVE 띠 — 사회적 증거 */}
+            {/* LIVE 띠 — 사회적 증거 (PC에서 위 배지와 간격 ↑) */}
             {liveItem && (
-              <div className="mt-3 inline-flex max-w-full items-center gap-2 rounded-lg bg-red-500/15 px-3 py-1.5 text-xs font-semibold text-white ring-1 ring-inset ring-red-400/40 backdrop-blur-sm sm:text-sm">
+              <div className="mt-3 inline-flex max-w-full items-center gap-2 rounded-lg bg-red-500/15 px-3 py-1.5 text-xs font-semibold text-white ring-1 ring-inset ring-red-400/40 backdrop-blur-sm sm:text-sm md:mt-5">
                 <span aria-hidden className="live-dot text-red-400" />
                 <span className="font-extrabold uppercase tracking-wide text-red-200">LIVE</span>
                 <span aria-hidden className="text-white/40">·</span>
@@ -189,17 +182,15 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
               {headline}
             </h1>
 
-            {/* 카운터 — 측정 가능한 실제 시공사례 수 */}
-            {totalCases > 0 && (
-              <div className="mt-5 inline-flex items-center gap-3 rounded-xl bg-white/12 px-4 py-3 ring-1 ring-inset ring-white/20 backdrop-blur-sm">
-                <span className="text-xs font-bold uppercase tracking-wider text-white/80">
-                  누적 시공
-                </span>
-                <span className="text-2xl font-black tracking-tight text-accent-200 sm:text-3xl">
-                  <CountUp to={totalCases} duration={1400} suffix="건+" />
-                </span>
-              </div>
-            )}
+            {/* 누적 시공 카운터 — 100건+ 고정 표시 (운영자 지정 값) */}
+            <div className="mt-5 inline-flex items-center gap-3 rounded-xl bg-white/12 px-4 py-3 ring-1 ring-inset ring-white/20 backdrop-blur-sm">
+              <span className="text-xs font-bold uppercase tracking-wider text-white/80">
+                누적 시공
+              </span>
+              <span className="text-2xl font-black tracking-tight text-accent-200 sm:text-3xl">
+                <CountUp to={100} duration={1400} suffix="건+" />
+              </span>
+            </div>
           </div>
 
           {/* 우측 — 큰 전화 카드 (3중 펄스) */}
