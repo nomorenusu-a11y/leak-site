@@ -62,7 +62,7 @@ export function MobileBottomBar() {
           >
             <span
               aria-hidden
-              className="absolute left-1/2 -top-7 flex size-14 -translate-x-1/2 items-center justify-center rounded-full bg-accent-500 text-white shadow-lg shadow-accent-500/40 ring-4 ring-white"
+              className="mobile-center-pulse absolute left-1/2 -top-7 flex size-14 -translate-x-1/2 items-center justify-center rounded-full bg-accent-500 text-white shadow-lg shadow-accent-500/40 ring-4 ring-white"
             >
               <Phone className="size-6" strokeWidth={2.25} aria-hidden />
             </span>

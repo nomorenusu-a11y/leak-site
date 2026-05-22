@@ -31,7 +31,7 @@ export async function LiveBoardSection() {
   if (initial.length === 0) return null;
 
   return (
-    <section className="py-12 md:py-16">
+    <section id="live-board" className="scroll-mt-20 py-12 md:py-16">
       <Container>
         <Reveal variant="up" className="mb-4 flex items-end justify-between gap-4">
           <div>

@@ -50,6 +50,7 @@ export {
   Snowflake,
   Star,
   ChevronUp,
+  ChevronDown,
   ArrowUp,
   MessageSquare,
   Sparkles,
