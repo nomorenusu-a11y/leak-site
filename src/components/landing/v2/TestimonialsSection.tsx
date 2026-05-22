@@ -129,6 +129,9 @@ export async function TestimonialsSection() {
             </RevealItem>
           ))}
         </RevealGroup>
+        <p className="mt-6 text-center text-xs text-slate-500">
+          * 후기는 개인의 의견이며, 실제 결과는 현장 상황에 따라 다를 수 있습니다.
+        </p>
       </Container>
     </section>
   );

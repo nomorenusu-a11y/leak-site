@@ -113,7 +113,7 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
           <div>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-bold tracking-wide ring-1 ring-inset ring-white/30 backdrop-blur-sm">
               <span aria-hidden className="size-1.5 animate-pulse rounded-full bg-accent-300" />
-              24시간 상담 · {BUSINESS.responseTime}
+              {BUSINESS.serviceArea} · {BUSINESS.responseTime}
             </span>
             <h1 className="mt-4 text-4xl font-black leading-[1.15] tracking-tight drop-shadow-md sm:text-5xl lg:text-[3.5rem]">
               {headline}
@@ -131,9 +131,6 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
                 {BUSINESS.warranty} · {BUSINESS.pricing}
               </li>
             </ul>
-            <p className="mt-3 text-xs text-white/70">
-              * 작업환경과 상황에 따라 달라질 수 있습니다.
-            </p>
           </div>
 
           {/* 우측 — 큰 전화 아이콘 (애니메이션) */}

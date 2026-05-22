@@ -22,6 +22,9 @@ export function Footer() {
   return (
     <footer className="border-t border-slate-200 bg-slate-900 text-slate-300">
       <Container className="py-10">
+        <p className="mb-6 rounded-lg bg-slate-800/60 px-4 py-2 text-xs text-slate-400">
+          * 게시된 출동 시간·시공 결과는 작업환경과 상황에 따라 달라질 수 있습니다.
+        </p>
         <div className="grid gap-6 sm:grid-cols-3">
           {/* 1. 브랜드 + 짧은 한 줄 */}
           <div>
