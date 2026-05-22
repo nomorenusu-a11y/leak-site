@@ -34,9 +34,8 @@ export function Header({ showBack = false }: Props) {
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white">
       <Container className="flex h-16 items-center justify-between gap-3">
-        {/* 좌측: 모바일 햄버거 + 로고 */}
+        {/* 좌측: 로고 + (서브페이지일 때) 홈 링크 */}
         <div className="flex items-center gap-1.5">
-          <MobileMenu />
           <Logo size="md" hideTextOnMobile />
           {showBack && (
             <Link
@@ -50,7 +49,7 @@ export function Header({ showBack = false }: Props) {
           )}
         </div>
 
-        {/* 우측: 데스크탑 메뉴 + 전화 */}
+        {/* 우측: 데스크탑 메뉴 + 모바일 햄버거 + 전화 */}
         <nav aria-label="주요 메뉴" className="flex items-center gap-1">
           <ul className="hidden items-center gap-1 md:flex">
             {NAV.map((it) => (
@@ -64,6 +63,8 @@ export function Header({ showBack = false }: Props) {
               </li>
             ))}
           </ul>
+          {/* 모바일 햄버거 — 전화상담 버튼 바로 왼쪽 */}
+          <MobileMenu />
           {phone && (
             <a
               href={`tel:${phone.tel}`}

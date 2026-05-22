@@ -41,18 +41,20 @@ export function WorksGalleryClient({ categories, itemsByCategory, allItems }: Pr
 
   return (
     <div>
-      {/* 탭 */}
-      <div className="-mx-4 mb-6 overflow-x-auto px-4">
-        <div role="tablist" aria-label="작업사례 카테고리" className="inline-flex gap-2">
-          <TabBtn active={tab === ALL_TAB} onClick={() => setTab(ALL_TAB)}>
-            전체
+      {/* 탭 — 가로 스크롤 대신 wrap (회색 스크롤바 노출 방지) */}
+      <div
+        role="tablist"
+        aria-label="작업사례 카테고리"
+        className="mb-6 flex flex-wrap justify-center gap-2"
+      >
+        <TabBtn active={tab === ALL_TAB} onClick={() => setTab(ALL_TAB)}>
+          전체
+        </TabBtn>
+        {categories.map((c) => (
+          <TabBtn key={c.code} active={tab === c.code} onClick={() => setTab(c.code)}>
+            {c.ko}
           </TabBtn>
-          {categories.map((c) => (
-            <TabBtn key={c.code} active={tab === c.code} onClick={() => setTab(c.code)}>
-              {c.ko}
-            </TabBtn>
-          ))}
-        </div>
+        ))}
       </div>
 
       {/* 그리드 */}
