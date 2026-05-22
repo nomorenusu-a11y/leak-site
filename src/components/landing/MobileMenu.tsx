@@ -11,7 +11,6 @@ type NavItem = { href: string; label: string };
 const NAV: NavItem[] = [
   { href: "/", label: "홈" },
   { href: "/posts", label: "시공 사례" },
-  { href: "/pricing-guide", label: "가격 안내" },
   { href: "/faq", label: "자주 묻는 질문" },
   { href: "/#quote-form", label: "무료 견적 신청" },
 ];

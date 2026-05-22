@@ -8,7 +8,6 @@ import { MobileMenu } from "./MobileMenu";
 
 const NAV: { href: string; label: string }[] = [
   { href: "/posts", label: "시공 사례" },
-  { href: "/pricing-guide", label: "가격 안내" },
   { href: "/faq", label: "자주 묻는 질문" },
 ];
 
