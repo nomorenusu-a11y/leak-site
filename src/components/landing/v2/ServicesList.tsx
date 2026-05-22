@@ -4,6 +4,7 @@ import { Container } from "@/components/ui/Container";
 import { Droplets, Bath, Wrench, Thermometer, Snowflake, ArrowRight } from "@/components/icons";
 import { siteConfig } from "@/lib/env";
 import { createSupabaseAnonClient } from "@/lib/supabase/anon";
+import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 
 type ServiceCard = {
   cat: "leak" | "toilet" | "sink" | "heating" | "frozen";
@@ -71,7 +72,7 @@ export async function ServicesList() {
   return (
     <section className="py-16 md:py-24">
       <Container>
-        <div className="mx-auto max-w-2xl text-center">
+        <Reveal variant="up" className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-bold tracking-wide text-brand-600">SERVICES</p>
           <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
             {siteConfig.name}의 서비스 목록
@@ -79,47 +80,51 @@ export async function ServicesList() {
           <p className="mt-3 text-slate-600">
             다양한 상황의 누수·하수 서비스를 받아보실 수 있습니다
           </p>
-        </div>
+        </Reveal>
 
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <RevealGroup
+          stagger={0.1}
+          className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {SERVICES.map((s) => (
-            <article
-              key={s.cat}
-              className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-lg"
-            >
-              <div className="relative aspect-[16/10] bg-slate-100">
-                {covers[s.cat] ? (
-                  <Image
-                    src={covers[s.cat]!}
-                    alt={s.ko}
-                    fill
-                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center">
-                    <s.Icon aria-hidden className="size-16 text-brand-300" strokeWidth={1.5} />
+            <RevealItem key={s.cat} variant="up">
+              <article
+                className="group h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-lg"
+              >
+                <div className="relative aspect-[16/10] bg-slate-100">
+                  {covers[s.cat] ? (
+                    <Image
+                      src={covers[s.cat]!}
+                      alt={s.ko}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center">
+                      <s.Icon aria-hidden className="size-16 text-brand-300" strokeWidth={1.5} />
+                    </div>
+                  )}
+                  <div className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 text-xs font-extrabold text-brand-700 shadow-sm">
+                    <s.Icon aria-hidden className="size-3.5" strokeWidth={2.25} />
+                    {s.ko}
                   </div>
-                )}
-                <div className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 text-xs font-extrabold text-brand-700 shadow-sm">
-                  <s.Icon aria-hidden className="size-3.5" strokeWidth={2.25} />
-                  {s.ko}
                 </div>
-              </div>
-              <div className="p-5">
-                <h3 className="text-lg font-bold text-slate-900">{s.ko}</h3>
-                <p className="mt-1.5 text-sm text-slate-600">{s.desc}</p>
-                <Link
-                  href={`/posts?cat=${s.cat}`}
-                  className="mt-3 inline-flex items-center gap-1 text-sm font-bold text-brand-700 hover:underline"
-                >
-                  자세히 보기
-                  <ArrowRight aria-hidden className="size-4" strokeWidth={2.25} />
-                </Link>
-              </div>
-            </article>
+                <div className="p-5">
+                  <h3 className="text-lg font-bold text-slate-900">{s.ko}</h3>
+                  <p className="mt-1.5 text-sm text-slate-600">{s.desc}</p>
+                  <Link
+                    href={`/posts?cat=${s.cat}`}
+                    className="mt-3 inline-flex items-center gap-1 text-sm font-bold text-brand-700 hover:underline"
+                  >
+                    자세히 보기
+                    <ArrowRight aria-hidden className="size-4" strokeWidth={2.25} />
+                  </Link>
+                </div>
+              </article>
+            </RevealItem>
           ))}
-        </div>
+        </RevealGroup>
       </Container>
     </section>
   );

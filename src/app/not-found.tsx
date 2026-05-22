@@ -12,7 +12,7 @@ export const metadata = {
 export default function NotFoundPage() {
   return (
     <>
-      <Header />
+      <Header showBack />
       <main className="flex-1">
         <Container className="py-20 sm:py-28">
           <div className="mx-auto max-w-xl text-center">

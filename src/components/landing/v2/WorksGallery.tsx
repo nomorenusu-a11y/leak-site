@@ -1,8 +1,9 @@
 import { Container } from "@/components/ui/Container";
 import { createSupabaseAnonClient } from "@/lib/supabase/anon";
+import { Reveal } from "@/components/ui/Reveal";
 import { WorksGalleryClient, type GalleryItem } from "./WorksGalleryClient";
 
-const PHOTOS_PER_CATEGORY = 24;
+const PHOTOS_PER_CATEGORY = 6;
 
 type Cat = "leak" | "toilet" | "sink" | "heating" | "frozen";
 
@@ -64,14 +65,16 @@ export async function WorksGallery() {
     itemsByCategory[code] = list;
   }
 
+  // 전체 탭: 각 카테고리에서 6장씩 모은 최대 30장 — "더보기"로 /posts 유도
   const all: GalleryItem[] = [];
   for (const c of CATEGORIES) all.push(...itemsByCategory[c.code]);
   if (all.length === 0) return null;
+  const allLimited = all.slice(0, PHOTOS_PER_CATEGORY);
 
   return (
     <section className="bg-white py-16 md:py-24">
       <Container>
-        <div className="mx-auto max-w-2xl text-center">
+        <Reveal variant="up" className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-bold tracking-wide text-brand-600">WORKS</p>
           <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
             작업사례
@@ -79,14 +82,14 @@ export async function WorksGallery() {
           <p className="mt-3 text-slate-600">
             실제 작업이 이루어지는 모습들을 생생히 담아 보여드립니다
           </p>
-        </div>
-        <div className="mt-8">
+        </Reveal>
+        <Reveal variant="up" delay={0.1} className="mt-8">
           <WorksGalleryClient
             categories={CATEGORIES}
             itemsByCategory={itemsByCategory}
-            allItems={all}
+            allItems={allLimited}
           />
-        </div>
+        </Reveal>
       </Container>
     </section>
   );

@@ -43,7 +43,7 @@ const ITEMS: { title: string; range: string; desc: string }[] = [
 export default function PricingGuidePage() {
   return (
     <>
-      <Header />
+      <Header showBack />
       <main className="flex-1 pb-20">
         <section className="border-b border-slate-200 bg-slate-50 py-12 sm:py-16">
           <Container>

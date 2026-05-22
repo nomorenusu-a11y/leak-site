@@ -56,7 +56,7 @@ export function WorksGalleryClient({ categories, itemsByCategory, allItems }: Pr
       </div>
 
       {/* 그리드 */}
-      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4">
+      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
         {items.map((it, idx) => (
           <li key={`${it.url}-${idx}`}>
             <button
@@ -69,7 +69,7 @@ export function WorksGalleryClient({ categories, itemsByCategory, allItems }: Pr
                 src={it.url}
                 alt={it.title}
                 fill
-                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                sizes="(min-width: 640px) 33vw, 50vw"
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
               <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent opacity-0 transition-opacity group-hover:opacity-100" />
@@ -77,6 +77,17 @@ export function WorksGalleryClient({ categories, itemsByCategory, allItems }: Pr
           </li>
         ))}
       </ul>
+
+      {/* 더보기 */}
+      <div className="mt-8 flex justify-center">
+        <Link
+          href="/posts"
+          className="inline-flex items-center gap-2 rounded-full border border-brand-600 bg-white px-6 py-3 text-sm font-extrabold text-brand-700 transition-colors hover:bg-brand-600 hover:text-white sm:text-base"
+        >
+          모든 작업사례 더보기
+          <span aria-hidden>→</span>
+        </Link>
+      </div>
 
       {/* 라이트박스 */}
       {lightbox && (

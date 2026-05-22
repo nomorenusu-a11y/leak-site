@@ -1,6 +1,7 @@
 import { Container } from "@/components/ui/Container";
 import { Clock, ShieldCheck, Phone } from "@/components/icons";
 import { BUSINESS } from "@/lib/business";
+import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 
 /**
  * "30분 이내 출동!" 같은 시간 강조 섹션 (장인케어 IMG_8 톤).
@@ -18,7 +19,7 @@ export function TimeEmphasis() {
   return (
     <section className="bg-slate-50 py-16 md:py-24">
       <Container>
-        <div className="mx-auto max-w-3xl text-center">
+        <Reveal variant="up" className="mx-auto max-w-3xl text-center">
           <p className="text-sm font-bold tracking-wide text-brand-600 sm:text-base">
             누수, 아직도 고민만 하고 계신가요?
           </p>
@@ -30,29 +31,28 @@ export function TimeEmphasis() {
             <br className="hidden sm:inline" />
             현장 도착 전부터 진단 방향을 잡아 빠르게 해결해드립니다.
           </p>
+        </Reveal>
 
-          <div className="mx-auto mt-10 grid max-w-2xl gap-3 sm:grid-cols-3">
-            <Card
-              Icon={Phone}
-              big="간편"
-              caption="전화 또는 사진 문의 1회"
-            />
-            <Card
-              Icon={Clock}
-              big="24/365"
-              caption="휴일·새벽 상담 가능"
-            />
-            <Card
-              Icon={ShieldCheck}
-              big="1년"
-              caption="동일 부위 무상 A/S"
-            />
-          </div>
+        <RevealGroup
+          stagger={0.12}
+          className="mx-auto mt-10 grid max-w-2xl gap-3 sm:grid-cols-3"
+        >
+          <RevealItem variant="up">
+            <Card Icon={Phone} big="간편" caption="전화 또는 사진 문의 1회" />
+          </RevealItem>
+          <RevealItem variant="up">
+            <Card Icon={Clock} big="24/365" caption="휴일·새벽 상담 가능" />
+          </RevealItem>
+          <RevealItem variant="up">
+            <Card Icon={ShieldCheck} big="1년" caption="동일 부위 무상 A/S" />
+          </RevealItem>
+        </RevealGroup>
 
-          <p className="mt-8 text-base font-semibold text-slate-900 sm:text-lg">
+        <Reveal variant="up" delay={0.1}>
+          <p className="mt-8 text-center text-base font-semibold text-slate-900 sm:text-lg">
             맡겨주시면 책임지고 해결해드립니다.
           </p>
-        </div>
+        </Reveal>
       </Container>
     </section>
   );

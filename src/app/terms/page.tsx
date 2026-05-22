@@ -15,7 +15,7 @@ export default function TermsPage() {
   const today = new Date().toISOString().slice(0, 10);
   return (
     <>
-      <Header />
+      <Header showBack />
       <main className="flex-1 pb-20">
         <Container className="max-w-3xl py-12 sm:py-16">
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">

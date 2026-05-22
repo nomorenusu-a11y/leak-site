@@ -26,7 +26,7 @@ export function MobileBottomBar() {
       className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur md:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="grid h-16 grid-cols-3 items-center text-center">
+      <div className="relative grid h-[68px] grid-cols-3 items-center text-center">
         {/* 좌측: 견적 / 카톡 */}
         {kakao ? (
           <a
@@ -38,7 +38,7 @@ export function MobileBottomBar() {
             aria-label="카카오톡 상담"
           >
             <MessageCircle aria-hidden className="size-6" strokeWidth={2} />
-            <span className="text-xs font-bold">카톡상담</span>
+            <span className="text-[11px] font-bold">카톡상담</span>
           </a>
         ) : (
           <Link
@@ -48,33 +48,39 @@ export function MobileBottomBar() {
             aria-label="견적 문의"
           >
             <Sparkles aria-hidden className="size-6" strokeWidth={2} />
-            <span className="text-xs font-bold">견적문의</span>
+            <span className="text-[11px] font-bold">견적문의</span>
           </Link>
         )}
 
-        {/* 중앙: 큰 전화 */}
+        {/* 중앙: 큰 전화 — flex-col + 명시적 pb로 텍스트 안 가림 */}
         {phone ? (
           <a
             href={`tel:${phone.tel}`}
             onClick={() => trackEvent(EVENTS.CLICK_CALL, { cta_label: "mobile_bar_call" })}
             aria-label={`전화 ${phone.display}로 상담`}
-            className="relative flex h-full items-center justify-center"
+            className="relative flex h-full flex-col items-center justify-end pb-1.5"
           >
-            <span className="absolute -top-6 flex size-16 items-center justify-center rounded-full bg-accent-500 text-white shadow-lg shadow-accent-500/40 ring-4 ring-white">
-              <Phone aria-hidden className="size-7" strokeWidth={2.25} />
+            <span
+              aria-hidden
+              className="absolute left-1/2 -top-7 flex size-14 -translate-x-1/2 items-center justify-center rounded-full bg-accent-500 text-white shadow-lg shadow-accent-500/40 ring-4 ring-white"
+            >
+              <Phone className="size-6" strokeWidth={2.25} aria-hidden />
             </span>
-            <span className="mt-7 text-xs font-extrabold text-accent-600">상담하기</span>
+            <span className="text-[11px] font-extrabold text-accent-600">상담하기</span>
           </a>
         ) : (
           <Link
             href="#quote-form"
-            className="relative flex h-full items-center justify-center"
+            className="relative flex h-full flex-col items-center justify-end pb-1.5"
             aria-label="무료 견적 신청"
           >
-            <span className="absolute -top-6 flex size-16 items-center justify-center rounded-full bg-brand-600 text-white shadow-lg shadow-brand-600/40 ring-4 ring-white">
-              <Sparkles aria-hidden className="size-7" strokeWidth={2.25} />
+            <span
+              aria-hidden
+              className="absolute left-1/2 -top-7 flex size-14 -translate-x-1/2 items-center justify-center rounded-full bg-brand-600 text-white shadow-lg shadow-brand-600/40 ring-4 ring-white"
+            >
+              <Sparkles className="size-6" strokeWidth={2.25} aria-hidden />
             </span>
-            <span className="mt-7 text-xs font-extrabold text-brand-700">견적신청</span>
+            <span className="text-[11px] font-extrabold text-brand-700">견적신청</span>
           </Link>
         )}
 
@@ -85,7 +91,7 @@ export function MobileBottomBar() {
           aria-label="작업사례 보기"
         >
           <ThumbsUpIcon className="size-6" />
-          <span className="text-xs font-bold">작업사례</span>
+          <span className="text-[11px] font-bold">작업사례</span>
         </Link>
       </div>
     </div>

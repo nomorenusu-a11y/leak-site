@@ -3,7 +3,6 @@ import { Header } from "@/components/landing/Header";
 import { LiveBoardSection } from "@/components/landing/LiveBoardSection";
 import { Footer } from "@/components/landing/Footer";
 import { HeroV2 } from "@/components/landing/v2/HeroV2";
-import { EmergencyBanner } from "@/components/landing/v2/EmergencyBanner";
 import { TimeEmphasis } from "@/components/landing/v2/TimeEmphasis";
 import { ServicesList } from "@/components/landing/v2/ServicesList";
 import { TestimonialsSection } from "@/components/landing/v2/TestimonialsSection";
@@ -69,7 +68,6 @@ export default async function HomePage({
       <Header />
       <main className="flex-1 pb-24 md:pb-0">
         <HeroV2 cityLabel={label} />
-        <EmergencyBanner />
         <TimeEmphasis />
         <ServicesList />
         <LiveBoardSection />

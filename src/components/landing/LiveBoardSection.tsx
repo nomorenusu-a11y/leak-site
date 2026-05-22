@@ -4,6 +4,7 @@ import { buildScrollPool, type ScrollItem } from "@/lib/live-board-scroll";
 import { getRecentBoardItems } from "@/lib/posts";
 import { LiveBoardScrollClient } from "./LiveBoardScrollClient";
 import { StatsBar } from "./StatsBar";
+import { Reveal } from "@/components/ui/Reveal";
 
 const REAL_LIMIT = 40;
 
@@ -32,7 +33,7 @@ export async function LiveBoardSection() {
   return (
     <section className="py-12 md:py-16">
       <Container>
-        <div className="mb-4 flex items-end justify-between gap-4">
+        <Reveal variant="up" className="mb-4 flex items-end justify-between gap-4">
           <div>
             <p className="text-sm font-bold tracking-wide text-brand-600">LIVE</p>
             <h2 className="mt-1 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
@@ -46,11 +47,13 @@ export async function LiveBoardSection() {
             <span aria-hidden className="live-dot text-emerald-500" />
             LIVE
           </span>
-        </div>
-        <div className="mb-4">
+        </Reveal>
+        <Reveal variant="fade" delay={0.1} className="mb-4">
           <StatsBar />
-        </div>
-        <LiveBoardScrollClient initial={initial} />
+        </Reveal>
+        <Reveal variant="up" delay={0.15}>
+          <LiveBoardScrollClient initial={initial} />
+        </Reveal>
       </Container>
     </section>
   );

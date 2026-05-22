@@ -2,6 +2,7 @@ import { Container } from "@/components/ui/Container";
 import { Phone } from "@/components/icons";
 import { BUSINESS } from "@/lib/business";
 import { QuoteForm } from "../QuoteForm";
+import { Reveal } from "@/components/ui/Reveal";
 
 type Props = {
   utmSource?: string;
@@ -25,7 +26,7 @@ export function QuoteFormSectionV2({ utmSource, utmCampaign, cityCode }: Props) 
     >
       <Container>
         <div className="mx-auto max-w-2xl">
-          <div className="text-center">
+          <Reveal variant="up" className="text-center">
             <p className="text-sm font-bold tracking-wide text-brand-600">CONTACT</p>
             <h2
               id="quote-form-title"
@@ -56,15 +57,15 @@ export function QuoteFormSectionV2({ utmSource, utmCampaign, cityCode }: Props) 
                 </span>
               </a>
             )}
-          </div>
+          </Reveal>
 
-          <div className="mt-8">
+          <Reveal variant="up" delay={0.1} className="mt-8">
             <QuoteForm
               utmSource={utmSource}
               utmCampaign={utmCampaign}
               cityCode={cityCode}
             />
-          </div>
+          </Reveal>
         </div>
       </Container>
     </section>

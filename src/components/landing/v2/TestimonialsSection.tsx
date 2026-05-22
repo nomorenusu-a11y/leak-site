@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { Star } from "@/components/icons";
 import { createSupabaseAnonClient } from "@/lib/supabase/anon";
+import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 
 type Cat = "leak" | "toilet" | "sink" | "heating";
 
@@ -75,7 +76,7 @@ export async function TestimonialsSection() {
   return (
     <section className="bg-slate-50 py-16 md:py-24">
       <Container>
-        <div className="mx-auto max-w-2xl text-center">
+        <Reveal variant="up" className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-bold tracking-wide text-brand-600">REVIEWS</p>
           <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
             고객 후기
@@ -83,14 +84,14 @@ export async function TestimonialsSection() {
           <p className="mt-3 text-slate-600">
             실제 시공 후 받은 고객님들의 후기입니다
           </p>
-        </div>
+        </Reveal>
 
-        <div className="mt-10 grid gap-5 sm:grid-cols-2">
+        <RevealGroup stagger={0.12} className="mt-10 grid gap-5 sm:grid-cols-2">
           {TESTIMONIALS.map((t, i) => (
-            <article
-              key={i}
-              className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
-            >
+            <RevealItem key={i} variant={i % 2 === 0 ? "left" : "right"}>
+              <article
+                className="h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+              >
               {photos[t.category] && (
                 <div className="relative aspect-[16/9] bg-slate-100">
                   <Image
@@ -125,8 +126,9 @@ export async function TestimonialsSection() {
                 </div>
               </div>
             </article>
+            </RevealItem>
           ))}
-        </div>
+        </RevealGroup>
       </Container>
     </section>
   );

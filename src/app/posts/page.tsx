@@ -30,7 +30,7 @@ export default async function PostsIndexPage() {
 
   return (
     <>
-      <Header />
+      <Header showBack />
       <main className="flex-1 pb-20">
         <section className="border-b border-slate-200 bg-slate-50 py-10 sm:py-14">
           <Container>

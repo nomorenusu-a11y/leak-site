@@ -89,7 +89,7 @@ export default async function PostDetailPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd(post)) }}
       />
       <PostViewTracker slug={post.slug} regionTags={post.region_tags} />
-      <Header />
+      <Header showBack />
       <main className="flex-1 pb-20">
         <article>
           <header className="border-b border-slate-200 bg-slate-50 py-10 sm:py-14">

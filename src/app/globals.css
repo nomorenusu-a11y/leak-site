@@ -148,6 +148,101 @@ body {
   animation: liveDotPulse 1.4s ease-in-out infinite;
 }
 
+/* Mobile drawer slide-in */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Hero — 떨어지는 물방울 */
+@keyframes dropFall {
+  0% {
+    transform: translateY(-12px);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(60vh);
+    opacity: 0;
+  }
+}
+.hero-drop {
+  position: absolute;
+  top: 0;
+  width: 0.35rem;
+  height: 0.7rem;
+  border-radius: 9999px 9999px 9999px 9999px / 80% 80% 100% 100%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.15));
+  filter: blur(0.5px);
+  animation: dropFall 3.6s ease-in infinite;
+}
+
+/* Hero — 배경 사진 카루셀 fade */
+@keyframes heroBgFade {
+  0%,
+  18% {
+    opacity: 1;
+  }
+  25%,
+  100% {
+    opacity: 0;
+  }
+}
+.hero-bg-slide {
+  animation: heroBgFade 16s ease-in-out infinite;
+}
+
+/* Hero — Ken Burns 슬로우 줌 */
+@keyframes kenBurns {
+  from {
+    transform: scale(1) translate(0, 0);
+  }
+  to {
+    transform: scale(1.08) translate(-1.5%, -1%);
+  }
+}
+.hero-ken-burns {
+  animation: kenBurns 14s ease-in-out infinite alternate;
+}
+
+/* Hero — 전화 아이콘 ring pulse */
+@keyframes phoneRing {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(-12deg);
+  }
+  20% {
+    transform: rotate(12deg);
+  }
+  30% {
+    transform: rotate(-10deg);
+  }
+  40% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+}
+.phone-ring {
+  animation: phoneRing 2.4s ease-in-out infinite;
+  transform-origin: center;
+}
+
 /* Respect users who reduce motion */
 @media (prefers-reduced-motion: reduce) {
   *,

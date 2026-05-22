@@ -50,11 +50,12 @@ function pickBucket(hash: number) {
 }
 
 function statusForOffset(offsetMs: number): RequestStatus {
-  // 무한 스크롤은 lifecycle처럼 엄격하지 않게 — 시간이 흐르면 done 비율 ↑.
-  // pending: <30분 / quote: <2시간 / active: <12시간 / done: 그 이상
+  // 시간이 흐를수록 done 비율 ↑. active(작업출동) 비중은 짧게 잡아 자연스러운 분포.
+  // pending: <30분 / quote: <2시간 / active: <4시간 / done: 그 이상
+  // → 대략 done 60% · pending 18% · quote 14% · active 7%
   if (offsetMs < 30 * MIN) return "pending";
   if (offsetMs < 2 * HOUR) return "quote";
-  if (offsetMs < 12 * HOUR) return "active";
+  if (offsetMs < 4 * HOUR) return "active";
   return "done";
 }
 
