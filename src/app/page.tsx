@@ -10,17 +10,16 @@ import { TestimonialsSection } from "@/components/landing/v2/TestimonialsSection
 import { WorksGallery } from "@/components/landing/v2/WorksGallery";
 import { QuoteFormSectionV2 } from "@/components/landing/v2/QuoteFormSectionV2";
 import { MasterSection } from "@/components/landing/v2/MasterSection";
+import { EquipmentSection } from "@/components/landing/v2/EquipmentSection";
+import { FaqSection } from "@/components/landing/v2/FaqSection";
 import { MobileBottomBar } from "@/components/landing/v2/MobileBottomBar";
 import { FloatingDesktop } from "@/components/landing/v2/FloatingDesktop";
+import { StickyBottomCTA } from "@/components/landing/v2/StickyBottomCTA";
 import { resolveCity } from "@/lib/city";
 import { landingMetadata } from "@/lib/seo/meta";
 import { localBusinessJsonLd } from "@/lib/seo/schema";
 import { faqPageJsonLd } from "@/lib/seo/faq";
 
-/**
- * 1분 ISR — LiveBoardSection 조건부 미렌더와 호환되도록.
- * 신규 leak_requests 행이 들어오면 1분 안에 홈 보드에 반영.
- */
 export const revalidate = 60;
 
 type Search = { [key: string]: string | string[] | undefined };
@@ -67,24 +66,27 @@ export default async function HomePage({
         }}
       />
       <Header />
-      <main className="flex-1 pb-24 md:pb-0">
+      <main className="flex-1 pb-24 md:pb-20">
         <HeroV2 cityLabel={label} />
         <AboutCards />
+        <MasterSection />
         <TimeEmphasis />
         <ServicesList />
         <LiveBoardSection />
-        <TestimonialsSection />
         <WorksGallery />
+        <EquipmentSection />
+        <TestimonialsSection />
         <QuoteFormSectionV2
           utmSource={utmSource}
           utmCampaign={utmCampaign}
           cityCode={code ?? undefined}
         />
-        <MasterSection />
+        <FaqSection />
       </main>
       <Footer />
       <MobileBottomBar />
       <FloatingDesktop />
+      <StickyBottomCTA />
     </>
   );
 }

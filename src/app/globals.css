@@ -2,18 +2,24 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
-  /* ---------- Brand: Trust Blue (#0060ad = 600) ---------- */
+  /* ---------- Brand: Royal Blue (Tailwind blue-* palette, 600=#2563eb) ---------- */
   --color-brand-50: #eff6ff;
   --color-brand-100: #dbeafe;
   --color-brand-200: #bfdbfe;
   --color-brand-300: #93c5fd;
-  --color-brand-400: #4d9fe6;
-  --color-brand-500: #1a7fd1;
-  --color-brand-600: #0060ad;
-  --color-brand-700: #004f8f;
-  --color-brand-800: #003e72;
-  --color-brand-900: #002a4f;
-  --color-brand-950: #001833;
+  --color-brand-400: #60a5fa;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+  --color-brand-800: #1e40af;
+  --color-brand-900: #1e3a8a;
+  --color-brand-950: #172554;
+
+  /* ---------- Highlight: Royal Yellow (CTA·강조) ---------- */
+  --color-highlight-300: #fde047;
+  --color-highlight-400: #facc15;
+  --color-highlight-500: #eab308;
+  --color-highlight-600: #ca8a04;
 
   /* ---------- Accent: Urgent Orange (긴급 전화만 사용. 블루 위 컨트라스트 위해 톤 한 단계 깊게) ---------- */
   --color-accent-50: #fff1ec;
@@ -39,7 +45,7 @@
 
   /* ---------- Form input tokens ---------- */
   --color-input-border: #cbd5e1;
-  --color-input-border-focus: #0060ad;
+  --color-input-border-focus: #2563eb;
   --color-input-border-error: #e11d48;
 
   /* ---------- Typography ---------- */
@@ -159,6 +165,15 @@ body {
 }
 .live-blink {
   animation: liveBlink 0.9s ease-in-out infinite;
+}
+
+/* 가로 카루셀용 — 스크롤바 시각적 숨김 (접근성: tab 스크롤은 유지) */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 /* Mobile drawer slide-in */

@@ -6,7 +6,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       // 모든 Supabase Storage public 객체 URL
       { protocol: "https", hostname: "*.supabase.co" },
-      // (P0-01: 외부 placehold.co 의존성 제거. 자체 SVG placeholder는 public/placeholder-post.svg)
+      // 무료 스톡 이미지 — 보유 장비·후기 등 자체 자산 없는 섹션용
+      { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "images.pexels.com" },
     ],
   },
   compiler: {

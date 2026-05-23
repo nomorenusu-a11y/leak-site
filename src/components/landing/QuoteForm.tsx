@@ -94,6 +94,19 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Sticky 하단 CTA 바에서 전화번호 prefill (mount 1회)
+  useEffect(() => {
+    try {
+      const v = sessionStorage.getItem("quote.phone.prefill");
+      if (v) {
+        setPhoneValue(formatPhone(v));
+        sessionStorage.removeItem("quote.phone.prefill");
+      }
+    } catch {
+      // sessionStorage 차단 환경: 조용히 무시
+    }
+  }, []);
+
   // 첫 에러 필드로 자동 focus
   useEffect(() => {
     if (state.status !== "error" || !state.fieldErrors) return;
