@@ -62,7 +62,7 @@ export async function HeroV2(_props: { cityLabel?: string }) {
         <span>수도권 365일 24시간 누수 출동 전문업체</span>
       </div>
 
-      <div className="grid grid-cols-1 items-stretch lg:min-h-[640px] lg:grid-cols-[6fr_4fr] xl:min-h-[700px]">
+      <div className="grid grid-cols-1 items-stretch lg:min-h-[680px] lg:grid-cols-[6fr_4fr] xl:min-h-[740px]">
         {/* 좌측 — 캐러셀 (모바일: vw 기반 높이, 데스크탑: grid stretch) */}
         <div className="relative h-[60vw] max-h-[440px] overflow-hidden bg-slate-900 lg:h-auto lg:max-h-none">
           <HeroCarouselClient slides={HERO_SLIDES} intervalMs={2800} />
@@ -74,7 +74,7 @@ export async function HeroV2(_props: { cityLabel?: string }) {
             {initial.length > 0 ? (
               <LiveStatusTableClient
                 initial={initial}
-                rows={7}
+                rows={8}
                 intervalMs={2500}
               />
             ) : (
