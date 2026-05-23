@@ -283,6 +283,75 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
           ))}
         </ul>
 
+        {/* 모바일 전용 — 인물 사진 + 강조 stamp + 2 floating 배지 (lg 미만에서만 노출) */}
+        <div className="relative mx-auto mb-7 w-full max-w-sm lg:hidden">
+          <div
+            aria-hidden
+            className="hero-spin-ring absolute -inset-3 -z-10 rounded-[2rem]"
+            style={{
+              background:
+                "conic-gradient(from 0deg, #fde047, #67e8f9, #facc15, #fde047)",
+              filter: "blur(6px)",
+              opacity: 0.55,
+            }}
+          />
+          <div className="relative overflow-hidden rounded-3xl shadow-2xl ring-4 ring-white/30">
+            <Image
+              src="/about/consult.png"
+              alt="작업복을 입고 전문 상담 중인 누수탐지 전문가"
+              width={400}
+              height={400}
+              priority
+              className="aspect-[5/3] w-full object-cover"
+            />
+          </div>
+          {/* 좌상단 ⭐4.9 배지 */}
+          <span className="hero-wobble-l absolute -left-2 -top-3 inline-flex items-center gap-1.5 rounded-2xl bg-white px-3 py-2 text-brand-700 shadow-xl ring-2 ring-white/60">
+            <Star
+              aria-hidden
+              className="size-4 fill-amber-400 text-amber-400"
+              strokeWidth={1}
+            />
+            <span>
+              <span className="block text-base font-black leading-none">4.9</span>
+              <span className="block text-[10px] font-bold">고객 만족</span>
+            </span>
+          </span>
+          {/* 우상단 100% 배지 */}
+          <span className="hero-wobble-r absolute -right-2 -top-3 inline-flex items-center gap-1.5 rounded-2xl bg-highlight-400 px-3 py-2 text-brand-900 shadow-xl ring-2 ring-white/60">
+            <span className="text-lg font-black leading-none">100%</span>
+            <span className="text-[10px] font-extrabold">해결 약속</span>
+          </span>
+          {/* 좌하단 30분 배지 */}
+          <span className="hero-wobble-l absolute -bottom-3 -left-2 inline-flex items-center gap-1.5 rounded-2xl bg-rose-500 px-3 py-2 text-white shadow-xl ring-2 ring-white/60">
+            <Zap aria-hidden className="size-3.5" strokeWidth={2.5} />
+            <span className="text-[11px] font-extrabold leading-tight">
+              30분 내
+              <br />
+              현장 도착
+            </span>
+          </span>
+          {/* 우하단 1년 A/S 배지 */}
+          <span className="hero-wobble-r absolute -bottom-3 -right-2 inline-flex items-center gap-1.5 rounded-2xl bg-white px-3 py-2 text-brand-700 shadow-xl ring-2 ring-white/60">
+            <ShieldCheck
+              aria-hidden
+              className="size-4 text-brand-600"
+              strokeWidth={2.5}
+            />
+            <span className="text-[11px] font-extrabold leading-tight">
+              1년
+              <br />
+              무상 A/S
+            </span>
+          </span>
+        </div>
+
+        {/* 모바일 강조 stamp — 헤드라인 위, 빨강 rotated */}
+        <div className="mb-3 inline-flex rotate-[-6deg] items-center gap-1.5 rounded-xl bg-rose-500 px-3 py-1.5 text-sm font-black uppercase tracking-wide text-white shadow-lg ring-2 ring-white/40 sm:text-base lg:hidden">
+          <Zap aria-hidden className="size-4" strokeWidth={2.75} />
+          <span>긴급 출동 가능!</span>
+        </div>
+
         <div className="grid items-center gap-8 lg:grid-cols-[1.3fr_1fr] lg:gap-12">
           {/* 좌측 — 카피 */}
           <div>

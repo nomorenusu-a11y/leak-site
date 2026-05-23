@@ -87,12 +87,10 @@ export function Header({ showBack = false }: Props) {
           {phone && (
             <a
               href={`tel:${phone.tel}`}
-              className="ml-1 inline-flex items-center gap-1.5 rounded-md bg-highlight-400 px-3 py-1.5 text-sm font-extrabold text-brand-900 shadow-sm hover:bg-highlight-300"
+              className="ml-1 inline-flex size-10 items-center justify-center rounded-full bg-highlight-400 text-brand-900 shadow-sm hover:bg-highlight-300"
               aria-label={`전화 ${phone.display}로 상담`}
             >
-              <Phone aria-hidden className="size-4" strokeWidth={2.5} />
-              <span className="hidden sm:inline">{phone.display}</span>
-              <span className="sm:hidden">전화상담</span>
+              <Phone aria-hidden className="size-5" strokeWidth={2.5} />
             </a>
           )}
         </nav>

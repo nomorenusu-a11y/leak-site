@@ -9,9 +9,22 @@ type Props = {
   initial: ScrollItem[];
   /** 보여줄 row 개수 (기본 12) */
   rows?: number;
-  /** 새 row 추가 간격 (기본 12초) */
+  /** 새 row 추가 간격 (기본 3.5초) */
   intervalMs?: number;
 };
+
+const CATEGORY_KO: Record<string, string> = {
+  leak: "누수",
+  toilet: "변기",
+  sink: "싱크대",
+  heating: "난방",
+  frozen: "동파",
+};
+
+function toCategoryLabel(cat: string | null | undefined): string {
+  if (!cat) return "기타";
+  return CATEGORY_KO[cat] ?? cat;
+}
 
 /**
  * 실시간 견적현황 테이블 (LiveStatusTable).
@@ -25,7 +38,7 @@ type Props = {
 export function LiveStatusTableClient({
   initial,
   rows = 12,
-  intervalMs = 12_000,
+  intervalMs = 2_500,
 }: Props) {
   const pool = useRef(initial);
   const cursor = useRef(rows % Math.max(initial.length, 1));
@@ -84,7 +97,7 @@ export function LiveStatusTableClient({
             >
               {/* 카테고리 */}
               <span className="inline-flex w-fit items-center rounded-full bg-brand-50 px-2.5 py-0.5 text-[11px] font-bold text-brand-700 sm:text-xs">
-                {item.category ?? "기타"}
+                {toCategoryLabel(item.category)}
               </span>
               {/* 시간 — 모바일에서 카테고리 옆 작게 */}
               <span className="text-right text-[11px] text-slate-500 sm:text-left sm:text-xs">
