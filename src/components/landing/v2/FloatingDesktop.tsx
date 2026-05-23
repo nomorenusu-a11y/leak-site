@@ -24,9 +24,15 @@ export function FloatingDesktop() {
   const { phone, kakao } = getContactInfo();
   const kakaoHref = kakao?.url ?? BUSINESS.kakaoChatUrl;
   const [showTop, setShowTop] = useState(false);
+  const [showAside, setShowAside] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setShowTop(window.scrollY > 600);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setShowTop(y > 600);
+      // Hero 영역 지나서(약 400px)부터 사이드 플로팅 노출
+      setShowAside(y > 400);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -48,7 +54,9 @@ export function FloatingDesktop() {
   return (
     <aside
       aria-label="빠른 연락"
-      className="pointer-events-none fixed right-3 top-1/2 z-30 hidden -translate-y-1/2 flex-col items-stretch gap-2 md:flex"
+      className={`pointer-events-none fixed right-3 top-1/2 z-30 hidden -translate-y-1/2 flex-col items-stretch gap-2 transition-opacity duration-300 md:flex ${
+        showAside ? "opacity-100" : "pointer-events-none opacity-0"
+      }`}
     >
       {/* 앵커 메뉴 카드 */}
       <nav

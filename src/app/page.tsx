@@ -15,7 +15,6 @@ import { EquipmentSection } from "@/components/landing/v2/EquipmentSection";
 import { FaqSection } from "@/components/landing/v2/FaqSection";
 import { MobileBottomBar } from "@/components/landing/v2/MobileBottomBar";
 import { FloatingDesktop } from "@/components/landing/v2/FloatingDesktop";
-import { StickyBottomCTA } from "@/components/landing/v2/StickyBottomCTA";
 import { resolveCity } from "@/lib/city";
 import { landingMetadata } from "@/lib/seo/meta";
 import { localBusinessJsonLd } from "@/lib/seo/schema";
@@ -88,7 +87,6 @@ export default async function HomePage({
       <Footer />
       <MobileBottomBar />
       <FloatingDesktop />
-      <StickyBottomCTA />
     </>
   );
 }
