@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Phone, Sparkles } from "@/components/icons";
-import { NaverLogo, KakaoLogo } from "@/components/icons/BrandLogos";
+import { NaverLogo } from "@/components/icons/BrandLogos";
 import { getContactInfo } from "@/lib/contact";
 import { BUSINESS } from "@/lib/business";
 import { EVENTS, trackEvent } from "@/lib/analytics";
@@ -119,7 +120,14 @@ export function MobileBottomBar() {
           className="flex h-full flex-col items-center justify-center gap-0.5 text-slate-800"
           aria-label="카카오톡 상담 새 창으로 열기"
         >
-          <KakaoLogo aria-hidden className="size-6" />
+          <Image
+            src="/kakao-icon.avif"
+            alt=""
+            width={28}
+            height={28}
+            className="size-7 rounded-md"
+            aria-hidden
+          />
           <span className="text-[10px] font-bold">카톡상담</span>
         </a>
       </div>
