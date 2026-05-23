@@ -8,6 +8,7 @@ import { TimeEmphasis } from "@/components/landing/v2/TimeEmphasis";
 import { ServicesList } from "@/components/landing/v2/ServicesList";
 import { TestimonialsSection } from "@/components/landing/v2/TestimonialsSection";
 import { WorksGallery } from "@/components/landing/v2/WorksGallery";
+import { WorksCardsSection } from "@/components/landing/v2/WorksCardsSection";
 import { QuoteFormSectionV2 } from "@/components/landing/v2/QuoteFormSectionV2";
 import { MasterSection } from "@/components/landing/v2/MasterSection";
 import { EquipmentSection } from "@/components/landing/v2/EquipmentSection";
@@ -66,13 +67,14 @@ export default async function HomePage({
         }}
       />
       <Header />
-      <main className="flex-1 pb-24 md:pb-20">
+      <main className="flex-1 pb-24">
         <HeroV2 cityLabel={label} />
         <AboutCards />
         <MasterSection />
         <TimeEmphasis />
         <ServicesList />
         <LiveBoardSection />
+        <WorksCardsSection />
         <WorksGallery />
         <EquipmentSection />
         <TestimonialsSection />

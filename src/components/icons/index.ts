@@ -59,4 +59,6 @@ export {
   BicepsFlexed,
   // 블로그 외부 링크
   BookOpen,
+  // AboutCards 코너 아이콘
+  Headset,
 } from "lucide-react";

@@ -49,14 +49,14 @@ export function MobileMenu() {
         aria-label="메뉴 열기"
         aria-expanded={open}
         onClick={() => setOpen(true)}
-        className="inline-flex size-10 items-center justify-center rounded-lg text-slate-800 hover:bg-slate-100 md:hidden"
+        className="inline-flex size-10 items-center justify-center rounded-lg text-slate-800 hover:bg-slate-100 lg:hidden"
       >
         <Menu aria-hidden className="size-6" strokeWidth={2.25} />
       </button>
 
       {/* Drawer */}
       {open && (
-        <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true">
+        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true">
           {/* Backdrop */}
           <div
             onClick={() => setOpen(false)}
