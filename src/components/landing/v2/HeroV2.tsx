@@ -11,26 +11,34 @@ const HERO_SLIDES = [
   {
     src: "/about/dispatch.png",
     alt: "긴급 출동 중인 누수탐지 전문기사",
+    tag: "24시간 긴급출동",
     headline: "365일 24시간\n긴급 출동",
-    sub: "서울·경기·인천 수도권 전지역 신속 대응",
+    sub: "서울·경기·인천 수도권 전지역 | 접수 후 30분 내 출동",
+    hashtags: ["24시간출동", "수도권전지역", "긴급누수", "야간출동"],
   },
   {
     src: "/about/rescue.png",
     alt: "작업 완료 후 OK 사인을 보내는 전문가",
+    tag: "실패현장 전문",
     headline: "타업체 실패현장\n해결 전문",
-    sub: "어디서도 못 찾은 누수, 저희가 끝냅니다",
+    sub: "다른 업체에서 못 찾은 누수도 끝까지 찾아냅니다",
+    hashtags: ["실패현장해결", "베테랑전문가", "완벽시공", "비파괴탐지"],
   },
   {
     src: "/about/estimate.png",
     alt: "현장에서 견적서를 설명하는 모습",
+    tag: "정직한 시공",
     headline: "정직한 견적\n확실한 A/S",
-    sub: "미해결 시 비용 0원 · 보험서류 무상 제공",
+    sub: "미해결 시 비용 0원 · 보험서류 무상 제공 · 1년 무상 A/S",
+    hashtags: ["정직견적", "비용0원", "1년무상AS", "보험서류무상"],
   },
   {
     src: "/about/consult.png",
     alt: "전문 상담센터에서 상담 중",
+    tag: "무료 상담",
     headline: "전화 한 통이면\n전문가가 찾아갑니다",
-    sub: "사진과 증상만 보내주세요, 바로 진단 시작",
+    sub: "사진과 증상만 보내주세요 · 현장 도착 전 사전 진단 완료",
+    hashtags: ["무료상담", "30분내회신", "비파괴탐지", "누수보험"],
   },
 ];
 
@@ -55,27 +63,18 @@ export async function HeroV2(_props: { cityLabel?: string }) {
       </div>
 
       <div className="grid grid-cols-1 items-stretch lg:min-h-[640px] lg:grid-cols-[6fr_4fr] xl:min-h-[700px]">
-        {/* 좌측 — 캐러셀 */}
-        <div className="relative overflow-hidden bg-slate-900">
+        {/* 좌측 — 캐러셀 (모바일: vw 기반 높이, 데스크탑: grid stretch) */}
+        <div className="relative h-[60vw] max-h-[440px] overflow-hidden bg-slate-900 lg:h-auto lg:max-h-none">
           <HeroCarouselClient slides={HERO_SLIDES} intervalMs={2800} />
         </div>
 
-        {/* 우측 — 실시간 견적현황 */}
+        {/* 우측 — 실시간 견적현황 (플러시, 둥근 모서리 제거) */}
         <div className="flex flex-col bg-white shadow-2xl shadow-black/10">
-          <div className="bg-brand-700 px-6 py-4 text-center text-white">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-cyan-200">
-              LIVE
-            </p>
-            <p className="mt-1 text-base font-extrabold tracking-tight sm:text-lg">
-              실시간 견적현황
-            </p>
-          </div>
-
-          <div className="flex-1 overflow-hidden p-3 lg:p-4">
+          <div className="flex-1 overflow-hidden [&>div]:rounded-none [&>div]:border-0 [&>div]:shadow-none">
             {initial.length > 0 ? (
               <LiveStatusTableClient
                 initial={initial}
-                rows={6}
+                rows={7}
                 intervalMs={2500}
               />
             ) : (
