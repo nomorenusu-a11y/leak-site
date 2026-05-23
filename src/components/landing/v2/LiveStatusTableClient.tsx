@@ -37,8 +37,8 @@ function toCategoryLabel(cat: string | null | undefined): string {
  */
 export function LiveStatusTableClient({
   initial,
-  rows = 12,
-  intervalMs = 2_500,
+  rows = 5,
+  intervalMs = 1_100,
 }: Props) {
   const pool = useRef(initial);
   const cursor = useRef(rows % Math.max(initial.length, 1));
