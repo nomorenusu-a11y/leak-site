@@ -97,16 +97,16 @@ export function HeroQuickForm() {
       noValidate
     >
       {/* 상단 brand 헤더 띠 */}
-      <div className="bg-brand-700 px-5 py-3 text-center text-white">
-        <p className="text-[10px] font-extrabold uppercase tracking-widest text-cyan-200">
+      <div className="bg-brand-700 px-6 py-4 text-center text-white">
+        <p className="text-xs font-extrabold uppercase tracking-widest text-cyan-200">
           무료 진단 상담
         </p>
-        <p className="mt-0.5 text-sm font-extrabold tracking-tight sm:text-base">
+        <p className="mt-1 text-base font-extrabold tracking-tight sm:text-lg">
           30분 내 회신 받기
         </p>
       </div>
 
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
+      <div className="flex flex-1 flex-col p-6 sm:p-8">
         {/* 로고 */}
         <div className="flex justify-center">
           <Link
@@ -145,7 +145,7 @@ export function HeroQuickForm() {
           readOnly
         />
 
-        <div className="mt-5 space-y-3">
+        <div className="mt-6 space-y-4">
           <label className="block">
             <span className="sr-only">이름</span>
             <input
@@ -157,7 +157,7 @@ export function HeroQuickForm() {
               maxLength={10}
               autoComplete="name"
               placeholder="이름을 입력해주세요"
-              className={`h-12 w-full rounded-lg border bg-white px-4 text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 ${
+              className={`h-14 w-full rounded-lg border bg-white px-4 text-base font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 ${
                 fieldErrors?.customer_name
                   ? "border-rose-400 focus:ring-rose-400/30"
                   : "border-slate-300 focus:border-brand-500 focus:ring-brand-400/30"
@@ -177,7 +177,7 @@ export function HeroQuickForm() {
               placeholder="연락처를 입력해주세요"
               value={phoneValue}
               onChange={(e) => setPhoneValue(formatPhone(e.target.value))}
-              className={`h-12 w-full rounded-lg border bg-white px-4 text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 ${
+              className={`h-14 w-full rounded-lg border bg-white px-4 text-base font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 ${
                 fieldErrors?.phone
                   ? "border-rose-400 focus:ring-rose-400/30"
                   : "border-slate-300 focus:border-brand-500 focus:ring-brand-400/30"
@@ -209,10 +209,10 @@ export function HeroQuickForm() {
           <button
             type="submit"
             disabled={pending || !agreed}
-            className="inline-flex h-14 w-full flex-col items-center justify-center gap-0 rounded-xl bg-brand-600 text-base font-extrabold text-white shadow-lg shadow-brand-600/30 transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex h-16 w-full flex-col items-center justify-center gap-0 rounded-xl bg-brand-600 text-lg font-extrabold text-white shadow-lg shadow-brand-600/30 transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <span>{pending ? "전송 중..." : "무료 상담 신청"}</span>
-            <span className="text-[10px] font-medium text-white/80">
+            <span className="text-xs font-medium text-white/80">
               담당자가 30분 안에 연락드립니다
             </span>
           </button>
