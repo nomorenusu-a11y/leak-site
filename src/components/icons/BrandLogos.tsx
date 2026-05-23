@@ -27,7 +27,7 @@ export function NaverLogo({ className = "", ...rest }: IconProps) {
   );
 }
 
-/** 카카오 옐로우(#FEE500) 말풍선 + 검정 표정. 카카오톡 상담 진입점 시각 식별용. */
+/** 카카오톡 공식 스타일 — 노란 라운드 사각 배경 + 갈색 말풍선 실루엣. */
 export function KakaoLogo({ className = "", ...rest }: IconProps) {
   return (
     <svg
@@ -35,18 +35,10 @@ export function KakaoLogo({ className = "", ...rest }: IconProps) {
       className={className}
       {...rest}
     >
+      <rect width="24" height="24" rx="6" fill="#FEE500" />
       <path
-        d="M12 3.5C6.85 3.5 2.5 6.7 2.5 10.7c0 2.55 1.7 4.8 4.3 6.1l-.95 3.45c-.1.35.27.62.57.4l4.1-2.7c.5.05.97.05 1.48.05 5.15 0 9.5-3.2 9.5-7.3S17.15 3.5 12 3.5z"
-        fill="#FEE500"
-      />
-      <circle cx="8.6" cy="11" r="1" fill="#3C1E1E" />
-      <circle cx="15.4" cy="11" r="1" fill="#3C1E1E" />
-      <path
-        d="M9 13.5c.7.7 1.8 1.1 3 1.1s2.3-.4 3-1.1"
-        stroke="#3C1E1E"
-        strokeWidth="1.1"
-        strokeLinecap="round"
-        fill="none"
+        d="M12 4.8c-4.14 0-7.5 2.73-7.5 6.1 0 2.17 1.44 4.07 3.6 5.15l-.9 3.3c-.08.28.22.5.45.33l3.43-2.27c.28.03.6.04.92.04 4.14 0 7.5-2.73 7.5-6.1S16.14 4.8 12 4.8z"
+        fill="#3C1E1E"
       />
     </svg>
   );
