@@ -15,41 +15,21 @@ import { buildScrollPool } from "@/lib/live-board-scroll";
 import { CountUp } from "@/components/ui/CountUp";
 import { ScrollTime } from "@/components/ui/ScrollTime";
 
-const REAL_WORK_FALLBACKS = [
-  "/about/rescue.png",
-  "/about/dispatch.png",
-  "/about/estimate.png",
-];
-
 /**
- * Hero v2 — 신뢰감 중심 단정한 디자인 (전면 재설계).
+ * Hero v2 — 좌 텍스트 / 우 컷아웃 인물 + 슬라이딩 그라데이션 배경.
  *
- * 디자인 원칙:
- *   1) 시각 노이즈 최소화 — 마키 띠·플로팅 배지·conic 링·말풍선·스탬프 모두 제거
- *   2) 컬러 단순화 — 딥 네이비 + 단일 accent(코랄/오렌지) + 흰색
- *   3) 카피 구체화 — "100% 해결" 같은 추상적 약속 대신 "벽 뒤에 숨은 누수, 30분 안에 찾아냅니다"
- *   4) CTA 단순화 — Primary(채움 accent) + Secondary(외곽선) 2개만
- *   5) 마이크로 신뢰 — 하단 한 줄 4종 stat (출동·시공·A/S·운영시간)
+ * 레이아웃:
+ *   PC: grid 2 columns — 좌측(텍스트·CTA) / 우측(컷아웃 인물 + 글로우)
+ *   모바일: 단일 컬럼 — 텍스트 → CTA → 컷아웃 인물
+ *
+ * 배경: cyan↔navy 그라데이션이 좌측으로 무한 슬라이드 (hero-sliding-bg, 16s)
+ * 키워드: hero-sliding-text 클래스로 텍스트 그라데이션 좌→우 흐름
  */
 export async function HeroV2({ cityLabel }: { cityLabel: string }) {
   const phone = BUSINESS.contact.phone;
   const supabase = createSupabaseAnonClient();
 
-  // 배경 사진 — 진짜 작업 사진 우선, fallback으로 자체 /about/* 자산
-  const { data: covers } = await supabase
-    .from("posts")
-    .select("cover_image_url")
-    .eq("published", true)
-    .not("cover_image_url", "is", null)
-    .order("published_at", { ascending: false })
-    .limit(3);
-  const bgImages = (covers ?? [])
-    .map((c) => c.cover_image_url)
-    .filter((u): u is string => !!u);
-  const heroPhotos =
-    bgImages.length >= 2 ? bgImages : REAL_WORK_FALLBACKS.slice(0, 2);
-
-  // LIVE 띠 — 최근 접수 1건 (subtle 표시)
+  // LIVE 띠 — 최근 접수 1건
   const { data: realRows } = await supabase
     .from("leak_requests")
     .select("masked_name, region, created_at")
@@ -87,124 +67,131 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
   ];
 
   return (
-    <section className="relative isolate overflow-hidden bg-brand-950 text-white">
-      {/* 배경: 진짜 작업 사진 카루셀 */}
-      <div aria-hidden className="absolute inset-0 -z-30">
-        {heroPhotos.map((url, i) => (
-          <div
-            key={url}
-            className="hero-bg-slide absolute inset-0"
-            style={{
-              animationDelay: `${i * 5}s`,
-              animationDuration: `${heroPhotos.length * 5}s`,
-            }}
-          >
-            <div className="hero-ken-burns absolute inset-0">
-              <Image
-                src={url}
-                alt=""
-                fill
-                priority={i === 0}
-                sizes="100vw"
-                className="object-cover"
-                unoptimized={url.startsWith("/")}
-              />
+    <section className="relative isolate overflow-hidden text-white">
+      {/* 슬라이딩 그라데이션 배경 (cyan↔navy 좌측 흐름) */}
+      <div aria-hidden className="hero-sliding-bg absolute inset-0 -z-30" />
+      {/* 좌측 가독성 보강 — 좌측 더 진하게 */}
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-20 bg-gradient-to-r from-brand-950/55 via-brand-900/25 to-transparent"
+      />
+      {/* 데코 sparkle SVG (모서리) */}
+      <Sparkle className="left-6 top-6 size-5 text-white/70" delay="0s" />
+      <Sparkle className="right-[28%] top-12 size-4 text-cyan-200/80" delay="1.4s" />
+      <Sparkle className="left-[38%] bottom-16 size-4 text-yellow-200/70" delay="0.7s" />
+
+      <Container className="relative py-14 sm:py-20 lg:py-24">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
+          {/* 좌측 — 카피·CTA */}
+          <div>
+            {/* 후킹 한 줄 */}
+            <p className="text-sm font-bold text-cyan-200 sm:text-base">
+              ✨ 수도권 전지역 어디라도 누수 문제는?
+            </p>
+
+            {/* LIVE 띠 — 작게 */}
+            {liveItem && (
+              <div className="mt-4 inline-flex max-w-full items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs text-white/90 ring-1 ring-inset ring-white/15 backdrop-blur-sm">
+                <span aria-hidden className="live-dot text-rose-400" />
+                <span className="font-bold uppercase tracking-wider text-rose-200">
+                  LIVE
+                </span>
+                <span aria-hidden className="text-white/30">·</span>
+                <span className="truncate">
+                  <ScrollTime date={liveItem.created_at} variant="relative" />
+                  {liveItem.region ? ` · ${liveItem.region}` : ""}{" "}
+                  <span className="font-semibold">
+                    {liveItem.masked_name || "고객"}
+                  </span>
+                  님 접수
+                </span>
+              </div>
+            )}
+
+            {/* 메인 헤드라인 */}
+            <h1 className="mt-5 text-4xl font-black leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl xl:text-[4.5rem]">
+              <span className="block text-white">
+                {headlineLead}벽 뒤에 숨은 누수,
+              </span>
+              <span className="mt-2 block">
+                <span className="hero-sliding-text font-black">
+                  30분 안에 찾아냅니다.
+                </span>
+              </span>
+            </h1>
+
+            {/* 서브 헤드라인 */}
+            <p className="mt-5 max-w-xl text-base font-medium leading-relaxed text-white/85 sm:text-lg">
+              비파괴 정밀 장비로 벽·바닥 손상 없이 정확한 위치만 진단합니다.
+            </p>
+            <p className="mt-2 text-sm font-semibold text-white/70">
+              서울·경기·인천 365일 24시간 출동 · 누적{" "}
+              <CountUp to={100} duration={1400} suffix="건+" /> 시공
+            </p>
+
+            {/* 듀얼 CTA — 강조 2개 */}
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:gap-3.5">
+              {phone ? (
+                <a
+                  href={`tel:${phone.tel}`}
+                  aria-label={`전화 ${phone.display}로 무료 진단 상담`}
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-accent-500 px-6 py-4 text-base font-extrabold text-white shadow-xl shadow-accent-500/30 transition-all hover:bg-accent-600 hover:shadow-2xl hover:shadow-accent-500/40 sm:text-lg"
+                >
+                  <Phone aria-hidden className="size-5" strokeWidth={2.5} />
+                  <span>무료 진단 상담 받기</span>
+                </a>
+              ) : (
+                <Link
+                  href="#quote-form"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-accent-500 px-6 py-4 text-base font-extrabold text-white shadow-xl shadow-accent-500/30 hover:bg-accent-600 sm:text-lg"
+                >
+                  <span>무료 진단 상담 받기</span>
+                </Link>
+              )}
+              <a
+                href={BUSINESS.kakaoChatUrl}
+                target="_blank"
+                rel="noopener"
+                aria-label="카카오톡으로 사진 견적 받기"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-highlight-400 px-6 py-4 text-base font-extrabold text-brand-900 shadow-xl shadow-highlight-500/25 transition-all hover:bg-highlight-300 hover:shadow-2xl sm:text-lg"
+              >
+                <MessageCircle aria-hidden className="size-5" strokeWidth={2.5} />
+                <span>사진으로 견적 받기</span>
+              </a>
             </div>
           </div>
-        ))}
-      </div>
 
-      {/* 다크 네이비 오버레이 — 좌측 더 진하게 (텍스트 가독성), 우측 photo 살림 */}
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-20 bg-gradient-to-r from-brand-950/95 via-brand-950/80 to-brand-900/55"
-      />
-      {/* 모바일/태블릿은 추가 다크 — 전체 어두운 톤 */}
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-20 bg-brand-950/40 lg:hidden"
-      />
-
-      <Container className="relative py-16 sm:py-20 lg:py-28">
-        <div className="max-w-2xl">
-          {/* LIVE 띠 — 줄인 사이즈 */}
-          {liveItem && (
-            <div className="mb-6 inline-flex max-w-full items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs text-white/90 ring-1 ring-inset ring-white/15 backdrop-blur-sm">
-              <span aria-hidden className="live-dot text-rose-400" />
-              <span className="font-bold uppercase tracking-wider text-rose-200">
-                LIVE
-              </span>
-              <span aria-hidden className="text-white/30">·</span>
-              <span className="truncate">
-                <ScrollTime date={liveItem.created_at} variant="relative" />
-                {liveItem.region ? ` · ${liveItem.region}` : ""}{" "}
-                <span className="font-semibold">
-                  {liveItem.masked_name || "고객"}
-                </span>
-                님 접수
-              </span>
-            </div>
-          )}
-
-          {/* 메인 헤드라인 — 구체적 약속 */}
-          <h1 className="text-4xl font-black leading-[1.15] tracking-tight sm:text-5xl lg:text-6xl xl:text-[4.25rem]">
-            <span className="block text-white/85">
-              {headlineLead}벽 뒤에 숨은 누수,
-            </span>
-            <span className="mt-2 block">
-              <span className="text-cyan-300">30분 안에</span>{" "}
-              <span className="text-white">찾아냅니다.</span>
-            </span>
-          </h1>
-
-          {/* 서브 헤드라인 */}
-          <p className="mt-6 max-w-xl text-base font-medium leading-relaxed text-white/80 sm:text-lg">
-            비파괴 정밀 장비로 벽·바닥 손상 없이 정확한 위치만 진단합니다.
-          </p>
-
-          {/* 마이크로 카피 */}
-          <p className="mt-3 text-sm font-semibold text-white/65">
-            서울·경기·인천 365일 24시간 출동 · 누적{" "}
-            <CountUp to={100} duration={1400} suffix="건+" /> 시공
-          </p>
-
-          {/* 듀얼 CTA — Primary 채움 / Secondary 외곽선 */}
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-3.5">
-            {phone ? (
-              <a
-                href={`tel:${phone.tel}`}
-                aria-label={`전화 ${phone.display}로 무료 진단 상담`}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent-500 px-6 py-3.5 text-base font-extrabold text-white shadow-xl shadow-accent-500/30 transition-all hover:bg-accent-600 hover:shadow-2xl hover:shadow-accent-500/40 sm:text-[17px]"
-              >
-                <Phone aria-hidden className="size-5" strokeWidth={2.5} />
-                <span>무료 진단 상담 받기</span>
-              </a>
-            ) : (
-              <Link
-                href="#quote-form"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent-500 px-6 py-3.5 text-base font-extrabold text-white shadow-xl shadow-accent-500/30 transition hover:bg-accent-600"
-              >
-                <span>무료 진단 상담 받기</span>
-              </Link>
-            )}
-            <a
-              href={BUSINESS.kakaoChatUrl}
-              target="_blank"
-              rel="noopener"
-              aria-label="카카오톡으로 사진 견적 받기"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/5 px-6 py-3.5 text-base font-bold text-white backdrop-blur-sm transition hover:bg-white/15 sm:text-[17px]"
-            >
-              <MessageCircle aria-hidden className="size-5" strokeWidth={2.25} />
-              <span>사진으로 견적 받기</span>
-            </a>
+          {/* 우측 — 컷아웃 인물 + 라디얼 글로우 */}
+          <div className="relative mx-auto h-72 w-full max-w-sm sm:h-96 sm:max-w-md lg:h-[30rem] lg:max-w-none">
+            <div
+              aria-hidden
+              className="absolute inset-0 -z-10"
+              style={{
+                background:
+                  "radial-gradient(circle at 50% 55%, rgba(253,224,71,0.4) 0%, rgba(103,232,249,0.25) 32%, rgba(0,0,0,0) 65%)",
+                filter: "blur(10px)",
+              }}
+            />
+            <div
+              aria-hidden
+              className="absolute bottom-3 left-1/2 h-5 w-3/4 -translate-x-1/2 rounded-full bg-black/30 blur-xl"
+            />
+            <Image
+              src="/about/worker-cutout.png"
+              alt="누수탐지 전문 상담사"
+              width={620}
+              height={620}
+              priority
+              className="relative mx-auto h-full w-auto object-contain drop-shadow-[0_22px_36px_rgba(8,32,80,0.5)]"
+            />
           </div>
         </div>
 
-        {/* 하단 마이크로 신뢰 스트립 — 4종 stat */}
-        <ul className="mt-14 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-white/15 pt-6 sm:mt-16 sm:grid-cols-4 sm:pt-8">
+        {/* 하단 마이크로 trust strip */}
+        <ul className="mt-12 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-white/15 pt-6 sm:mt-14 sm:grid-cols-4 sm:pt-8">
           {trustStrip.map(({ Icon, k, v }) => (
             <li key={k} className="flex items-center gap-3">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/10 text-cyan-300 ring-1 ring-inset ring-white/15">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/10 text-cyan-200 ring-1 ring-inset ring-white/15">
                 <Icon aria-hidden className="size-5" strokeWidth={2.25} />
               </span>
               <div className="min-w-0 leading-tight">
@@ -234,5 +221,26 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
         </Link>
       </Container>
     </section>
+  );
+}
+
+/** 작은 8각형 별 SVG — sparkle 효과 */
+function Sparkle({
+  className,
+  delay,
+}: {
+  className?: string;
+  delay?: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden
+      className={`hero-sparkle pointer-events-none absolute -z-10 ${className ?? ""}`}
+      style={delay ? { animationDelay: delay } : undefined}
+      fill="currentColor"
+    >
+      <path d="M12 0 L13.5 9 L24 12 L13.5 15 L12 24 L10.5 15 L0 12 L10.5 9 Z" />
+    </svg>
   );
 }

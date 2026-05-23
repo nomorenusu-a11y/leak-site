@@ -84,6 +84,9 @@ body {
   font-family: var(--font-sans);
   font-feature-settings: "ss06"; /* nicer Pretendard digits */
   letter-spacing: -0.01em;
+  /* 가로 스크롤 방지 — 일부 컴포넌트의 absolute/translate 요소가
+     뷰포트를 살짝 넘는 경우 PC에서 우측 공백 + 좌우 스크롤이 생김 */
+  overflow-x: hidden;
 }
 
 /* Live board: new row fade-in (CSS only, no motion lib) */
@@ -251,6 +254,47 @@ body {
 }
 .hero-marquee {
   animation: marqueeFlow 18s linear infinite;
+}
+
+/* Hero — 배경 그라데이션 좌측으로 무한 슬라이드 */
+@keyframes heroBgSlide {
+  from { background-position: 100% 50%; }
+  to { background-position: -100% 50%; }
+}
+.hero-sliding-bg {
+  background: linear-gradient(
+    90deg,
+    #0e7490 0%,
+    #0891b2 18%,
+    #1e40af 36%,
+    #1e3a8a 54%,
+    #0891b2 72%,
+    #06b6d4 90%,
+    #0e7490 100%
+  );
+  background-size: 200% 100%;
+  animation: heroBgSlide 16s linear infinite;
+}
+
+/* Hero — 텍스트 컬러 슬라이드 (그라데이션 텍스트가 좌→우로 흐름) */
+@keyframes heroTextSlide {
+  from { background-position: 0% 50%; }
+  to { background-position: 200% 50%; }
+}
+.hero-sliding-text {
+  background: linear-gradient(
+    90deg,
+    #fde047 0%,
+    #fff 25%,
+    #67e8f9 50%,
+    #fff 75%,
+    #fde047 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: heroTextSlide 8s linear infinite;
 }
 
 /* 가로 카루셀용 — 스크롤바 시각적 숨김 (접근성: tab 스크롤은 유지) */
