@@ -8,7 +8,10 @@ type Slide = {
   src: string;
   alt: string;
   tag: string;
-  headline: string;
+  tagColor: string;
+  line1: string;
+  line2: string;
+  line2Color: string;
   sub: string;
   hashtags: string[];
 };
@@ -60,10 +63,9 @@ export function HeroCarouselClient({ slides, intervalMs = 2800 }: Props) {
               sizes="(min-width: 1024px) 60vw, 100vw"
               className="object-cover"
             />
-            {/* 어두운 오버레이 */}
             <div
               aria-hidden
-              className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/25"
+              className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/20"
             />
             <div
               aria-hidden
@@ -71,21 +73,25 @@ export function HeroCarouselClient({ slides, intervalMs = 2800 }: Props) {
             />
 
             {/* 슬라이드별 문구 */}
-            <div className="absolute inset-0 flex flex-col justify-end p-6 pb-16 sm:justify-center sm:p-10 lg:p-14">
-              <span className="inline-flex w-fit rounded-full bg-white/20 px-5 py-2 text-sm font-extrabold text-white backdrop-blur-sm sm:px-6 sm:py-2.5 sm:text-base">
+            <div className="absolute inset-0 flex flex-col justify-end px-5 pb-12 sm:justify-center sm:px-10 lg:px-14">
+              <span
+                className={`inline-flex w-fit rounded-full px-4 py-1.5 text-xs font-extrabold backdrop-blur-sm sm:px-6 sm:py-2 sm:text-base lg:text-lg ${s.tagColor}`}
+              >
                 {s.tag}
               </span>
-              <h2 className="mt-3 whitespace-pre-line text-4xl font-black leading-[1.1] tracking-tight text-white drop-shadow-[0_3px_10px_rgba(0,0,0,0.7)] sm:text-5xl lg:text-6xl xl:text-7xl">
-                {s.headline}
+              <h2 className="mt-2 text-[2rem] font-black leading-[1.1] tracking-tight drop-shadow-[0_3px_10px_rgba(0,0,0,0.7)] sm:mt-3 sm:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl">
+                <span className="text-white">{s.line1}</span>
+                <br />
+                <span className={s.line2Color}>{s.line2}</span>
               </h2>
-              <p className="mt-3 max-w-xl text-base font-semibold text-white/90 drop-shadow sm:text-lg lg:text-xl">
+              <p className="mt-2 max-w-xl text-sm font-semibold text-white/90 drop-shadow sm:mt-3 sm:text-lg lg:text-xl">
                 {s.sub}
               </p>
-              <div className="mt-4 flex flex-wrap gap-2 sm:gap-2.5">
+              <div className="mt-3 flex flex-wrap gap-1.5 sm:mt-4 sm:gap-2.5">
                 {s.hashtags.map((h) => (
                   <span
                     key={h}
-                    className="rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-xs font-bold text-white/90 backdrop-blur-sm sm:px-5 sm:py-2 sm:text-sm lg:text-base"
+                    className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-bold text-white/85 backdrop-blur-sm sm:px-5 sm:py-2 sm:text-sm lg:text-base"
                   >
                     #{h}
                   </span>
@@ -119,7 +125,7 @@ export function HeroCarouselClient({ slides, intervalMs = 2800 }: Props) {
       </button>
 
       {/* 페이지네이션 점 */}
-      <div className="absolute inset-x-0 bottom-4 flex items-center justify-center gap-2">
+      <div className="absolute inset-x-0 bottom-3 flex items-center justify-center gap-2 sm:bottom-4">
         {slides.map((_, i) => (
           <button
             key={i}

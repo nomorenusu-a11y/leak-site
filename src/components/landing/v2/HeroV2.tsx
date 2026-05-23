@@ -12,7 +12,10 @@ const HERO_SLIDES = [
     src: "/about/dispatch.png",
     alt: "긴급 출동 중인 누수탐지 전문기사",
     tag: "24시간 긴급출동",
-    headline: "365일 24시간\n긴급 출동",
+    tagColor: "bg-cyan-500/30 text-cyan-200",
+    line1: "365일 24시간",
+    line2: "긴급 출동",
+    line2Color: "text-yellow-300",
     sub: "서울·경기·인천 수도권 전지역 | 접수 후 30분 내 출동",
     hashtags: ["24시간출동", "수도권전지역", "긴급누수", "야간출동"],
   },
@@ -20,7 +23,10 @@ const HERO_SLIDES = [
     src: "/about/rescue.png",
     alt: "작업 완료 후 OK 사인을 보내는 전문가",
     tag: "실패현장 전문",
-    headline: "타업체 실패현장\n해결 전문",
+    tagColor: "bg-rose-500/30 text-rose-200",
+    line1: "타업체 실패현장",
+    line2: "해결 전문",
+    line2Color: "text-emerald-300",
     sub: "다른 업체에서 못 찾은 누수도 끝까지 찾아냅니다",
     hashtags: ["실패현장해결", "베테랑전문가", "완벽시공", "비파괴탐지"],
   },
@@ -28,7 +34,10 @@ const HERO_SLIDES = [
     src: "/about/estimate.png",
     alt: "현장에서 견적서를 설명하는 모습",
     tag: "정직한 시공",
-    headline: "정직한 견적\n확실한 A/S",
+    tagColor: "bg-amber-500/30 text-amber-200",
+    line1: "정직한 견적",
+    line2: "확실한 A/S",
+    line2Color: "text-amber-300",
     sub: "미해결 시 비용 0원 · 보험서류 무상 제공 · 1년 무상 A/S",
     hashtags: ["정직견적", "비용0원", "1년무상AS", "보험서류무상"],
   },
@@ -36,7 +45,10 @@ const HERO_SLIDES = [
     src: "/about/consult.png",
     alt: "전문 상담센터에서 상담 중",
     tag: "무료 상담",
-    headline: "전화 한 통이면\n전문가가 찾아갑니다",
+    tagColor: "bg-blue-500/30 text-blue-200",
+    line1: "전화 한 통이면",
+    line2: "전문가가 찾아갑니다",
+    line2Color: "text-cyan-300",
     sub: "사진과 증상만 보내주세요 · 현장 도착 전 사전 진단 완료",
     hashtags: ["무료상담", "30분내회신", "비파괴탐지", "누수보험"],
   },
@@ -63,14 +75,14 @@ export async function HeroV2(_props: { cityLabel?: string }) {
       </div>
 
       <div className="grid grid-cols-1 items-stretch lg:min-h-[680px] lg:grid-cols-[6fr_4fr] xl:min-h-[740px]">
-        {/* 좌측 — 캐러셀 (모바일: vw 기반 높이, 데스크탑: grid stretch) */}
-        <div className="relative h-[60vw] max-h-[440px] overflow-hidden bg-slate-900 lg:h-auto lg:max-h-none">
+        {/* 좌측 — 캐러셀 */}
+        <div className="relative h-[56vw] max-h-[400px] overflow-hidden bg-slate-900 sm:h-[50vw] sm:max-h-[440px] lg:h-auto lg:max-h-none">
           <HeroCarouselClient slides={HERO_SLIDES} intervalMs={2800} />
         </div>
 
-        {/* 우측 — 실시간 견적현황 (플러시, 둥근 모서리 제거) */}
-        <div className="flex flex-col bg-white shadow-2xl shadow-black/10">
-          <div className="flex-1 overflow-hidden [&>div]:rounded-none [&>div]:border-0 [&>div]:shadow-none">
+        {/* 우측/하단 — 실시간 견적현황 */}
+        <div className="flex max-h-[360px] flex-col bg-white shadow-2xl shadow-black/10 lg:max-h-none">
+          <div className="min-h-0 flex-1 overflow-hidden [&>div]:rounded-none [&>div]:border-0 [&>div]:shadow-none">
             {initial.length > 0 ? (
               <LiveStatusTableClient
                 initial={initial}
@@ -84,16 +96,16 @@ export async function HeroV2(_props: { cityLabel?: string }) {
             )}
           </div>
 
-          <div className="mt-auto space-y-2.5 border-t border-slate-100 px-4 py-3 lg:px-5">
+          <div className="shrink-0 space-y-2 border-t border-slate-100 px-4 py-2.5 lg:space-y-2.5 lg:px-5 lg:py-3">
             {phone && (
               <a
                 href={`tel:${phone.tel}`}
-                className="block rounded-xl border-2 border-brand-200 bg-brand-50 px-3 py-3 text-center hover:bg-brand-100"
+                className="block rounded-xl border-2 border-brand-200 bg-brand-50 px-3 py-2.5 text-center hover:bg-brand-100 lg:py-3"
               >
                 <span className="block text-[10px] font-extrabold uppercase tracking-widest text-brand-600">
                   긴급출동 직통
                 </span>
-                <span className="mt-0.5 inline-flex items-center gap-1.5 text-xl font-black tracking-tight text-brand-900 sm:text-2xl">
+                <span className="mt-0.5 inline-flex items-center gap-1.5 text-lg font-black tracking-tight text-brand-900 sm:text-2xl">
                   <Phone aria-hidden className="size-5" strokeWidth={2.5} />
                   {phone.display}
                 </span>
@@ -103,7 +115,7 @@ export async function HeroV2(_props: { cityLabel?: string }) {
               href={BUSINESS.kakaoChatUrl}
               target="_blank"
               rel="noopener"
-              className="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#FEE500] text-sm font-extrabold text-[#3C1E1E] shadow-md transition hover:brightness-95"
+              className="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-[#FEE500] text-sm font-extrabold text-[#3C1E1E] shadow-md transition hover:brightness-95 lg:h-11"
             >
               <KakaoLogo aria-hidden className="size-5" />
               <span>카카오톡으로 빠른 상담</span>

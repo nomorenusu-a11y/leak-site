@@ -44,8 +44,6 @@ export function LiveStatusTableClient({
   );
   const [justAddedId, setJustAddedId] = useState<string | null>(null);
   const [paused, setPaused] = useState(false);
-  const [todayCount, setTodayCount] = useState(initial.length);
-  const [counterPulse, setCounterPulse] = useState(false);
 
   useEffect(() => {
     if (paused || pool.current.length === 0) return;
@@ -75,9 +73,6 @@ export function LiveStatusTableClient({
         }
         return [...next];
       });
-      setTodayCount((c) => c + 1);
-      setCounterPulse(true);
-      setTimeout(() => setCounterPulse(false), 500);
       setTimeout(() => setJustAddedId(null), 2000);
     }, intervalMs);
     return () => clearInterval(t);
@@ -89,28 +84,16 @@ export function LiveStatusTableClient({
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* 상단 카운터 바 */}
-      <div className="flex items-center justify-between gap-3 border-b border-slate-200 bg-gradient-to-r from-rose-50 via-amber-50 to-rose-50 px-4 py-2.5 sm:px-5">
-        <div className="flex items-center gap-2">
-          <span aria-hidden className="live-dot text-rose-500" />
-          <span className="live-blink text-xs font-extrabold uppercase tracking-wider text-rose-700">
-            LIVE
-          </span>
-          <span aria-hidden className="text-slate-300">·</span>
-          <span className="text-xs font-semibold text-slate-700 sm:text-sm">
-            지금도 작업 신청이 들어오고 있습니다
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5 text-xs sm:text-sm">
-          <span className="text-slate-500">오늘 누적</span>
-          <span
-            className={`inline-block min-w-[2.5rem] rounded-md bg-rose-500 px-2 py-0.5 text-center text-xs font-black text-white sm:text-sm ${
-              counterPulse ? "live-counter-pulse" : ""
-            }`}
-          >
-            {todayCount}건
-          </span>
-        </div>
+      {/* 상단 LIVE 바 */}
+      <div className="flex items-center gap-2 border-b border-slate-200 bg-gradient-to-r from-rose-50 via-amber-50 to-rose-50 px-4 py-2.5 sm:px-5">
+        <span aria-hidden className="live-dot text-rose-500" />
+        <span className="live-blink text-xs font-extrabold uppercase tracking-wider text-rose-700">
+          LIVE
+        </span>
+        <span aria-hidden className="text-slate-300">·</span>
+        <span className="text-xs font-semibold text-slate-700 sm:text-sm">
+          지금도 작업 신청이 들어오고 있습니다
+        </span>
       </div>
 
       {/* 행 — flex-1로 CTA 직전까지 채움 */}
