@@ -16,11 +16,11 @@ type Props = {
 };
 
 /**
- * Hero 가로 캐러셀 — 크로스페이드 + 자동 슬라이드.
+ * Hero 가로 캐러셀 — 꽉차는 풀블리드 + 크로스페이드 자동 슬라이드.
  *
+ * - 라운드 코너·shadow 제거 → 좌측 column을 끝까지 채움
  * - 5장 와이드 이미지가 일정 간격으로 자동 전환 (opacity 600ms 페이드)
- * - 좌·우 화살표로 수동 이동
- * - 하단 페이지네이션 점
+ * - 좌·우 화살표 (sm+) + 하단 페이지네이션 점
  * - 마우스 hover 시 일시 정지
  */
 export function HeroCarouselClient({ slides, intervalMs = 3500 }: Props) {
@@ -44,12 +44,12 @@ export function HeroCarouselClient({ slides, intervalMs = 3500 }: Props) {
 
   return (
     <div
-      className="relative overflow-hidden rounded-2xl bg-slate-900 shadow-2xl ring-1 ring-white/10"
+      className="relative h-full w-full overflow-hidden bg-slate-900"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={() => setPaused(true)}
     >
-      <div className="relative aspect-[15/7] w-full">
+      <div className="relative aspect-[15/7] w-full lg:aspect-auto lg:h-full">
         {slides.map((s, i) => (
           <div
             key={s.src}
@@ -63,7 +63,7 @@ export function HeroCarouselClient({ slides, intervalMs = 3500 }: Props) {
               alt={s.alt}
               fill
               priority={i === 0}
-              sizes="(min-width: 1024px) 60vw, 100vw"
+              sizes="(min-width: 1024px) 80vw, 100vw"
               className="object-cover"
             />
           </div>
@@ -86,21 +86,21 @@ export function HeroCarouselClient({ slides, intervalMs = 3500 }: Props) {
         >
           <ChevronRight aria-hidden className="size-5" strokeWidth={2.5} />
         </button>
-      </div>
 
-      {/* 페이지네이션 점 */}
-      <div className="absolute inset-x-0 bottom-3 flex items-center justify-center gap-1.5">
-        {slides.map((_, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={() => setIdx(i)}
-            aria-label={`${i + 1}번 이미지로`}
-            className={`h-1.5 rounded-full transition-all ${
-              i === idx ? "w-7 bg-white" : "w-1.5 bg-white/50 hover:bg-white/75"
-            }`}
-          />
-        ))}
+        {/* 페이지네이션 점 */}
+        <div className="absolute inset-x-0 bottom-3 flex items-center justify-center gap-1.5">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setIdx(i)}
+              aria-label={`${i + 1}번 이미지로`}
+              className={`h-1.5 rounded-full transition-all ${
+                i === idx ? "w-7 bg-white" : "w-1.5 bg-white/55 hover:bg-white/80"
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

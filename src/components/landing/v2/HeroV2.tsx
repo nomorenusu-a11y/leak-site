@@ -7,7 +7,6 @@ import {
   MessageCircle,
   Star,
 } from "@/components/icons";
-import { BUSINESS } from "@/lib/business";
 import { createSupabaseAnonClient } from "@/lib/supabase/anon";
 import { buildScrollPool } from "@/lib/live-board-scroll";
 import { CountUp } from "@/components/ui/CountUp";
@@ -39,18 +38,17 @@ const HERO_SLIDES = [
 ];
 
 /**
- * Hero v2 — 와이드 캐러셀 + 사이드 빠른 문의폼.
+ * Hero v2 — 8:2 풀블리드 캐러셀 + 좁은 사이드 빠른 문의폼.
  *
- * PC:  좌 60% 캐러셀(5장 자동 슬라이드) / 우 40% 빠른 문의폼
- * 모바일: 캐러셀 상단 → 빠른 문의폼 하단
+ * PC:  좌 80% 캐러셀(풀블리드) / 우 20% 빠른 문의폼 — 둘 다 hero를 꽉채움
+ * 모바일: 캐러셀 위(자연 aspect-[15/7]) → 빠른 문의폼 아래 (full width)
  *
- * 카루셀: 3.5s 간격 크로스페이드 자동 슬라이드 + 좌우 화살표 + 페이지네이션 점
- * 폼: 4 필드(이름·연락처·증상·동의) — 실제 submitQuote 서버 액션으로 DB 등록
+ * 캐러셀: 3.5s 크로스페이드 자동 슬라이드, 풀블리드(rounded/shadow 없음)
+ * 폼: 좁은 column에 맞춘 컴팩트 — 이름·연락처·동의 3요소, hidden symptom 자동
  */
 export async function HeroV2(_props: { cityLabel?: string }) {
   const supabase = createSupabaseAnonClient();
 
-  // LIVE 띠 — 최근 접수 1건 (참고용)
   const { data: realRows } = await supabase
     .from("leak_requests")
     .select("masked_name, region, created_at")
@@ -87,17 +85,17 @@ export async function HeroV2(_props: { cityLabel?: string }) {
 
   return (
     <section className="relative isolate overflow-hidden bg-slate-900 text-white">
-      {/* 슬라이딩 그라데이션 배경 (cyan↔navy 좌측 흐름) */}
+      {/* 슬라이딩 그라데이션 배경 — 하단 trust strip 영역만 보임 */}
       <div aria-hidden className="hero-sliding-bg absolute inset-0 -z-30" />
       <div
         aria-hidden
-        className="absolute inset-0 -z-20 bg-gradient-to-r from-brand-950/65 via-brand-900/40 to-brand-900/20"
+        className="absolute inset-0 -z-20 bg-gradient-to-b from-brand-950/30 via-transparent to-brand-950/55"
       />
 
-      <Container className="relative py-8 sm:py-12 lg:py-16">
-        {/* LIVE 띠 — 캐러셀 위 */}
+      {/* LIVE 띠 — 캐러셀 위 */}
+      <Container className="relative pt-6 sm:pt-8">
         {liveItem && (
-          <div className="mb-4 inline-flex max-w-full items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs text-white/90 ring-1 ring-inset ring-white/15 backdrop-blur-sm">
+          <div className="inline-flex max-w-full items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs text-white/90 ring-1 ring-inset ring-white/15 backdrop-blur-sm">
             <span aria-hidden className="live-dot text-rose-400" />
             <span className="font-bold uppercase tracking-wider text-rose-200">
               LIVE
@@ -113,16 +111,17 @@ export async function HeroV2(_props: { cityLabel?: string }) {
             </span>
           </div>
         )}
+      </Container>
 
-        <div className="grid items-stretch gap-5 lg:grid-cols-[1.6fr_1fr] lg:gap-6">
-          {/* 좌측: 캐러셀 */}
-          <HeroCarouselClient slides={HERO_SLIDES} intervalMs={3500} />
-          {/* 우측: 빠른 문의폼 */}
-          <HeroQuickForm />
-        </div>
+      {/* 메인 그리드 — full bleed, 8:2 PC */}
+      <div className="relative mt-4 grid grid-cols-1 items-stretch lg:mt-6 lg:grid-cols-[4fr_1fr]">
+        <HeroCarouselClient slides={HERO_SLIDES} intervalMs={3500} />
+        <HeroQuickForm />
+      </div>
 
-        {/* 하단 마이크로 trust strip */}
-        <ul className="mt-10 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-white/15 pt-6 sm:mt-12 sm:grid-cols-4 sm:pt-8">
+      {/* 하단 마이크로 trust strip */}
+      <Container className="relative pb-10 pt-6 sm:pt-8">
+        <ul className="grid grid-cols-2 gap-x-6 gap-y-4 border-t border-white/15 pt-6 sm:grid-cols-4 sm:pt-8">
           {trustStrip.map(({ Icon, k, v }) => (
             <li key={k} className="flex items-center gap-3">
               <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/10 text-cyan-200 ring-1 ring-inset ring-white/15">
@@ -140,7 +139,6 @@ export async function HeroV2(_props: { cityLabel?: string }) {
           ))}
         </ul>
 
-        {/* 스크롤 유도 */}
         <Link
           href="#live-board"
           aria-label="실시간 작업현황으로 스크롤"
