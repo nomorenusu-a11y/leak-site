@@ -27,6 +27,8 @@ type ServiceCard = {
   }>;
   /** 외부 라우트 (cat이 있으면 /posts?cat=... 자동) */
   href?: string;
+  /** cat이 null인 informational 카드용 고정 이미지 (public 경로) */
+  image?: string;
 };
 
 const LEAK_SERVICES: ServiceCard[] = [
@@ -69,6 +71,7 @@ const PIPE_SERVICES: ServiceCard[] = [
     desc: "주방·욕실 하수구·배수관 막힘 해소 (고압세척)",
     Icon: Wrench,
     href: "/posts",
+    image: "/about/rescue.png",
   },
   {
     cat: null,
@@ -76,6 +79,7 @@ const PIPE_SERVICES: ServiceCard[] = [
     desc: "오래된 배관·배수구 누적 이물질 강력 세척",
     Icon: Droplets,
     href: "/posts",
+    image: "/about/dispatch.png",
   },
 ];
 
@@ -107,12 +111,13 @@ function Card({
   cover?: string;
 }) {
   const href = s.cat ? `/posts?cat=${s.cat}` : (s.href ?? "/posts");
+  const imgSrc = cover ?? s.image;
   return (
     <article className="group h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
       <div className="relative aspect-[16/10] bg-slate-100">
-        {cover ? (
+        {imgSrc ? (
           <Image
-            src={cover}
+            src={imgSrc}
             alt={s.ko}
             fill
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"

@@ -1,7 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
-import { Phone, ChevronDown, MapPin, Clock, ShieldCheck } from "@/components/icons";
+import {
+  Phone,
+  ChevronDown,
+  MapPin,
+  Clock,
+  ShieldCheck,
+  Star,
+  Zap,
+  Check,
+} from "@/components/icons";
 import { KakaoLogo } from "@/components/icons/BrandLogos";
 import { BUSINESS } from "@/lib/business";
 import { createSupabaseAnonClient } from "@/lib/supabase/anon";
@@ -10,15 +19,18 @@ import { CountUp } from "@/components/ui/CountUp";
 import { ScrollTime } from "@/components/ui/ScrollTime";
 
 /**
- * Hero v2 — 임팩트 강화판.
+ * Hero v2 — 시선 강탈판.
  *
- * 구조:
- *   1) 상단 신뢰 배지 (출동 지역·24시간·AS 보장)
- *   2) 좌측: LIVE 띠 → 거대 헤드라인(핵심어 yellow→cyan 그라데이션) → 이중 CTA(전화·카톡)
- *   3) 우측: 작업자 인물 사진(public/about/consult.png)
- *   4) 하단: 누적 시공 카운터 + 스크롤 유도
- *
- * 배경: 진짜 작업 사진 카루셀(있으면) + brand-700 그라데이션 + 떨어지는 물방울.
+ * 시각 자극 레이어:
+ *   - 배경 사진 카루셀 + brand 그라데이션 + 떨어지는 물방울 + 바닥 ripple
+ *   - 가로 흐름 EMERGENCY 마키 띠 (상단 풀폭)
+ *   - 신뢰 배지 3종 (브랜드 yellow 아이콘)
+ *   - LIVE 빨강 깜빡임 (최근 접수 1건)
+ *   - 거대 헤드라인 + "100% 해결" gradient + 노란 highlighter bar + glow
+ *   - 이중 CTA: highlight CTA에 노란 펄스 ring 2중
+ *   - 우측 인물 사진 conic gradient spin ring + 4 floating 배지 wobble
+ *   - 누적 시공 카운터 (yellow gradient 박스 강조)
+ *   - SVG sparkle 4종 (좌상/우상/좌하/우하)
  */
 export async function HeroV2({ cityLabel }: { cityLabel: string }) {
   const phone = BUSINESS.contact.phone;
@@ -76,9 +88,84 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
     { Icon: ShieldCheck, label: "A/S 1년 보장" },
   ];
 
+  // 마키에 반복할 문구 — 6개 → 2회 복제로 seamless loop
+  const marqueeItems = [
+    "🚨 긴급출동",
+    "365일 24시간",
+    "30분 이내 도착",
+    "비용 0원 보장",
+    "1년 무상 A/S",
+    "외주·신입 파견 없음",
+  ];
+
+  // 우측 인물 floating 뱃지
+  const floatingBadges = [
+    {
+      pos: "absolute -left-4 top-6",
+      cls: "hero-wobble-l bg-white text-brand-700",
+      content: (
+        <>
+          <Star
+            aria-hidden
+            className="size-4 fill-amber-400 text-amber-400"
+            strokeWidth={1}
+          />
+          <span>
+            <span className="block text-base font-black leading-none">4.9</span>
+            <span className="block text-[10px] font-bold">고객 만족</span>
+          </span>
+        </>
+      ),
+    },
+    {
+      pos: "absolute -right-3 top-14",
+      cls: "hero-wobble-r bg-highlight-400 text-brand-900",
+      content: (
+        <>
+          <span className="text-lg font-black leading-none">100%</span>
+          <span className="text-[10px] font-extrabold">해결 약속</span>
+        </>
+      ),
+    },
+    {
+      pos: "absolute -left-2 bottom-10",
+      cls: "hero-wobble-l bg-rose-500 text-white",
+      content: (
+        <>
+          <Zap
+            aria-hidden
+            className="size-3.5"
+            strokeWidth={2.5}
+          />
+          <span className="text-[11px] font-extrabold leading-tight">
+            30분 내<br />
+            현장 도착
+          </span>
+        </>
+      ),
+    },
+    {
+      pos: "absolute -right-4 bottom-2",
+      cls: "hero-wobble-r bg-white text-brand-700",
+      content: (
+        <>
+          <ShieldCheck
+            aria-hidden
+            className="size-4 text-brand-600"
+            strokeWidth={2.5}
+          />
+          <span className="text-[11px] font-extrabold leading-tight">
+            1년<br />
+            무상 A/S
+          </span>
+        </>
+      ),
+    },
+  ];
+
   return (
     <section className="relative isolate overflow-hidden text-white">
-      {/* 배경 */}
+      {/* 배경 카루셀 */}
       <div aria-hidden className="absolute inset-0 -z-30">
         {bgImages.length > 0 ? (
           bgImages.map((url, i) => (
@@ -117,10 +204,17 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
         aria-hidden
         className="absolute inset-0 -z-20 bg-gradient-to-br from-brand-800/95 via-brand-700/92 to-brand-900/95"
       />
+      {/* 우상단 light 블롭 */}
       <div
         aria-hidden
-        className="absolute -right-32 -top-24 -z-10 size-[28rem] rounded-full bg-white/10 blur-3xl"
+        className="absolute -right-32 -top-24 -z-10 size-[28rem] rounded-full bg-highlight-400/20 blur-3xl"
       />
+      {/* 좌하단 cyan 블롭 */}
+      <div
+        aria-hidden
+        className="absolute -left-32 bottom-0 -z-10 size-[24rem] rounded-full bg-cyan-400/15 blur-3xl"
+      />
+      {/* 떨어지는 물방울 + ripple */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
@@ -148,6 +242,28 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
           />
         ))}
       </div>
+      {/* Sparkle SVG 4종 */}
+      <Sparkle className="left-[6%] top-[14%] size-6 text-highlight-300" delay="0s" />
+      <Sparkle className="left-[42%] top-[8%] size-4 text-cyan-200" delay="1.4s" />
+      <Sparkle className="right-[10%] top-[22%] size-5 text-highlight-300" delay="0.7s" />
+      <Sparkle className="left-[14%] bottom-[18%] size-4 text-cyan-200" delay="2s" />
+
+      {/* 상단 마키 띠 — EMERGENCY 흐름 */}
+      <div
+        aria-hidden
+        className="border-y border-rose-500/40 bg-rose-600/80 py-1.5 text-[11px] font-extrabold uppercase tracking-widest text-white shadow-lg backdrop-blur-sm sm:text-xs"
+      >
+        <div className="flex overflow-hidden">
+          <ul className="hero-marquee flex shrink-0 items-center gap-8 whitespace-nowrap pr-8">
+            {[...marqueeItems, ...marqueeItems].map((m, i) => (
+              <li key={i} className="flex items-center gap-2">
+                <span aria-hidden className="size-1.5 rounded-full bg-highlight-300" />
+                <span>{m}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
 
       <Container className="relative py-10 sm:py-14 lg:py-20">
         {/* 상단 신뢰 배지 행 */}
@@ -170,7 +286,6 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
         <div className="grid items-center gap-8 lg:grid-cols-[1.3fr_1fr] lg:gap-12">
           {/* 좌측 — 카피 */}
           <div>
-            {/* LIVE 띠 */}
             {liveItem && (
               <div className="mb-5 inline-flex max-w-full items-center gap-2 rounded-lg bg-rose-500/20 px-3 py-1.5 text-xs font-semibold text-white ring-1 ring-inset ring-rose-400/40 backdrop-blur-sm sm:text-sm">
                 <span aria-hidden className="live-dot text-rose-300" />
@@ -189,11 +304,17 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
               </div>
             )}
 
-            {/* 메인 헤드라인 */}
-            <h1 className="text-5xl font-black leading-[1.1] tracking-tight drop-shadow-md sm:text-6xl lg:text-7xl xl:text-[5.5rem]">
+            <h1 className="text-5xl font-black leading-[1.05] tracking-tight drop-shadow-[0_4px_24px_rgba(8,32,80,0.45)] sm:text-6xl lg:text-7xl xl:text-[5.5rem]">
               <span className="block text-white/95">{headlineLead}</span>
-              <span className="mt-1 block bg-gradient-to-r from-highlight-300 via-cyan-200 to-cyan-400 bg-clip-text pb-2 text-transparent">
-                100% 해결
+              <span className="relative mt-1 inline-block">
+                {/* 노란 highlighter bar — text 뒤에 깔리는 굵은 막대 */}
+                <span
+                  aria-hidden
+                  className="hero-highlight-bar absolute inset-x-0 bottom-2 -z-10 block h-[0.45em] rounded-md bg-highlight-400/85 sm:bottom-3 sm:h-[0.4em]"
+                />
+                <span className="relative bg-gradient-to-r from-highlight-300 via-cyan-200 to-cyan-400 bg-clip-text pb-2 text-transparent drop-shadow-[0_2px_8px_rgba(252,211,77,0.4)]">
+                  100% 해결
+                </span>
               </span>
               <span className="mt-1 block text-3xl font-extrabold text-white/90 sm:text-4xl lg:text-5xl">
                 해드립니다.
@@ -211,7 +332,7 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
                 <a
                   href={`tel:${phone.tel}`}
                   aria-label={`전화 ${phone.display}로 상담`}
-                  className="group flex items-center justify-center gap-2.5 rounded-2xl bg-highlight-400 px-6 py-4 text-base font-extrabold text-brand-900 shadow-xl shadow-highlight-500/30 transition hover:bg-highlight-300 sm:text-lg"
+                  className="cta-pulse-ring group relative isolate flex items-center justify-center gap-2.5 rounded-2xl bg-highlight-400 px-6 py-4 text-base font-extrabold text-brand-900 shadow-xl shadow-highlight-500/40 ring-2 ring-white/30 transition hover:bg-highlight-300 hover:scale-[1.02] sm:text-lg"
                 >
                   <Phone
                     aria-hidden
@@ -226,28 +347,44 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
                 target="_blank"
                 rel="noopener"
                 aria-label="카카오톡 상담 새 창으로 열기"
-                className="flex items-center justify-center gap-2.5 rounded-2xl bg-white/15 px-6 py-4 text-base font-extrabold text-white ring-1 ring-inset ring-white/30 backdrop-blur transition hover:bg-white/25 sm:text-lg"
+                className="flex items-center justify-center gap-2.5 rounded-2xl bg-white/15 px-6 py-4 text-base font-extrabold text-white ring-1 ring-inset ring-white/30 backdrop-blur transition hover:bg-white/25 hover:scale-[1.02] sm:text-lg"
               >
                 <KakaoLogo aria-hidden className="size-6" />
                 <span>카카오톡 상담</span>
               </a>
             </div>
 
-            {/* 누적 카운터 */}
-            <div className="mt-7 inline-flex items-center gap-3 rounded-xl bg-white/10 px-4 py-2.5 ring-1 ring-inset ring-white/20 backdrop-blur-sm">
-              <span className="text-xs font-bold uppercase tracking-wider text-white/80">
+            {/* 누적 카운터 — 강조 박스 */}
+            <div className="mt-7 inline-flex items-center gap-3 rounded-2xl bg-gradient-to-r from-highlight-400 to-amber-400 px-5 py-3 shadow-lg shadow-highlight-500/30">
+              <Check
+                aria-hidden
+                className="size-5 text-brand-900"
+                strokeWidth={3}
+              />
+              <span className="text-xs font-extrabold uppercase tracking-wider text-brand-900">
                 누적 시공
               </span>
-              <span className="text-2xl font-black tracking-tight text-highlight-300 sm:text-3xl">
+              <span className="text-2xl font-black tracking-tight text-brand-900 sm:text-3xl">
                 <CountUp to={100} duration={1400} suffix="건+" />
               </span>
             </div>
           </div>
 
-          {/* 우측 — 작업자 인물 */}
+          {/* 우측 — 작업자 인물 + 4 floating 배지 */}
           <div className="relative hidden lg:block">
-            <div className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-gradient-to-br from-highlight-300/20 via-cyan-400/10 to-brand-400/30 blur-2xl" />
-            <div className="relative overflow-hidden rounded-3xl shadow-2xl ring-4 ring-white/20">
+            {/* conic gradient spinning ring */}
+            <div
+              aria-hidden
+              className="hero-spin-ring absolute -inset-5 -z-10 rounded-[3rem]"
+              style={{
+                background:
+                  "conic-gradient(from 0deg, #fde047, #67e8f9, #facc15, #fde047)",
+                filter: "blur(8px)",
+                opacity: 0.65,
+              }}
+            />
+            {/* 인물 프레임 */}
+            <div className="relative overflow-hidden rounded-3xl shadow-2xl ring-4 ring-white/30">
               <Image
                 src="/about/consult.png"
                 alt="작업복을 입고 전문 상담 중인 누수탐지 전문가"
@@ -257,13 +394,19 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
                 className="aspect-square w-full object-cover"
               />
             </div>
-            {/* 사진 위 작은 신뢰 배지 */}
-            <div className="absolute -bottom-4 -left-4 rounded-2xl bg-white px-4 py-3 shadow-xl">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-brand-600">
+            {/* 4 floating 배지 */}
+            {floatingBadges.map((b, i) => (
+              <span
+                key={i}
+                className={`${b.pos} inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 shadow-xl ring-2 ring-white/40 ${b.cls}`}
+              >
+                {b.content}
+              </span>
+            ))}
+            {/* 하단 안내 칩 */}
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-brand-900 px-4 py-2 text-center shadow-xl ring-2 ring-highlight-300/60">
+              <p className="whitespace-nowrap text-[11px] font-extrabold uppercase tracking-wider text-highlight-300">
                 전문가 직접 출동
-              </p>
-              <p className="mt-0.5 text-sm font-extrabold text-slate-900">
-                외주·신입 파견 없음
               </p>
             </div>
           </div>
@@ -286,5 +429,26 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
         </Link>
       </Container>
     </section>
+  );
+}
+
+/** 작은 8각형 별 SVG — sparkle 효과 */
+function Sparkle({
+  className,
+  delay,
+}: {
+  className?: string;
+  delay?: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden
+      className={`hero-sparkle pointer-events-none absolute -z-10 ${className ?? ""}`}
+      style={delay ? { animationDelay: delay } : undefined}
+      fill="currentColor"
+    >
+      <path d="M12 0 L13.5 9 L24 12 L13.5 15 L12 24 L10.5 15 L0 12 L10.5 9 Z" />
+    </svg>
   );
 }

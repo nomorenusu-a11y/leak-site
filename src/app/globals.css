@@ -167,6 +167,90 @@ body {
   animation: liveBlink 0.9s ease-in-out infinite;
 }
 
+/* Hero — conic gradient ring slow spin (우측 인물 사진 데코) */
+@keyframes heroSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.hero-spin-ring {
+  animation: heroSpin 12s linear infinite;
+}
+
+/* Hero — 뱃지 살짝 흔들기 (회전축 좌상단/우상단) */
+@keyframes wobbleBadge {
+  0%, 100% { transform: rotate(-6deg) translateY(0); }
+  50% { transform: rotate(-2deg) translateY(-4px); }
+}
+.hero-wobble-l {
+  animation: wobbleBadge 3.2s ease-in-out infinite;
+}
+@keyframes wobbleBadgeR {
+  0%, 100% { transform: rotate(8deg) translateY(0); }
+  50% { transform: rotate(4deg) translateY(-3px); }
+}
+.hero-wobble-r {
+  animation: wobbleBadgeR 2.8s ease-in-out infinite;
+}
+
+/* Hero — CTA 펄스 ring (yellow halo 확장) */
+@keyframes ctaPulseRing {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+.cta-pulse-ring::before,
+.cta-pulse-ring::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(250, 204, 21, 0.35);
+  z-index: -1;
+  animation: ctaPulseRing 2.2s ease-out infinite;
+}
+.cta-pulse-ring::after {
+  animation-delay: 1.1s;
+}
+
+/* Hero — 헤드라인 highlight bar (노란 강조 막대) */
+@keyframes highlightExpand {
+  from {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  to {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+.hero-highlight-bar {
+  animation: highlightExpand 1.4s 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Hero — sparkle 트윙클 (8각형 별 깜빡) */
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.6) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(40deg);
+  }
+}
+.hero-sparkle {
+  animation: sparkle 2.8s ease-in-out infinite;
+}
+
+/* Hero — 큰 EMERGENCY 띠 좌→우 흐름 */
+@keyframes marqueeFlow {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.hero-marquee {
+  animation: marqueeFlow 18s linear infinite;
+}
+
 /* 가로 카루셀용 — 스크롤바 시각적 숨김 (접근성: tab 스크롤은 유지) */
 .hide-scrollbar {
   scrollbar-width: none;
