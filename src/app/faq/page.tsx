@@ -8,7 +8,7 @@ import { BUSINESS } from "@/lib/business";
 
 export const metadata: Metadata = {
   title: "자주 묻는 질문",
-  description: `${BUSINESS.name} 누수 탐지·시공 관련 자주 묻는 질문 모음. 비용·지역·보증·결제 안내.`,
+  description: `${BUSINESS.name} 누수 탐지·시공 관련 자주 묻는 질문 모음. 비용·지역·보증 안내.`,
   alternates: { canonical: "/faq" },
   openGraph: {
     type: "website",
