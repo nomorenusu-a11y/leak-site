@@ -54,4 +54,9 @@ export {
   ArrowUp,
   MessageSquare,
   Sparkles,
+  // About 섹션 — 3대 약속 카드
+  Truck,
+  BicepsFlexed,
+  // 블로그 외부 링크
+  BookOpen,
 } from "lucide-react";

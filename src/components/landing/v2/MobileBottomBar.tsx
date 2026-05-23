@@ -1,23 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { Phone, MessageCircle, Sparkles } from "@/components/icons";
+import { Phone, MessageCircle, Sparkles, BookOpen } from "@/components/icons";
 import { getContactInfo } from "@/lib/contact";
+import { BUSINESS } from "@/lib/business";
 import { EVENTS, trackEvent } from "@/lib/analytics";
 
 /**
- * 모바일 하단 고정 메뉴 (장인케어 톤).
+ * 모바일 하단 고정 메뉴 (장인배관 톤 — IMG_1314 참고).
  *
- * 3개 아이콘:
- *   - 견적문의 (#quote-form 스크롤)
- *   - 상담하기 (전화) — 중앙, 크게
- *   - 작업사례 (/posts)
+ * 5칸 구성 (좌→우):
+ *   1) 견적문의 (#quote-form 스크롤)
+ *   2) 작업사례 (/posts)
+ *   3) 상담하기 (전화) — 중앙, 크게 띄움
+ *   4) 블로그 (네이버 블로그 외부 링크)
+ *   5) 카톡상담 (오픈채팅 외부 링크)
  *
- * 카톡 URL이 있으면 견적문의 대신 카톡 노출.
- * 전화 없으면 상담 자리에 견적 fallback.
+ * 전화 없으면 중앙은 견적 fallback.
  */
 export function MobileBottomBar() {
-  const { phone, kakao } = getContactInfo();
+  const { phone } = getContactInfo();
 
   return (
     <div
@@ -26,37 +28,37 @@ export function MobileBottomBar() {
       className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur md:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="relative grid h-[68px] grid-cols-3 items-center text-center">
-        {/* 좌측: 견적 / 카톡 */}
-        {kakao ? (
-          <a
-            href={kakao.url}
-            target="_blank"
-            rel="noopener"
-            onClick={() => trackEvent(EVENTS.CLICK_KAKAO, { cta_label: "mobile_bar_kakao" })}
-            className="flex h-full flex-col items-center justify-center gap-0.5 text-[#3C1E1E]"
-            aria-label="카카오톡 상담"
-          >
-            <MessageCircle aria-hidden className="size-6" strokeWidth={2} />
-            <span className="text-[11px] font-bold">카톡상담</span>
-          </a>
-        ) : (
-          <Link
-            href="#quote-form"
-            onClick={() => trackEvent(EVENTS.CTA_CLICK, { cta_label: "mobile_bar_quote" })}
-            className="flex h-full flex-col items-center justify-center gap-0.5 text-slate-800"
-            aria-label="견적 문의"
-          >
-            <Sparkles aria-hidden className="size-6" strokeWidth={2} />
-            <span className="text-[11px] font-bold">견적문의</span>
-          </Link>
-        )}
+      <div className="relative grid h-[68px] grid-cols-5 items-center text-center">
+        {/* 1) 견적문의 */}
+        <Link
+          href="#quote-form"
+          onClick={() =>
+            trackEvent(EVENTS.CTA_CLICK, { cta_label: "mobile_bar_quote" })
+          }
+          className="flex h-full flex-col items-center justify-center gap-0.5 text-slate-800"
+          aria-label="견적 문의"
+        >
+          <Sparkles aria-hidden className="size-5" strokeWidth={2} />
+          <span className="text-[10px] font-bold">견적문의</span>
+        </Link>
 
-        {/* 중앙: 큰 전화 — flex-col + 명시적 pb로 텍스트 안 가림 */}
+        {/* 2) 작업사례 */}
+        <Link
+          href="/posts"
+          className="flex h-full flex-col items-center justify-center gap-0.5 text-slate-800"
+          aria-label="작업사례 보기"
+        >
+          <ThumbsUpIcon className="size-5" />
+          <span className="text-[10px] font-bold">작업사례</span>
+        </Link>
+
+        {/* 3) 중앙: 큰 전화 */}
         {phone ? (
           <a
             href={`tel:${phone.tel}`}
-            onClick={() => trackEvent(EVENTS.CLICK_CALL, { cta_label: "mobile_bar_call" })}
+            onClick={() =>
+              trackEvent(EVENTS.CLICK_CALL, { cta_label: "mobile_bar_call" })
+            }
             aria-label={`전화 ${phone.display}로 상담`}
             className="relative flex h-full flex-col items-center justify-end pb-1.5"
           >
@@ -66,7 +68,9 @@ export function MobileBottomBar() {
             >
               <Phone className="size-6" strokeWidth={2.25} aria-hidden />
             </span>
-            <span className="text-[11px] font-extrabold text-accent-600">상담하기</span>
+            <span className="text-[10px] font-extrabold text-accent-600">
+              상담하기
+            </span>
           </a>
         ) : (
           <Link
@@ -80,19 +84,41 @@ export function MobileBottomBar() {
             >
               <Sparkles className="size-6" strokeWidth={2.25} aria-hidden />
             </span>
-            <span className="text-[11px] font-extrabold text-brand-700">견적신청</span>
+            <span className="text-[10px] font-extrabold text-brand-700">
+              견적신청
+            </span>
           </Link>
         )}
 
-        {/* 우측: 작업사례 */}
-        <Link
-          href="/posts"
+        {/* 4) 블로그 */}
+        <a
+          href={BUSINESS.blogUrl}
+          target="_blank"
+          rel="noopener"
+          onClick={() =>
+            trackEvent(EVENTS.CTA_CLICK, { cta_label: "mobile_bar_blog" })
+          }
           className="flex h-full flex-col items-center justify-center gap-0.5 text-slate-800"
-          aria-label="작업사례 보기"
+          aria-label="네이버 블로그 새 창으로 열기"
         >
-          <ThumbsUpIcon className="size-6" />
-          <span className="text-[11px] font-bold">작업사례</span>
-        </Link>
+          <BookOpen aria-hidden className="size-5" strokeWidth={2} />
+          <span className="text-[10px] font-bold">블로그</span>
+        </a>
+
+        {/* 5) 카톡상담 */}
+        <a
+          href={BUSINESS.kakaoChatUrl}
+          target="_blank"
+          rel="noopener"
+          onClick={() =>
+            trackEvent(EVENTS.CLICK_KAKAO, { cta_label: "mobile_bar_kakao" })
+          }
+          className="flex h-full flex-col items-center justify-center gap-0.5 text-[#3C1E1E]"
+          aria-label="카카오톡 상담 새 창으로 열기"
+        >
+          <MessageCircle aria-hidden className="size-5" strokeWidth={2} />
+          <span className="text-[10px] font-bold">카톡상담</span>
+        </a>
       </div>
     </div>
   );

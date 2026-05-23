@@ -42,6 +42,12 @@ export const BUSINESS = {
   warranty: "1년 무상 A/S",
   pricing: "가격 정찰제",
 
+  /** 네이버 블로그 — 모바일 하단 바 및 푸터에서 사용 */
+  blogUrl: "https://blog.naver.com/leakzero",
+
+  /** 카카오톡 오픈채팅 — 모바일 하단 바 및 데스크탑 플로팅에서 사용 */
+  kakaoChatUrl: "https://open.kakao.com/o/s6CAOcwi",
+
   /** 사업자 정보 (Phase 3에서 privacy/terms 페이지에서도 사용). 빈 값이면 표기 영역 자체 미렌더. */
   legalName: LEGAL_NAME,
   ownerName: OWNER,
