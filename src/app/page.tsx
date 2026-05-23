@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/landing/Header";
-import { LiveBoardSection } from "@/components/landing/LiveBoardSection";
 import { Footer } from "@/components/landing/Footer";
 import { HeroV2 } from "@/components/landing/v2/HeroV2";
 import { AboutCards } from "@/components/landing/v2/AboutCards";
@@ -72,7 +71,6 @@ export default async function HomePage({
         <MasterSection />
         <TimeEmphasis />
         <ServicesList />
-        <LiveBoardSection />
         <WorksCardsSection />
         <WorksGallery />
         <EquipmentSection />
