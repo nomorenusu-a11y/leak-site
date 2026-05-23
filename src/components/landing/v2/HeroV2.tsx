@@ -283,30 +283,39 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
           ))}
         </ul>
 
-        {/* 모바일 전용 — 인물 사진 + 강조 stamp + 2 floating 배지 (lg 미만에서만 노출) */}
-        <div className="relative mx-auto mb-7 w-full max-w-sm lg:hidden">
+        {/* 모바일 전용 — 컷아웃 인물 + 라디얼 글로우 + floating 배지 (lg 미만 노출) */}
+        <div className="relative mx-auto mb-7 h-72 w-full max-w-sm lg:hidden">
+          {/* 라디얼 글로우 — 인물 뒤에서 빛이 퍼지는 듯한 효과 */}
           <div
             aria-hidden
-            className="hero-spin-ring absolute -inset-3 -z-10 rounded-[2rem]"
+            className="absolute inset-0 -z-10"
+            style={{
+              background:
+                "radial-gradient(circle at 50% 60%, rgba(253,224,71,0.55) 0%, rgba(103,232,249,0.3) 28%, rgba(0,0,0,0) 55%)",
+              filter: "blur(8px)",
+            }}
+          />
+          {/* 회전 그라데이션 원 */}
+          <div
+            aria-hidden
+            className="hero-spin-ring absolute left-1/2 top-1/2 -z-10 size-72 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-30"
             style={{
               background:
                 "conic-gradient(from 0deg, #fde047, #67e8f9, #facc15, #fde047)",
-              filter: "blur(6px)",
-              opacity: 0.55,
+              filter: "blur(12px)",
             }}
           />
-          <div className="relative overflow-hidden rounded-3xl shadow-2xl ring-4 ring-white/30">
-            <Image
-              src="/about/consult.png"
-              alt="작업복을 입고 전문 상담 중인 누수탐지 전문가"
-              width={400}
-              height={400}
-              priority
-              className="aspect-[5/3] w-full object-cover"
-            />
-          </div>
-          {/* 좌상단 ⭐4.9 배지 */}
-          <span className="hero-wobble-l absolute -left-2 -top-3 inline-flex items-center gap-1.5 rounded-2xl bg-white px-3 py-2 text-brand-700 shadow-xl ring-2 ring-white/60">
+          {/* 컷아웃 인물 — 프레임 없이 자연스럽게 떠 있는 형태 */}
+          <Image
+            src="/about/worker-cutout.png"
+            alt="누수탐지 전문 상담사"
+            width={520}
+            height={520}
+            priority
+            className="relative mx-auto h-full w-auto object-contain drop-shadow-[0_18px_28px_rgba(8,32,80,0.45)]"
+          />
+          {/* 좌상단 ⭐4.9 */}
+          <span className="hero-wobble-l absolute left-0 top-2 inline-flex items-center gap-1.5 rounded-2xl bg-white px-3 py-2 text-brand-700 shadow-xl ring-2 ring-white/60">
             <Star
               aria-hidden
               className="size-4 fill-amber-400 text-amber-400"
@@ -317,13 +326,13 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
               <span className="block text-[10px] font-bold">고객 만족</span>
             </span>
           </span>
-          {/* 우상단 100% 배지 */}
-          <span className="hero-wobble-r absolute -right-2 -top-3 inline-flex items-center gap-1.5 rounded-2xl bg-highlight-400 px-3 py-2 text-brand-900 shadow-xl ring-2 ring-white/60">
+          {/* 우상단 100% */}
+          <span className="hero-wobble-r absolute right-0 top-2 inline-flex items-center gap-1.5 rounded-2xl bg-highlight-400 px-3 py-2 text-brand-900 shadow-xl ring-2 ring-white/60">
             <span className="text-lg font-black leading-none">100%</span>
             <span className="text-[10px] font-extrabold">해결 약속</span>
           </span>
-          {/* 좌하단 30분 배지 */}
-          <span className="hero-wobble-l absolute -bottom-3 -left-2 inline-flex items-center gap-1.5 rounded-2xl bg-rose-500 px-3 py-2 text-white shadow-xl ring-2 ring-white/60">
+          {/* 좌하단 30분 */}
+          <span className="hero-wobble-l absolute bottom-2 left-0 inline-flex items-center gap-1.5 rounded-2xl bg-rose-500 px-3 py-2 text-white shadow-xl ring-2 ring-white/60">
             <Zap aria-hidden className="size-3.5" strokeWidth={2.5} />
             <span className="text-[11px] font-extrabold leading-tight">
               30분 내
@@ -331,8 +340,8 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
               현장 도착
             </span>
           </span>
-          {/* 우하단 1년 A/S 배지 */}
-          <span className="hero-wobble-r absolute -bottom-3 -right-2 inline-flex items-center gap-1.5 rounded-2xl bg-white px-3 py-2 text-brand-700 shadow-xl ring-2 ring-white/60">
+          {/* 우하단 1년 A/S */}
+          <span className="hero-wobble-r absolute bottom-2 right-0 inline-flex items-center gap-1.5 rounded-2xl bg-white px-3 py-2 text-brand-700 shadow-xl ring-2 ring-white/60">
             <ShieldCheck
               aria-hidden
               className="size-4 text-brand-600"
@@ -439,30 +448,42 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
             </div>
           </div>
 
-          {/* 우측 — 작업자 인물 + 4 floating 배지 */}
-          <div className="relative hidden lg:block">
-            {/* conic gradient spinning ring */}
+          {/* 우측 — 컷아웃 인물 + 라디얼 글로우 + 4 floating 배지 */}
+          <div className="relative hidden h-[32rem] lg:block">
+            {/* 라디얼 글로우 — 인물 뒤 빛의 후광 */}
             <div
               aria-hidden
-              className="hero-spin-ring absolute -inset-5 -z-10 rounded-[3rem]"
+              className="absolute inset-0 -z-10"
+              style={{
+                background:
+                  "radial-gradient(circle at 50% 55%, rgba(253,224,71,0.55) 0%, rgba(103,232,249,0.3) 30%, rgba(0,0,0,0) 60%)",
+                filter: "blur(12px)",
+              }}
+            />
+            {/* 회전 그라데이션 원 — 후광 강화 */}
+            <div
+              aria-hidden
+              className="hero-spin-ring absolute left-1/2 top-1/2 -z-10 size-[26rem] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-35"
               style={{
                 background:
                   "conic-gradient(from 0deg, #fde047, #67e8f9, #facc15, #fde047)",
-                filter: "blur(8px)",
-                opacity: 0.65,
+                filter: "blur(16px)",
               }}
             />
-            {/* 인물 프레임 */}
-            <div className="relative overflow-hidden rounded-3xl shadow-2xl ring-4 ring-white/30">
-              <Image
-                src="/about/consult.png"
-                alt="작업복을 입고 전문 상담 중인 누수탐지 전문가"
-                width={520}
-                height={520}
-                priority
-                className="aspect-square w-full object-cover"
-              />
-            </div>
+            {/* 바닥 그림자 — 인물이 떠있지 않게 */}
+            <div
+              aria-hidden
+              className="absolute bottom-4 left-1/2 h-6 w-3/4 -translate-x-1/2 rounded-full bg-black/30 blur-xl"
+            />
+            {/* 컷아웃 인물 */}
+            <Image
+              src="/about/worker-cutout.png"
+              alt="누수탐지 전문 상담사"
+              width={620}
+              height={620}
+              priority
+              className="relative mx-auto h-full w-auto object-contain drop-shadow-[0_24px_36px_rgba(8,32,80,0.55)]"
+            />
             {/* 4 floating 배지 */}
             {floatingBadges.map((b, i) => (
               <span
@@ -472,6 +493,20 @@ export async function HeroV2({ cityLabel }: { cityLabel: string }) {
                 {b.content}
               </span>
             ))}
+            {/* 말풍선 — "지금 바로 전화하세요!" */}
+            <div className="absolute right-6 top-1/2 -translate-y-12 rotate-3 rounded-2xl bg-white px-4 py-3 shadow-2xl ring-2 ring-highlight-300/70">
+              <p className="whitespace-nowrap text-xs font-black uppercase tracking-wider text-brand-600">
+                지금 바로
+              </p>
+              <p className="whitespace-nowrap text-base font-black tracking-tight text-brand-900">
+                전화하세요!
+              </p>
+              {/* 말풍선 꼬리 */}
+              <span
+                aria-hidden
+                className="absolute -bottom-2 left-6 size-4 rotate-45 bg-white shadow-[2px_2px_0_rgba(253,224,71,0.7)]"
+              />
+            </div>
             {/* 하단 안내 칩 */}
             <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-brand-900 px-4 py-2 text-center shadow-xl ring-2 ring-highlight-300/60">
               <p className="whitespace-nowrap text-[11px] font-extrabold uppercase tracking-wider text-highlight-300">
