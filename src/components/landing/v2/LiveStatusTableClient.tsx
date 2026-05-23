@@ -43,8 +43,10 @@ export function LiveStatusTableClient({
     initial.slice(0, rows),
   );
   const [justAddedId, setJustAddedId] = useState<string | null>(null);
+  const [changedRowId, setChangedRowId] = useState<string | null>(null);
   const [paused, setPaused] = useState(false);
 
+  // Effect 1: 새 row 추가 (intervalMs 간격)
   useEffect(() => {
     if (paused || pool.current.length === 0) return;
     const t = setInterval(() => {
@@ -59,24 +61,36 @@ export function LiveStatusTableClient({
         time_variant: "relative",
       };
       setJustAddedId(fresh.id);
-      setVisible((prev) => {
-        const next = [fresh, ...prev].slice(0, rows);
-        const advanceCount = 1 + Math.floor(Math.random() * 2);
-        for (let j = 0; j < advanceCount; j++) {
-          const ri = 1 + Math.floor(Math.random() * (next.length - 1));
-          if (ri < next.length && next[ri].status !== "done") {
-            next[ri] = {
-              ...next[ri],
-              status: advanceStatus(next[ri].status),
-            };
-          }
-        }
-        return [...next];
-      });
+      setVisible((prev) => [fresh, ...prev].slice(0, rows));
       setTimeout(() => setJustAddedId(null), 2000);
     }, intervalMs);
     return () => clearInterval(t);
   }, [paused, intervalMs, rows]);
+
+  // Effect 2: 기존 row 상태 전진 (1.5초 간격) — 활발한 작업 진행 느낌
+  useEffect(() => {
+    if (paused) return;
+    const t = setInterval(() => {
+      let picked: string | null = null;
+      setVisible((prev) => {
+        const candidates = prev.filter((item) => item.status !== "done");
+        if (candidates.length === 0) return prev;
+        const pick =
+          candidates[Math.floor(Math.random() * candidates.length)];
+        picked = pick.id;
+        return prev.map((item) =>
+          item.id === pick.id
+            ? { ...item, status: advanceStatus(item.status) }
+            : item,
+        );
+      });
+      if (picked) {
+        setChangedRowId(picked);
+        setTimeout(() => setChangedRowId(null), 900);
+      }
+    }, 1500);
+    return () => clearInterval(t);
+  }, [paused]);
 
   return (
     <div
@@ -96,17 +110,19 @@ export function LiveStatusTableClient({
         </span>
       </div>
 
-      {/* 행 — flex-1로 CTA 직전까지 채움 */}
+      {/* 행 */}
       <ul
         aria-live="polite"
         className="flex flex-1 flex-col divide-y divide-slate-100"
       >
         {visible.map((item) => {
           const isNew = item.id === justAddedId;
+          const isChanged = item.id === changedRowId;
           return (
             <li
               key={item.id}
               data-just-added={isNew ? "true" : "false"}
+              data-status-changed={isChanged ? "true" : "false"}
               className="flex flex-1 items-center"
             >
               <div className="grid w-full grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 px-4 py-1 sm:grid-cols-[6.5rem_7rem_1fr_1fr_7rem] sm:px-5">

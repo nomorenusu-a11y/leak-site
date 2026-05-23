@@ -61,7 +61,7 @@ export function HeroCarouselClient({ slides, intervalMs = 2800 }: Props) {
               fill
               priority={i === 0}
               sizes="(min-width: 1024px) 60vw, 100vw"
-              className="object-cover"
+              className="object-cover object-top sm:object-center"
             />
             <div
               aria-hidden

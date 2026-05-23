@@ -76,7 +76,7 @@ export async function HeroV2(_props: { cityLabel?: string }) {
 
       <div className="grid grid-cols-1 items-stretch lg:min-h-[680px] lg:grid-cols-[6fr_4fr] xl:min-h-[740px]">
         {/* 좌측 — 캐러셀 */}
-        <div className="relative h-[56vw] max-h-[400px] overflow-hidden bg-slate-900 sm:h-[50vw] sm:max-h-[440px] lg:h-auto lg:max-h-none">
+        <div className="relative h-[70vw] max-h-[440px] overflow-hidden bg-slate-900 sm:h-[50vw] sm:max-h-[440px] lg:h-auto lg:max-h-none">
           <HeroCarouselClient slides={HERO_SLIDES} intervalMs={2800} />
         </div>
 

@@ -42,7 +42,7 @@ const VARIANTS: Record<Variant, Variants> = {
  * 스크롤 진입 시 한 번 트리거되는 모션 wrapper.
  *
  * - prefers-reduced-motion 자동 비활성
- * - viewport once: true (한 번만 재생)
+ * - viewport once: false (한 번만 재생)
  * - server component 안에서 wrap 가능 (children은 RSC OK)
  */
 export function Reveal({
@@ -60,7 +60,7 @@ export function Reveal({
       variants={VARIANTS[variant]}
       initial="hidden"
       whileInView="show"
-      viewport={{ once: true, margin: `0px 0px ${threshold}px 0px` }}
+      viewport={{ once: false, margin: `0px 0px ${threshold}px 0px` }}
       transition={{ duration, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
@@ -90,7 +90,7 @@ export function RevealGroup({
     <motion.div
       initial="hidden"
       whileInView="show"
-      viewport={{ once: true, margin: `0px 0px ${threshold}px 0px` }}
+      viewport={{ once: false, margin: `0px 0px ${threshold}px 0px` }}
       variants={{
         hidden: {},
         show: { transition: { staggerChildren: stagger } },
