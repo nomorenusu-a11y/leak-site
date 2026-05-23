@@ -4,70 +4,88 @@ import { Logo } from "@/components/ui/Logo";
 import { BUSINESS } from "@/lib/business";
 
 /**
- * 푸터. 사업자 정보는 BUSINESS에서 가져오며, 빈 값이면 해당 줄 자체를 미렌더.
- * "추후 입력" 같은 placeholder 텍스트 절대 노출하지 않음.
+ * 푸터 — IMG_1320 레퍼런스 (NJ 누수장인 스타일).
+ *
+ * 다크 배경 + 가운데 정렬 큰 로고 → 메뉴 라인 → 사업자 정보 한 줄 → 주소 한 줄 → 카피라이트.
+ * 빈 사업자 정보 항목은 자동 미렌더.
  */
 export function Footer() {
-  const lines: { label: string; value: string }[] = [];
-  if (BUSINESS.legalName) lines.push({ label: "법인명", value: BUSINESS.legalName });
-  if (BUSINESS.ownerName) lines.push({ label: "대표", value: BUSINESS.ownerName });
+  // 사업자 정보 inline 한 줄 — 빈 값은 제외
+  const bizSegments: string[] = [];
+  if (BUSINESS.legalName) bizSegments.push(BUSINESS.legalName);
+  if (BUSINESS.ownerName) bizSegments.push(`대표자: ${BUSINESS.ownerName}`);
+  if (BUSINESS.contact.phone)
+    bizSegments.push(`전화: ${BUSINESS.contact.phone.display}`);
   if (BUSINESS.businessRegNo)
-    lines.push({ label: "사업자등록번호", value: BUSINESS.businessRegNo });
-  if (BUSINESS.address) lines.push({ label: "주소", value: BUSINESS.address });
-  if (BUSINESS.bizType) lines.push({ label: "업태", value: BUSINESS.bizType });
-  if (BUSINESS.bizCategory)
-    lines.push({ label: "종목", value: BUSINESS.bizCategory });
-  if (BUSINESS.email) lines.push({ label: "이메일", value: BUSINESS.email });
+    bizSegments.push(`사업자정보: ${BUSINESS.businessRegNo}`);
+  if (BUSINESS.email) bizSegments.push(`이메일: ${BUSINESS.email}`);
+
+  const menu = [
+    { href: "/", label: "홈" },
+    { href: "/posts", label: "시공 사례" },
+    { href: "/#quote-form", label: "견적 신청" },
+    { href: "/privacy", label: "개인정보처리방침" },
+    { href: "/terms", label: "이용약관" },
+  ];
 
   return (
-    <footer className="border-t border-slate-200 bg-slate-900 text-slate-300">
-      <Container className="py-10">
-        <p className="mb-6 rounded-lg bg-slate-800/60 px-4 py-2 text-xs text-slate-400">
-          * 게시된 출동 시간·시공 결과는 작업환경과 상황에 따라 달라질 수 있습니다.
-        </p>
-        <div className="grid gap-6 sm:grid-cols-3">
-          {/* 1. 브랜드 + 짧은 한 줄 */}
-          <div>
-            <Logo size="sm" textClass="text-white" />
-            <p className="mt-3 text-sm text-slate-400">
-              누수 탐지·시공 · {BUSINESS.serviceArea} · 24시간 상담
-            </p>
-            <p className="mt-1 text-xs text-slate-500">
-              {BUSINESS.warranty} · {BUSINESS.pricing}
-            </p>
-          </div>
-
-          {/* 2. 메뉴 */}
-          <nav aria-label="푸터 메뉴" className="text-sm">
-            <p className="mb-2 font-semibold text-slate-200">메뉴</p>
-            <ul className="space-y-1.5 text-slate-400">
-              <li><Link href="/" className="hover:text-white">홈</Link></li>
-              <li><Link href="/posts" className="hover:text-white">시공 사례</Link></li>
-              <li><Link href="/#quote-form" className="hover:text-white">견적 신청</Link></li>
-              <li><Link href="/privacy" className="hover:text-white">개인정보처리방침</Link></li>
-              <li><Link href="/terms" className="hover:text-white">이용약관</Link></li>
-            </ul>
-          </nav>
-
-          {/* 3. 사업자 정보 */}
-          <div className="text-sm text-slate-400">
-            <p className="mb-2 font-semibold text-slate-200">사업자 정보</p>
-            {lines.length === 0 ? (
-              <p className="text-xs text-slate-500">사업자 정보는 운영 시작 후 등록됩니다.</p>
-            ) : (
-              <dl className="space-y-1">
-                {lines.map((l) => (
-                  <div key={l.label} className="flex gap-2">
-                    <dt className="shrink-0 text-slate-500">{l.label}</dt>
-                    <dd className="text-slate-300">{l.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            )}
-          </div>
+    <footer className="border-t border-slate-800 bg-slate-950 text-slate-300">
+      <Container className="py-12 sm:py-16">
+        {/* 1) 로고 중앙 큰 사이즈 */}
+        <div className="flex justify-center">
+          <Logo size="lg" textClass="text-white" />
         </div>
-        <p className="mt-8 border-t border-slate-800 pt-5 text-xs text-slate-500">
-          © {new Date().getFullYear()} {BUSINESS.name}. All rights reserved.
+
+        {/* 2) 메뉴 — 가로 한 줄, 구분자 | */}
+        <nav
+          aria-label="푸터 메뉴"
+          className="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm text-slate-200 sm:gap-x-6"
+        >
+          {menu.map((m, i) => (
+            <span key={m.href} className="inline-flex items-center gap-x-3 sm:gap-x-6">
+              <Link href={m.href} className="font-semibold hover:text-white">
+                {m.label}
+              </Link>
+              {i < menu.length - 1 && (
+                <span aria-hidden className="text-slate-600">
+                  |
+                </span>
+              )}
+            </span>
+          ))}
+        </nav>
+
+        {/* 3) 사업자 정보 — 한 줄, 구분자 | */}
+        {bizSegments.length > 0 && (
+          <p className="mt-10 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-slate-400 sm:text-sm">
+            {bizSegments.map((seg, i) => (
+              <span key={seg} className="inline-flex items-center gap-x-3">
+                <span>{seg}</span>
+                {i < bizSegments.length - 1 && (
+                  <span aria-hidden className="text-slate-600">
+                    |
+                  </span>
+                )}
+              </span>
+            ))}
+          </p>
+        )}
+
+        {/* 4) 주소 — 단일 행 */}
+        {BUSINESS.address && (
+          <p className="mt-2 text-center text-xs text-slate-400 sm:text-sm">
+            주소: {BUSINESS.address}
+          </p>
+        )}
+
+        {/* 5) 카피라이트 */}
+        <p className="mt-6 text-center text-xs text-slate-500">
+          COPYRIGHT © {BUSINESS.name}. ALL RIGHTS RESERVED.
+        </p>
+
+        {/* 디스클레이머 — 작게, 하단 */}
+        <p className="mx-auto mt-8 max-w-2xl text-center text-[11px] text-slate-600">
+          * 게시된 출동 시간·시공 결과는 작업환경과 상황에 따라 달라질 수 있습니다.
         </p>
       </Container>
     </footer>

@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Phone, MessageCircle, Sparkles, BookOpen } from "@/components/icons";
+import { Phone, Sparkles } from "@/components/icons";
+import { NaverLogo, KakaoLogo } from "@/components/icons/BrandLogos";
 import { getContactInfo } from "@/lib/contact";
 import { BUSINESS } from "@/lib/business";
 import { EVENTS, trackEvent } from "@/lib/analytics";
@@ -9,14 +10,12 @@ import { EVENTS, trackEvent } from "@/lib/analytics";
 /**
  * 모바일 하단 고정 메뉴 (장인배관 톤 — IMG_1314 참고).
  *
- * 5칸 구성 (좌→우):
- *   1) 견적문의 (#quote-form 스크롤)
- *   2) 작업사례 (/posts)
- *   3) 상담하기 (전화) — 중앙, 크게 띄움
- *   4) 블로그 (네이버 블로그 외부 링크)
- *   5) 카톡상담 (오픈채팅 외부 링크)
- *
- * 전화 없으면 중앙은 견적 fallback.
+ * 5칸 + 각 아이콘 브랜드 컬러:
+ *   1) 견적문의 (brand-600 파랑)
+ *   2) 작업사례 (emerald-500 초록 thumbs up)
+ *   3) 상담하기 (accent 주황 중앙 큰 원, 전화)
+ *   4) 블로그 (네이버 그린 로고)
+ *   5) 카톡상담 (카카오 옐로우 로고)
  */
 export function MobileBottomBar() {
   const { phone } = getContactInfo();
@@ -38,7 +37,11 @@ export function MobileBottomBar() {
           className="flex h-full flex-col items-center justify-center gap-0.5 text-slate-800"
           aria-label="견적 문의"
         >
-          <Sparkles aria-hidden className="size-5" strokeWidth={2} />
+          <Sparkles
+            aria-hidden
+            className="size-6 text-brand-600"
+            strokeWidth={2.25}
+          />
           <span className="text-[10px] font-bold">견적문의</span>
         </Link>
 
@@ -48,7 +51,7 @@ export function MobileBottomBar() {
           className="flex h-full flex-col items-center justify-center gap-0.5 text-slate-800"
           aria-label="작업사례 보기"
         >
-          <ThumbsUpIcon className="size-5" />
+          <ThumbsUpIcon className="size-6 text-emerald-500" />
           <span className="text-[10px] font-bold">작업사례</span>
         </Link>
 
@@ -90,7 +93,7 @@ export function MobileBottomBar() {
           </Link>
         )}
 
-        {/* 4) 블로그 */}
+        {/* 4) 블로그 — 네이버 로고 */}
         <a
           href={BUSINESS.blogUrl}
           target="_blank"
@@ -101,11 +104,11 @@ export function MobileBottomBar() {
           className="flex h-full flex-col items-center justify-center gap-0.5 text-slate-800"
           aria-label="네이버 블로그 새 창으로 열기"
         >
-          <BookOpen aria-hidden className="size-5" strokeWidth={2} />
+          <NaverLogo aria-hidden className="size-6" />
           <span className="text-[10px] font-bold">블로그</span>
         </a>
 
-        {/* 5) 카톡상담 */}
+        {/* 5) 카톡상담 — 카카오 로고 */}
         <a
           href={BUSINESS.kakaoChatUrl}
           target="_blank"
@@ -113,10 +116,10 @@ export function MobileBottomBar() {
           onClick={() =>
             trackEvent(EVENTS.CLICK_KAKAO, { cta_label: "mobile_bar_kakao" })
           }
-          className="flex h-full flex-col items-center justify-center gap-0.5 text-[#3C1E1E]"
+          className="flex h-full flex-col items-center justify-center gap-0.5 text-slate-800"
           aria-label="카카오톡 상담 새 창으로 열기"
         >
-          <MessageCircle aria-hidden className="size-5" strokeWidth={2} />
+          <KakaoLogo aria-hidden className="size-6" />
           <span className="text-[10px] font-bold">카톡상담</span>
         </a>
       </div>
@@ -131,7 +134,7 @@ function ThumbsUpIcon({ className = "" }: { className?: string }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={2}
+      strokeWidth={2.25}
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}

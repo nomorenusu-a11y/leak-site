@@ -1,21 +1,14 @@
 import { Container } from "@/components/ui/Container";
 import { Clock, ShieldCheck, Phone } from "@/components/icons";
-import { BUSINESS } from "@/lib/business";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 
 /**
- * "30분 이내 출동!" 같은 시간 강조 섹션 (장인케어 IMG_8 톤).
+ * "24시간 출동 가능" 시간 강조 섹션 (IMG_1316 레퍼런스).
  *
- * 측정 불가능한 가짜 숫자(3분 10초 등) 대신, 사실 기반 표현만 사용:
- *   - {BUSINESS.responseTime} 출동 (예: 30분 이내)
- *   - 24시간 365일 상담
- *   - 1년 무상 A/S 보장
+ * 헤딩 → 거대한 브랜드 컬러 헤드라인 → 서브 카피 → 3카드 → 푸터 한 줄.
+ * 카드: Phone(간편) / Clock(24·365) / Shield(1년) — 아이콘 위 / big 숫자 / 캡션.
  */
 export function TimeEmphasis() {
-  // 환경변수 값이 "30분 이내" 같은 시간이면 끝에 "출동!"을 붙이고,
-  // 이미 "24시간 출동 가능" 등 동사를 포함하면 그대로 사용. 어색한 중복 방지.
-  const rt = BUSINESS.responseTime;
-  const headline = /출동|상담|가능/.test(rt) ? rt : `${rt} 출동!`;
   return (
     <section className="bg-slate-50 py-16 md:py-24">
       <Container>
@@ -23,10 +16,10 @@ export function TimeEmphasis() {
           <p className="text-sm font-bold tracking-wide text-brand-600 sm:text-base">
             누수, 아직도 고민만 하고 계신가요?
           </p>
-          <h2 className="mt-3 text-4xl font-black leading-tight tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-            <span className="text-brand-600">{headline}</span>
+          <h2 className="mt-3 text-5xl font-black leading-tight tracking-tight text-brand-600 sm:text-6xl lg:text-7xl">
+            24시간 출동 가능
           </h2>
-          <p className="mt-5 text-base text-slate-700 sm:text-lg">
+          <p className="mt-6 text-base text-slate-700 sm:text-lg">
             전화 한 통이면 충분합니다. 사진과 함께 증상을 보내주시면,
             <br className="hidden sm:inline" />
             현장 도착 전부터 진단 방향을 잡아 빠르게 해결해드립니다.
@@ -35,7 +28,7 @@ export function TimeEmphasis() {
 
         <RevealGroup
           stagger={0.12}
-          className="mx-auto mt-10 grid max-w-2xl gap-3 sm:grid-cols-3"
+          className="mx-auto mt-12 grid max-w-3xl gap-4 sm:grid-cols-3"
         >
           <RevealItem variant="up">
             <Card Icon={Phone} big="간편" caption="전화 또는 사진 문의 1회" />
@@ -49,7 +42,7 @@ export function TimeEmphasis() {
         </RevealGroup>
 
         <Reveal variant="up" delay={0.1}>
-          <p className="mt-8 text-center text-base font-semibold text-slate-900 sm:text-lg">
+          <p className="mt-10 text-center text-base font-bold text-slate-900 sm:text-lg">
             맡겨주시면 책임지고 해결해드립니다.
           </p>
         </Reveal>
@@ -68,12 +61,16 @@ function Card({
   caption: string;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-5 shadow-sm">
-      <Icon aria-hidden className="mx-auto size-7 text-brand-600" strokeWidth={2} />
-      <div className="mt-2 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
+    <div className="rounded-2xl bg-white px-5 py-7 text-left shadow-md sm:px-6 sm:py-8">
+      <Icon
+        aria-hidden
+        className="size-7 text-brand-600 sm:size-8"
+        strokeWidth={1.75}
+      />
+      <div className="mt-4 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
         {big}
       </div>
-      <div className="mt-1 text-xs text-slate-600 sm:text-sm">{caption}</div>
+      <div className="mt-2 text-xs text-slate-600 sm:text-sm">{caption}</div>
     </div>
   );
 }

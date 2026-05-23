@@ -17,7 +17,9 @@ const EXPERIENCE = process.env.NEXT_PUBLIC_EXPERIENCE?.trim() || "오랜 경력�
 const LEGAL_NAME = process.env.NEXT_PUBLIC_BUSINESS_LEGAL_NAME?.trim() || undefined;
 const OWNER = process.env.NEXT_PUBLIC_BUSINESS_OWNER?.trim() || undefined;
 const REG_NO = process.env.NEXT_PUBLIC_BUSINESS_REG_NO?.trim() || undefined;
-const ADDRESS = process.env.NEXT_PUBLIC_BUSINESS_ADDRESS?.trim() || undefined;
+const ADDRESS =
+  process.env.NEXT_PUBLIC_BUSINESS_ADDRESS?.trim() ||
+  "서울특별시 도봉구 도봉로 104길";
 const BIZ_TYPE = process.env.NEXT_PUBLIC_BUSINESS_BIZ_TYPE?.trim() || undefined;
 const BIZ_CATEGORY = process.env.NEXT_PUBLIC_BUSINESS_BIZ_CATEGORY?.trim() || undefined;
 const EMAIL = process.env.NEXT_PUBLIC_BUSINESS_EMAIL?.trim() || undefined;

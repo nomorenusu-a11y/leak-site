@@ -43,8 +43,8 @@ export async function LiveBoardSection() {
               지금 들어오는 신청과 진행 상태입니다.
             </p>
           </div>
-          <span className="hidden items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 sm:inline-flex">
-            <span aria-hidden className="live-dot text-emerald-500" />
+          <span className="live-blink hidden items-center gap-1.5 rounded-full bg-rose-50 px-3 py-1 text-xs font-bold text-rose-700 sm:inline-flex">
+            <span aria-hidden className="live-dot text-rose-500" />
             LIVE
           </span>
         </Reveal>

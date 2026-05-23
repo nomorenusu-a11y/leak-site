@@ -148,6 +148,19 @@ body {
   animation: liveDotPulse 1.4s ease-in-out infinite;
 }
 
+/* LIVE 배지 깜빡임 — 0.8초 주기로 opacity 토글 */
+@keyframes liveBlink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.live-blink {
+  animation: liveBlink 0.9s ease-in-out infinite;
+}
+
 /* Mobile drawer slide-in */
 @keyframes slideInLeft {
   from {

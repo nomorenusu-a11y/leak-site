@@ -20,7 +20,7 @@ import { Field } from "@/components/ui/Field";
 import { Camera, Upload, X, Check } from "@/components/icons";
 import { EVENTS, trackEvent } from "@/lib/analytics";
 import { readStoredUtm } from "@/lib/utm";
-import { ALL_CITY_CODES, CITY_REGION_TAGS } from "@/lib/city";
+import { RegionStepPicker } from "@/components/landing/RegionStepPicker";
 
 const MAX_IMAGES = 3;
 const SYMPTOM_MAX = 500;
@@ -43,11 +43,6 @@ function formatPhone(raw: string): string {
   if (d.length === 10) return `${d.slice(0, 3)}-${d.slice(3, 6)}-${d.slice(6)}`;
   return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
 }
-
-// 지역 자동완성용 — city.ts와 동일 소스 (P2-07)
-const REGION_OPTIONS = ALL_CITY_CODES.map((c) => `서울 ${CITY_REGION_TAGS[c]}`).concat(
-  "성남시 분당구",
-);
 
 export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
   const [utmEff, setUtmEff] = useState({
@@ -254,22 +249,10 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
         </Field>
 
         <Field htmlFor="region" label="지역 (시·구)" error={fieldErrors?.region}>
-          <Input
-            id="region"
-            name="region"
-            type="text"
-            list="region-options"
-            maxLength={50}
-            placeholder="예) 서울 강남구"
+          <RegionStepPicker
             invalid={!!fieldErrors?.region}
-            aria-invalid={!!fieldErrors?.region}
-            aria-describedby={fieldErrors?.region ? "region-error" : undefined}
+            errorId={fieldErrors?.region ? "region-error" : undefined}
           />
-          <datalist id="region-options">
-            {REGION_OPTIONS.map((r) => (
-              <option key={r} value={r} />
-            ))}
-          </datalist>
         </Field>
 
         <Field htmlFor="apartment" label="상세주소" error={fieldErrors?.apartment}>
