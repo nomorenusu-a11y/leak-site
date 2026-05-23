@@ -161,7 +161,7 @@ export async function ServicesList() {
   const covers = await loadCovers();
 
   return (
-    <section id="services" className="scroll-mt-20 py-10 md:py-14">
+    <section id="services" className="scroll-mt-20 py-8 md:py-12">
       <Container>
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-bold tracking-wide text-brand-600">

@@ -93,7 +93,7 @@ export function MasterSection() {
   ];
 
   return (
-    <section className="bg-white py-10 md:py-14">
+    <section className="bg-white py-8 md:py-12">
       <Container>
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-bold tracking-wide text-brand-600">ABOUT US</p>

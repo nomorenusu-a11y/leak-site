@@ -104,7 +104,7 @@ export async function TestimonialsSection() {
   }));
 
   return (
-    <section id="reviews" className="scroll-mt-20 bg-slate-50 py-10 md:py-14">
+    <section id="reviews" className="scroll-mt-20 bg-slate-50 py-8 md:py-12">
       <Container>
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-bold tracking-wide text-brand-600">

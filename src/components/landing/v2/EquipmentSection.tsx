@@ -142,7 +142,7 @@ export function EquipmentSection() {
   return (
     <section
       id="equipment"
-      className="scroll-mt-20 bg-white py-10 md:py-14"
+      className="scroll-mt-20 bg-white py-8 md:py-12"
     >
       <Container>
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
@@ -159,7 +159,7 @@ export function EquipmentSection() {
 
         <RevealGroup
           stagger={0.08}
-          className="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
+          className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
         >
           {EQUIPMENT.map((e) => (
             <RevealItem key={e.name} variant="scale">

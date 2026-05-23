@@ -10,7 +10,7 @@ import { FaqAccordion } from "./FaqAccordion";
  */
 export function FaqSection() {
   return (
-    <section id="faq" className="scroll-mt-20 bg-white py-10 md:py-14">
+    <section id="faq" className="scroll-mt-20 bg-white py-8 md:py-12">
       <Container className="max-w-3xl">
         <Reveal variant="up" className="text-center">
           <p className="text-sm font-bold tracking-wide text-brand-600">FAQ</p>

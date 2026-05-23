@@ -60,7 +60,7 @@ const CARDS: AboutCard[] = [
  */
 export function AboutCards() {
   return (
-    <section id="about" className="scroll-mt-20 bg-slate-50 py-10 md:py-14">
+    <section id="about" className="scroll-mt-20 bg-slate-50 py-8 md:py-12">
       <Container>
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-bold tracking-wide text-brand-600">ABOUT</p>

@@ -8,6 +8,7 @@ import {
   type SubmitQuoteState,
 } from "@/app/actions/submit-quote";
 import { Phone, Check } from "@/components/icons";
+import { KakaoLogo } from "@/components/icons/BrandLogos";
 import { BUSINESS } from "@/lib/business";
 import { siteConfig } from "@/lib/env";
 import { EVENTS, trackEvent } from "@/lib/analytics";
@@ -221,7 +222,7 @@ export function HeroQuickForm() {
         {phone && (
           <a
             href={`tel:${phone.tel}`}
-            className="mt-5 block rounded-xl border-2 border-brand-200 bg-brand-50 px-3 py-3 text-center hover:bg-brand-100"
+            className="mt-4 block rounded-xl border-2 border-brand-200 bg-brand-50 px-3 py-3 text-center hover:bg-brand-100"
           >
             <span className="block text-[10px] font-extrabold uppercase tracking-widest text-brand-600">
               긴급출동 직통
@@ -232,6 +233,56 @@ export function HeroQuickForm() {
             </span>
           </a>
         )}
+
+        {/* 빈 공간 채우기 — 신뢰 배지·카톡·디스클레이머 */}
+        <div className="mt-auto pt-4">
+          {/* 3개 신뢰 배지 */}
+          <ul className="grid grid-cols-1 gap-1.5 border-t border-slate-100 pt-3 text-[11px] text-slate-700">
+            <li className="flex items-center gap-1.5">
+              <Check
+                aria-hidden
+                className="size-3.5 shrink-0 text-emerald-600"
+                strokeWidth={3}
+              />
+              <span className="font-semibold">365일 24시간 출동</span>
+            </li>
+            <li className="flex items-center gap-1.5">
+              <Check
+                aria-hidden
+                className="size-3.5 shrink-0 text-emerald-600"
+                strokeWidth={3}
+              />
+              <span className="font-semibold">무료 현장 진단</span>
+            </li>
+            <li className="flex items-center gap-1.5">
+              <Check
+                aria-hidden
+                className="size-3.5 shrink-0 text-emerald-600"
+                strokeWidth={3}
+              />
+              <span className="font-semibold">시공 후 1년 무상 A/S</span>
+            </li>
+          </ul>
+
+          {/* 카카오톡 버튼 */}
+          <a
+            href={BUSINESS.kakaoChatUrl}
+            target="_blank"
+            rel="noopener"
+            onClick={() =>
+              trackEvent(EVENTS.CLICK_KAKAO, { cta_label: "hero_form_kakao" })
+            }
+            className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#FEE500] text-sm font-extrabold text-[#3C1E1E] shadow-md transition hover:brightness-95"
+          >
+            <KakaoLogo aria-hidden className="size-5" />
+            <span>카카오톡으로 빠른 상담</span>
+          </a>
+
+          {/* 디스클레이머 */}
+          <p className="mt-2.5 text-center text-[10px] leading-relaxed text-slate-400">
+            * 상담 내용은 외부 유출 없이 안전하게 처리됩니다
+          </p>
+        </div>
       </div>
     </form>
   );
