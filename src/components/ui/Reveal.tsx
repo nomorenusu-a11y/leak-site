@@ -1,6 +1,12 @@
 "use client";
 
-import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { useRef } from "react";
+import {
+  motion,
+  useInView,
+  useReducedMotion,
+  type Variants,
+} from "framer-motion";
 import type { ReactNode } from "react";
 
 type Variant = "up" | "fade" | "scale" | "left" | "right";
@@ -10,7 +16,6 @@ type Props = {
   variant?: Variant;
   delay?: number;
   duration?: number;
-  /** intersection 진입 margin (px). 음수면 viewport 더 깊이 들어와야 트리거 */
   threshold?: number;
   className?: string;
 };
@@ -38,29 +43,29 @@ const VARIANTS: Record<Variant, Variants> = {
   },
 };
 
-/**
- * 스크롤 진입 시 한 번 트리거되는 모션 wrapper.
- *
- * - prefers-reduced-motion 자동 비활성
- * - viewport once: false (한 번만 재생)
- * - server component 안에서 wrap 가능 (children은 RSC OK)
- */
 export function Reveal({
   children,
   variant = "up",
   delay = 0,
   duration = 0.55,
-  threshold = -80,
+  threshold = -60,
   className,
 }: Props) {
   const reduce = useReducedMotion();
+  const ref = useRef(null);
+  const isInView = useInView(ref, {
+    once: false,
+    margin: `0px 0px ${threshold}px 0px`,
+  });
+
   if (reduce) return <div className={className}>{children}</div>;
+
   return (
     <motion.div
+      ref={ref}
       variants={VARIANTS[variant]}
       initial="hidden"
-      whileInView="show"
-      viewport={{ once: false, margin: `0px 0px ${threshold}px 0px` }}
+      animate={isInView ? "show" : "hidden"}
       transition={{ duration, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
@@ -69,10 +74,6 @@ export function Reveal({
   );
 }
 
-/**
- * Stagger 그룹용 — 자식들이 순차 등장.
- * 자식은 `<RevealItem>`이어야 함.
- */
 export function RevealGroup({
   children,
   stagger = 0.08,
@@ -85,12 +86,19 @@ export function RevealGroup({
   className?: string;
 }) {
   const reduce = useReducedMotion();
+  const ref = useRef(null);
+  const isInView = useInView(ref, {
+    once: false,
+    margin: `0px 0px ${threshold}px 0px`,
+  });
+
   if (reduce) return <div className={className}>{children}</div>;
+
   return (
     <motion.div
+      ref={ref}
       initial="hidden"
-      whileInView="show"
-      viewport={{ once: false, margin: `0px 0px ${threshold}px 0px` }}
+      animate={isInView ? "show" : "hidden"}
       variants={{
         hidden: {},
         show: { transition: { staggerChildren: stagger } },

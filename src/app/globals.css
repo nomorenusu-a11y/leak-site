@@ -84,9 +84,9 @@ body {
   font-family: var(--font-sans);
   font-feature-settings: "ss06"; /* nicer Pretendard digits */
   letter-spacing: -0.01em;
-  /* 가로 스크롤 방지 — 일부 컴포넌트의 absolute/translate 요소가
-     뷰포트를 살짝 넘는 경우 PC에서 우측 공백 + 좌우 스크롤이 생김 */
-  overflow-x: hidden;
+  /* 가로 스크롤 방지 — clip은 hidden과 달리 fixed 요소의 containing block을
+     바꾸지 않아 모바일 하단 바 위치가 정상 동작함 */
+  overflow-x: clip;
 }
 
 /* Live board: 새 row 진입 — 슬라이드 + yellow flash로 "방금 들어왔다" 시각 강조 */
