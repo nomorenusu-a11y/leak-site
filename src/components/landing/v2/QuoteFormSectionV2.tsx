@@ -32,7 +32,7 @@ export function QuoteFormSectionV2({
     <section
       id="quote-form"
       aria-labelledby="quote-form-title"
-      className="scroll-mt-20 bg-gradient-to-br from-brand-50 via-white to-cyan-50/40 py-16 md:py-24"
+      className="scroll-mt-20 bg-gradient-to-br from-brand-50 via-white to-cyan-50/40 py-10 md:py-14"
     >
       <Container>
         <div className="mx-auto max-w-3xl">

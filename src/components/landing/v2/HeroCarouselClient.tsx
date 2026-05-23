@@ -49,7 +49,7 @@ export function HeroCarouselClient({ slides, intervalMs = 3500 }: Props) {
       onMouseLeave={() => setPaused(false)}
       onTouchStart={() => setPaused(true)}
     >
-      <div className="relative aspect-[15/7] w-full lg:aspect-auto lg:h-full">
+      <div className="relative aspect-[12/5] w-full">
         {slides.map((s, i) => (
           <div
             key={s.src}
@@ -64,7 +64,7 @@ export function HeroCarouselClient({ slides, intervalMs = 3500 }: Props) {
               fill
               priority={i === 0}
               sizes="(min-width: 1024px) 80vw, 100vw"
-              className="object-cover"
+              className="object-contain"
             />
           </div>
         ))}

@@ -29,7 +29,7 @@ export async function LiveBoardSection() {
   if (initial.length === 0) return null;
 
   return (
-    <section id="live-board" className="scroll-mt-20 py-12 md:py-16">
+    <section id="live-board" className="scroll-mt-20 py-8 md:py-12">
       <Container>
         <Reveal
           variant="up"

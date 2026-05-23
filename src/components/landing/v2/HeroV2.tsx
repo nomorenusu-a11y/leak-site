@@ -36,6 +36,13 @@ const HERO_SLIDES = [
 export async function HeroV2(_props: { cityLabel?: string }) {
   return (
     <section className="relative isolate bg-slate-900">
+      {/* 상단 멘트 — 한 줄 띠 */}
+      <div className="bg-brand-700 px-4 py-2 text-center text-xs font-bold text-white sm:text-sm">
+        <span className="text-cyan-200">✨ 신속함과 정직함으로</span>
+        <span className="mx-1.5 text-white/40">|</span>
+        <span>수도권 365일 24시간 누수 출동 전문업체</span>
+      </div>
+
       <div className="grid grid-cols-1 items-stretch lg:grid-cols-[4fr_1fr]">
         <HeroCarouselClient slides={HERO_SLIDES} intervalMs={3500} />
         <HeroQuickForm />

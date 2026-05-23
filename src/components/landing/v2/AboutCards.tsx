@@ -60,7 +60,7 @@ const CARDS: AboutCard[] = [
  */
 export function AboutCards() {
   return (
-    <section id="about" className="scroll-mt-20 bg-slate-50 py-16 md:py-20">
+    <section id="about" className="scroll-mt-20 bg-slate-50 py-10 md:py-14">
       <Container>
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-bold tracking-wide text-brand-600">ABOUT</p>
@@ -74,7 +74,7 @@ export function AboutCards() {
 
         <RevealGroup
           stagger={0.1}
-          className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+          className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
         >
           {CARDS.map((card) => (
             <RevealItem key={card.line1} variant="up">

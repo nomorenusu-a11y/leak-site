@@ -72,7 +72,7 @@ export async function WorksGallery() {
   const allLimited = all.slice(0, PHOTOS_PER_CATEGORY);
 
   return (
-    <section className="bg-white py-16 md:py-24">
+    <section className="bg-white py-10 md:py-14">
       <Container>
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-bold tracking-wide text-brand-600">WORKS</p>

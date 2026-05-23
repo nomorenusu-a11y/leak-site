@@ -93,7 +93,7 @@ export function MasterSection() {
   ];
 
   return (
-    <section className="bg-white py-16 md:py-20">
+    <section className="bg-white py-10 md:py-14">
       <Container>
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-bold tracking-wide text-brand-600">ABOUT US</p>
@@ -113,7 +113,7 @@ export function MasterSection() {
 
         <RevealGroup
           stagger={0.1}
-          className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
         >
           {cards.map((card) => (
             <RevealItem key={card.key} variant="up">

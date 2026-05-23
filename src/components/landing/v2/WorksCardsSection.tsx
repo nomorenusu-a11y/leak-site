@@ -62,7 +62,7 @@ export async function WorksCardsSection() {
   return (
     <section
       id="works-cards"
-      className="scroll-mt-20 bg-slate-50 py-16 md:py-24"
+      className="scroll-mt-20 bg-slate-50 py-10 md:py-14"
     >
       <Container>
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
@@ -77,7 +77,7 @@ export async function WorksCardsSection() {
 
         <RevealGroup
           stagger={0.08}
-          className="mt-10 grid gap-5 sm:grid-cols-2"
+          className="mt-6 grid gap-5 sm:grid-cols-2"
         >
           {posts.map((p) => {
             const cover = p.cover_image_url ?? PLACEHOLDER;
