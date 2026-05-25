@@ -76,6 +76,7 @@ html {
   word-break: keep-all;
   /* sticky 헤더(상단 띠+메인) 클리어런스 — 앵커 점프 시 컨텐츠가 가려지지 않게 */
   scroll-padding-top: 7rem;
+  overflow-x: clip;
 }
 
 body {

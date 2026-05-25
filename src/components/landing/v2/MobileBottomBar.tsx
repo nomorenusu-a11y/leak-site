@@ -24,7 +24,7 @@ export function MobileBottomBar() {
     <div
       role="region"
       aria-label="빠른 상담"
-      className="fixed bottom-0 left-0 z-50 w-screen border-t border-slate-200 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] md:hidden"
+      className="fixed bottom-0 left-0 z-50 w-full border-t border-slate-200 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] md:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="relative grid h-[68px] grid-cols-5 items-center text-center">
