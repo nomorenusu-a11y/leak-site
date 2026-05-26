@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
 
@@ -26,7 +25,6 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const pathname = usePathname() ?? "";
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // 로그인 페이지는 사이드바 없이 자체 레이아웃만 사용
   if (pathname === "/admin/login") {
     return <>{children}</>;
   }
@@ -42,9 +40,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-slate-50">
       {/* Mobile top bar */}
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 md:hidden">
-        <Link href="/admin" className="font-extrabold text-slate-900">
+        <a href="/admin" className="font-extrabold text-slate-900">
           관리자
-        </Link>
+        </a>
         <button
           type="button"
           onClick={() => setMobileOpen((v) => !v)}
@@ -70,19 +68,19 @@ export function AdminShell({ children }: { children: ReactNode }) {
                       {it.group}
                     </div>
                   )}
-                  <Link href={it.href} className={linkClass(it.href)} onClick={() => setMobileOpen(false)}>
+                  <a href={it.href} className={linkClass(it.href)} onClick={() => setMobileOpen(false)}>
                     {it.label}
-                  </Link>
+                  </a>
                 </li>
               );
             })}
             <li>
-              <Link
+              <a
                 href="/admin/logout"
                 className="block rounded-md px-3 py-2 text-sm font-semibold text-red-300 hover:bg-slate-800"
               >
                 로그아웃
-              </Link>
+              </a>
             </li>
           </ul>
         </nav>
@@ -103,20 +101,20 @@ export function AdminShell({ children }: { children: ReactNode }) {
                       {it.group}
                     </div>
                   )}
-                  <Link href={it.href} className={linkClass(it.href)}>
+                  <a href={it.href} className={linkClass(it.href)}>
                     {it.label}
-                  </Link>
+                  </a>
                 </li>
               );
             })}
           </ul>
           <div className="mt-8 border-t border-slate-800 pt-4">
-            <Link
+            <a
               href="/admin/logout"
               className="block rounded-md px-3 py-2 text-sm font-semibold text-red-300 hover:bg-slate-800"
             >
               로그아웃
-            </Link>
+            </a>
           </div>
         </aside>
         <main className="min-w-0 flex-1 p-4 sm:p-6 md:p-8">{children}</main>
