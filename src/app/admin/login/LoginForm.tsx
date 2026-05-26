@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { loginAction, type LoginState } from "./actions";
 
 const INITIAL: LoginState = { status: "idle" };
@@ -11,6 +11,12 @@ export function LoginForm({ from }: { from?: string }) {
     INITIAL,
   );
   const error = state.status === "error" ? state.message : null;
+
+  useEffect(() => {
+    if (state.status === "success") {
+      window.location.href = state.redirectTo;
+    }
+  }, [state]);
 
   return (
     <form action={action} className="space-y-3" noValidate>
@@ -32,10 +38,10 @@ export function LoginForm({ from }: { from?: string }) {
       </div>
       <button
         type="submit"
-        disabled={pending}
+        disabled={pending || state.status === "success"}
         className="inline-flex w-full items-center justify-center rounded-lg bg-brand-600 px-4 py-2.5 text-base font-bold text-white shadow-sm transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:bg-slate-400"
       >
-        {pending ? "확인 중..." : "로그인"}
+        {state.status === "success" ? "이동 중..." : pending ? "확인 중..." : "로그인"}
       </button>
     </form>
   );

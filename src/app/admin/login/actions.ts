@@ -1,7 +1,6 @@
 "use server";
 
 import { cookies, headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { z } from "zod";
 import {
   COOKIE_NAME,
@@ -23,10 +22,11 @@ const inputSchema = z.object({
 
 export type LoginState =
   | { status: "idle" }
+  | { status: "success"; redirectTo: string }
   | { status: "error"; message: string };
 
 const RATE_LIMIT_MAX = 5;
-const RATE_LIMIT_WINDOW_MS = 5 * 60 * 1000; // 5분
+const RATE_LIMIT_WINDOW_MS = 5 * 60 * 1000;
 
 async function clientIp(): Promise<string> {
   const h = await headers();
@@ -76,7 +76,6 @@ export async function loginAction(
     return { status: "error", message: "비밀번호가 일치하지 않습니다." };
   }
 
-  // 성공
   const token = await signSession(secret);
   const jar = await cookies();
   jar.set(COOKIE_NAME, token, {
@@ -87,5 +86,5 @@ export async function loginAction(
     maxAge: SESSION_DURATION_SECONDS,
   });
 
-  redirect(parsed.data.from ?? "/admin");
+  return { status: "success", redirectTo: parsed.data.from ?? "/admin" };
 }
