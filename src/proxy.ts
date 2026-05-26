@@ -17,8 +17,7 @@ export const config = {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // /admin/login은 인증 없이 접근 가능
-  if (pathname === "/admin/login") {
+  if (pathname === "/admin/login" || pathname === "/admin/api/login") {
     return NextResponse.next();
   }
 
