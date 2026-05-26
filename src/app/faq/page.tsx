@@ -3,7 +3,7 @@ import { Container } from "@/components/ui/Container";
 import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
 import { ContactCTA } from "@/components/landing/CtaButtons";
-import { FAQ_ITEMS, faqPageJsonLd } from "@/lib/seo/faq";
+import { loadFaqItems, faqPageJsonLd } from "@/lib/seo/faq";
 import { BUSINESS } from "@/lib/business";
 
 export const metadata: Metadata = {
@@ -18,13 +18,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  const faqItems = await loadFaqItems();
+
   return (
     <>
       <script
         type="application/ld+json"
         suppressHydrationWarning
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPageJsonLd()) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPageJsonLd(faqItems)) }}
       />
       <Header showBack />
       <main className="flex-1 pb-20">
@@ -40,7 +42,7 @@ export default function FaqPage() {
         </section>
         <Container className="max-w-3xl py-12">
           <ul className="space-y-6">
-            {FAQ_ITEMS.map((item, i) => (
+            {faqItems.map((item, i) => (
               <li
                 key={item.question}
                 className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"

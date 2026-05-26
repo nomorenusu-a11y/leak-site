@@ -12,76 +12,14 @@ import {
 import { siteConfig } from "@/lib/env";
 import { createSupabaseAnonClient } from "@/lib/supabase/anon";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
+import { getServicesLeak, getServicesPipe } from "@/lib/site-content";
+import type { ServiceData } from "@/types/database";
 
 type Cat = "leak" | "toilet" | "sink" | "heating" | "frozen";
 
-type ServiceCard = {
-  /** DB 카테고리 매핑이 있으면 그 키, 없으면 null (informational 카드) */
-  cat: Cat | null;
-  ko: string;
-  desc: string;
-  Icon: React.ComponentType<{
-    className?: string;
-    strokeWidth?: number;
-    "aria-hidden"?: boolean;
-  }>;
-  /** 외부 라우트 (cat이 있으면 /posts?cat=... 자동) */
-  href?: string;
-  /** cat이 null인 informational 카드용 고정 이미지 (public 경로) */
-  image?: string;
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string; strokeWidth?: number; "aria-hidden"?: boolean }>> = {
+  Droplets, Bath, Wrench, Thermometer, Snowflake,
 };
-
-const LEAK_SERVICES: ServiceCard[] = [
-  {
-    cat: "leak",
-    ko: "누수탐지",
-    desc: "비파괴 정밀 장비로 누수 위치를 찾아 최소 시공으로 해결",
-    Icon: Droplets,
-  },
-  {
-    cat: "toilet",
-    ko: "변기 누수·교체",
-    desc: "변기 바닥 누수·물탱크 누수·부품 교체까지",
-    Icon: Bath,
-  },
-  {
-    cat: "sink",
-    ko: "싱크대 누수·막힘",
-    desc: "하부장 누수와 배수 막힘 동시 해결",
-    Icon: Wrench,
-  },
-  {
-    cat: "frozen",
-    ko: "동파·해빙",
-    desc: "겨울 한파로 얼고 파열된 배관 안전 복구",
-    Icon: Snowflake,
-  },
-];
-
-const PIPE_SERVICES: ServiceCard[] = [
-  {
-    cat: "heating",
-    ko: "난방배관 청소",
-    desc: "방마다 온도 차가 나면 슬러지 청소 시점",
-    Icon: Thermometer,
-  },
-  {
-    cat: null,
-    ko: "하수구 막힘",
-    desc: "주방·욕실 하수구·배수관 막힘 해소 (고압세척)",
-    Icon: Wrench,
-    href: "/posts",
-    image: "/about/rescue.png",
-  },
-  {
-    cat: null,
-    ko: "배관 고압세척",
-    desc: "오래된 배관·배수구 누적 이물질 강력 세척",
-    Icon: Droplets,
-    href: "/posts",
-    image: "/about/dispatch.png",
-  },
-];
 
 const ALL_CATS: Cat[] = ["leak", "toilet", "sink", "heating", "frozen"];
 
@@ -107,11 +45,12 @@ function Card({
   s,
   cover,
 }: {
-  s: ServiceCard;
+  s: ServiceData;
   cover?: string;
 }) {
   const href = s.cat ? `/posts?cat=${s.cat}` : (s.href ?? "/posts");
   const imgSrc = cover ?? s.image;
+  const Icon = ICON_MAP[s.icon] ?? Wrench;
   return (
     <article className="group h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
       <div className="relative aspect-[16/10] bg-slate-100">
@@ -125,15 +64,11 @@ function Card({
           />
         ) : (
           <div className="flex h-full items-center justify-center bg-gradient-to-br from-brand-50 to-brand-100">
-            <s.Icon
-              aria-hidden
-              className="size-16 text-brand-400"
-              strokeWidth={1.5}
-            />
+            <Icon aria-hidden className="size-16 text-brand-400" strokeWidth={1.5} />
           </div>
         )}
         <div className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 text-xs font-extrabold text-brand-700 shadow-sm">
-          <s.Icon aria-hidden className="size-3.5" strokeWidth={2.25} />
+          <Icon aria-hidden className="size-3.5" strokeWidth={2.25} />
           {s.ko}
         </div>
       </div>
@@ -158,7 +93,11 @@ function Card({
  * 각 그룹 헤더 + 카드 그리드. 카드 hover 시 살짝 떠오르는 효과.
  */
 export async function ServicesList() {
-  const covers = await loadCovers();
+  const [leakServices, pipeServices, covers] = await Promise.all([
+    getServicesLeak(),
+    getServicesPipe(),
+    loadCovers(),
+  ]);
 
   return (
     <section id="services" className="scroll-mt-20 py-8 md:py-12">
@@ -175,55 +114,39 @@ export async function ServicesList() {
           </p>
         </Reveal>
 
-        {/* 그룹 1: 누수 관련 */}
         <div className="mt-12">
           <Reveal variant="up" className="mb-5 flex items-end justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-brand-500">
-                Group 1
-              </p>
+              <p className="text-xs font-bold uppercase tracking-wider text-brand-500">Group 1</p>
               <h3 className="mt-0.5 text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
                 누수 관련 서비스
               </h3>
-              <p className="mt-1 text-sm text-slate-600">
-                아파트·빌라·주택 등 모든 건물 대응
-              </p>
+              <p className="mt-1 text-sm text-slate-600">아파트·빌라·주택 등 모든 건물 대응</p>
             </div>
           </Reveal>
-          <RevealGroup
-            stagger={0.08}
-            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
-          >
-            {LEAK_SERVICES.map((s) => (
+          <RevealGroup stagger={0.08} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {leakServices.map((s) => (
               <RevealItem key={s.ko} variant="up">
-                <Card s={s} cover={s.cat ? covers[s.cat] : undefined} />
+                <Card s={s} cover={s.cat ? covers[s.cat as Cat] : undefined} />
               </RevealItem>
             ))}
           </RevealGroup>
         </div>
 
-        {/* 그룹 2: 배관·세척 */}
         <div className="mt-9">
           <Reveal variant="up" className="mb-5 flex items-end justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-brand-500">
-                Group 2
-              </p>
+              <p className="text-xs font-bold uppercase tracking-wider text-brand-500">Group 2</p>
               <h3 className="mt-0.5 text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
                 배관·고압세척 서비스
               </h3>
-              <p className="mt-1 text-sm text-slate-600">
-                하수구·배관·배수구 막힘 및 기타 고압세척 현장 해결
-              </p>
+              <p className="mt-1 text-sm text-slate-600">하수구·배관·배수구 막힘 및 기타 고압세척 현장 해결</p>
             </div>
           </Reveal>
-          <RevealGroup
-            stagger={0.08}
-            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-          >
-            {PIPE_SERVICES.map((s) => (
+          <RevealGroup stagger={0.08} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {pipeServices.map((s) => (
               <RevealItem key={s.ko} variant="up">
-                <Card s={s} cover={s.cat ? covers[s.cat] : undefined} />
+                <Card s={s} cover={s.cat ? covers[s.cat as Cat] : undefined} />
               </RevealItem>
             ))}
           </RevealGroup>

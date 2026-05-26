@@ -1,14 +1,12 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
-import { FAQ_ITEMS } from "@/lib/seo/faq";
+import { loadFaqItems } from "@/lib/seo/faq";
 import { FaqAccordion } from "./FaqAccordion";
 
-/**
- * 메인페이지 FAQ — 풋터 직전 노출.
- * /faq 페이지와 동일한 데이터 소스(FAQ_ITEMS) 사용.
- */
-export function FaqSection() {
+export async function FaqSection() {
+  const faqItems = await loadFaqItems();
+
   return (
     <section id="faq" className="scroll-mt-20 bg-white py-8 md:py-12">
       <Container className="max-w-3xl">
@@ -23,7 +21,7 @@ export function FaqSection() {
         </Reveal>
 
         <Reveal variant="up" delay={0.1} className="mt-10">
-          <FaqAccordion items={FAQ_ITEMS} />
+          <FaqAccordion items={faqItems} />
         </Reveal>
 
         <div className="mt-8 text-center">

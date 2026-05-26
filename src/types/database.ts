@@ -119,6 +119,115 @@ export type PostImageInsert = {
 };
 
 // ============================================================
+// site_content
+// ============================================================
+
+export type SiteContent = {
+  key: string;
+  value: unknown;
+  updated_at: string;
+};
+
+export type SiteContentInsert = {
+  key: string;
+  value: unknown;
+};
+
+// ============================================================
+// 사이트 콘텐츠 JSON 타입
+// ============================================================
+
+export type HeroSlideData = {
+  src: string;
+  alt: string;
+  tag: string;
+  tagColor: string;
+  line1: string;
+  line2: string;
+  line2Color: string;
+  sub: string;
+  hashtags: string[];
+};
+
+export type HeroBannerData = {
+  highlight: string;
+  text: string;
+};
+
+export type TestimonialData = {
+  author: string;
+  region: string;
+  category: string;
+  ko: string;
+  body: string;
+};
+
+export type FaqItemData = {
+  question: string;
+  answer: string;
+};
+
+export type AboutCardData = {
+  src: string;
+  alt: string;
+  icon: string;
+  line1: string;
+  line2: string;
+};
+
+export type MasterCardData = {
+  key: string;
+  icon: string;
+  visualText?: string;
+  body: string;
+  highlight: string;
+};
+
+export type MasterSectionData = {
+  title: string;
+  subtitle: string;
+  cta: string;
+  cards: MasterCardData[];
+};
+
+export type TimeCardData = {
+  icon: string;
+  big: string;
+  caption: string;
+};
+
+export type TimeSectionData = {
+  preTitle: string;
+  title: string;
+  description: string;
+  footer: string;
+  cards: TimeCardData[];
+};
+
+export type ServiceData = {
+  cat: string | null;
+  ko: string;
+  desc: string;
+  icon: string;
+  href?: string;
+  image?: string;
+};
+
+export type EquipmentData = {
+  name: string;
+  caption: string;
+};
+
+export type DemoRequestData = {
+  id: string;
+  masked_name: string;
+  region: string;
+  metro: string;
+  category: string;
+  symptom: string;
+};
+
+// ============================================================
 // Database 제네릭 — supabase-js / @supabase/ssr 클라이언트에 주입
 // ============================================================
 
@@ -150,6 +259,12 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      site_content: {
+        Row: SiteContent;
+        Insert: SiteContentInsert;
+        Update: Partial<SiteContentInsert>;
+        Relationships: [];
       };
     };
     Views: Record<string, never>;

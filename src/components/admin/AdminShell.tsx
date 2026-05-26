@@ -4,10 +4,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
 
-const NAV: { href: string; label: string }[] = [
+type NavItem = { href: string; label: string; group?: string };
+
+const NAV: NavItem[] = [
   { href: "/admin", label: "대시보드" },
   { href: "/admin/requests", label: "견적 신청" },
   { href: "/admin/posts", label: "시공 사례" },
+  { href: "/admin/hero", label: "히어로", group: "사이트 관리" },
+  { href: "/admin/reviews", label: "후기 관리", group: "사이트 관리" },
+  { href: "/admin/faq", label: "FAQ 관리", group: "사이트 관리" },
+  { href: "/admin/content", label: "메인 콘텐츠", group: "사이트 관리" },
+  { href: "/admin/live-board", label: "실시간 현황판", group: "사이트 관리" },
 ];
 
 function isActive(pathname: string, href: string): boolean {
@@ -53,13 +60,22 @@ export function AdminShell({ children }: { children: ReactNode }) {
       {mobileOpen && (
         <nav className="border-b border-slate-800 bg-slate-900 px-4 py-3 md:hidden">
           <ul className="space-y-1">
-            {NAV.map((it) => (
-              <li key={it.href}>
-                <Link href={it.href} className={linkClass(it.href)} onClick={() => setMobileOpen(false)}>
-                  {it.label}
-                </Link>
-              </li>
-            ))}
+            {NAV.map((it, i) => {
+              const prevGroup = i > 0 ? NAV[i - 1].group : undefined;
+              const showGroup = it.group && it.group !== prevGroup;
+              return (
+                <li key={it.href}>
+                  {showGroup && (
+                    <div className="mt-3 mb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                      {it.group}
+                    </div>
+                  )}
+                  <Link href={it.href} className={linkClass(it.href)} onClick={() => setMobileOpen(false)}>
+                    {it.label}
+                  </Link>
+                </li>
+              );
+            })}
             <li>
               <Link
                 href="/admin/logout"
@@ -77,13 +93,22 @@ export function AdminShell({ children }: { children: ReactNode }) {
         <aside className="hidden w-56 shrink-0 border-r border-slate-800 bg-slate-900 p-4 md:block md:min-h-screen">
           <div className="px-3 py-2 text-base font-extrabold text-white">관리자</div>
           <ul className="mt-4 space-y-1">
-            {NAV.map((it) => (
-              <li key={it.href}>
-                <Link href={it.href} className={linkClass(it.href)}>
-                  {it.label}
-                </Link>
-              </li>
-            ))}
+            {NAV.map((it, i) => {
+              const prevGroup = i > 0 ? NAV[i - 1].group : undefined;
+              const showGroup = it.group && it.group !== prevGroup;
+              return (
+                <li key={it.href}>
+                  {showGroup && (
+                    <div className="mt-5 mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                      {it.group}
+                    </div>
+                  )}
+                  <Link href={it.href} className={linkClass(it.href)}>
+                    {it.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
           <div className="mt-8 border-t border-slate-800 pt-4">
             <Link

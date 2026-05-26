@@ -17,7 +17,7 @@ import { FloatingDesktop } from "@/components/landing/v2/FloatingDesktop";
 import { resolveCity } from "@/lib/city";
 import { landingMetadata } from "@/lib/seo/meta";
 import { localBusinessJsonLd } from "@/lib/seo/schema";
-import { faqPageJsonLd } from "@/lib/seo/faq";
+import { faqPageJsonLd, loadFaqItems } from "@/lib/seo/faq";
 
 export const revalidate = 60;
 
@@ -47,6 +47,7 @@ export default async function HomePage({
   const { code, label } = resolveCity(sp.city);
   const utmSource = firstString(sp.utm_source);
   const utmCampaign = firstString(sp.utm_campaign);
+  const faqItems = await loadFaqItems();
 
   return (
     <>
@@ -61,7 +62,7 @@ export default async function HomePage({
         type="application/ld+json"
         suppressHydrationWarning
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqPageJsonLd()),
+          __html: JSON.stringify(faqPageJsonLd(faqItems)),
         }}
       />
       <Header />

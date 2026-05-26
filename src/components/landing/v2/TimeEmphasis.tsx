@@ -1,22 +1,29 @@
 import { Container } from "@/components/ui/Container";
 import { Clock, ShieldCheck, Phone } from "@/components/icons";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
+import { getTimeSection } from "@/lib/site-content";
 
-export function TimeEmphasis() {
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string; strokeWidth?: number; "aria-hidden"?: boolean }>> = {
+  Clock, ShieldCheck, Phone,
+};
+
+export async function TimeEmphasis() {
+  const data = await getTimeSection();
+
   return (
     <section className="bg-slate-50 py-8 md:py-12">
       <Container>
         <Reveal variant="up" className="mx-auto text-center">
           <p className="text-sm font-bold tracking-wide text-brand-600 sm:text-base">
-            누수, 아직도 고민만 하고 계신가요?
+            {data.preTitle}
           </p>
           <h2 className="mt-3 text-5xl font-black leading-tight tracking-tight text-brand-600 sm:text-6xl lg:text-7xl">
-            24시간 출동 가능
+            {data.title}
           </h2>
           <p className="mt-6 text-base text-slate-700 sm:text-lg">
-            전화 한 통이면 충분합니다. 사진과 함께 증상을 보내주시면,
-            <br className="hidden sm:inline" />
-            현장 도착 전부터 진단 방향을 잡아 빠르게 해결해드립니다.
+            {data.description.split("\n").map((line, i) => (
+              <span key={i}>{i > 0 && <br className="hidden sm:inline" />}{line}</span>
+            ))}
           </p>
         </Reveal>
 
@@ -24,24 +31,19 @@ export function TimeEmphasis() {
           stagger={0.12}
           className="mt-12 grid gap-5 sm:grid-cols-3 lg:gap-6"
         >
-          <RevealItem variant="up">
-            <Card Icon={Phone} big="간편" caption="전화 또는 사진 문의 1회" />
-          </RevealItem>
-          <RevealItem variant="up">
-            <Card Icon={Clock} big="24/365" caption="휴일·새벽 상담 가능" />
-          </RevealItem>
-          <RevealItem variant="up">
-            <Card
-              Icon={ShieldCheck}
-              big="1년"
-              caption="동일 부위 무상 A/S"
-            />
-          </RevealItem>
+          {data.cards.map((card) => {
+            const Icon = ICON_MAP[card.icon] ?? Phone;
+            return (
+              <RevealItem key={card.big} variant="up">
+                <Card Icon={Icon} big={card.big} caption={card.caption} />
+              </RevealItem>
+            );
+          })}
         </RevealGroup>
 
         <Reveal variant="up" delay={0.1}>
           <p className="mt-10 text-center text-base font-bold text-slate-900 sm:text-lg">
-            맡겨주시면 책임지고 해결해드립니다.
+            {data.footer}
           </p>
         </Reveal>
       </Container>
