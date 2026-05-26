@@ -1,25 +1,18 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import { loginAction, type LoginState } from "./actions";
+import { useState } from "react";
 
-const INITIAL: LoginState = { status: "idle" };
-
-export function LoginForm({ from }: { from?: string }) {
-  const [state, action, pending] = useActionState<LoginState, FormData>(
-    loginAction,
-    INITIAL,
-  );
-  const error = state.status === "error" ? state.message : null;
-
-  useEffect(() => {
-    if (state.status === "success") {
-      window.location.href = state.redirectTo;
-    }
-  }, [state]);
+export function LoginForm({ from, error }: { from?: string; error?: string }) {
+  const [submitting, setSubmitting] = useState(false);
 
   return (
-    <form action={action} className="space-y-3" noValidate>
+    <form
+      action="/admin/api/login"
+      method="POST"
+      onSubmit={() => setSubmitting(true)}
+      className="space-y-3"
+      noValidate
+    >
       {from && <input type="hidden" name="from" defaultValue={from} />}
       <div>
         <label htmlFor="password" className="mb-1.5 block text-sm font-bold text-slate-800">
@@ -38,10 +31,10 @@ export function LoginForm({ from }: { from?: string }) {
       </div>
       <button
         type="submit"
-        disabled={pending || state.status === "success"}
+        disabled={submitting}
         className="inline-flex w-full items-center justify-center rounded-lg bg-brand-600 px-4 py-2.5 text-base font-bold text-white shadow-sm transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:bg-slate-400"
       >
-        {state.status === "success" ? "이동 중..." : pending ? "확인 중..." : "로그인"}
+        {submitting ? "확인 중..." : "로그인"}
       </button>
     </form>
   );

@@ -19,11 +19,11 @@ export default async function AdminLoginPage({
 }: {
   searchParams: Promise<Search>;
 }) {
-  // 이미 로그인됐으면 /admin으로 (또는 from으로) 즉시 이동
   const session = await readAdminSession();
   const sp = await searchParams;
   const from = firstString(sp.from);
   const fromValid = from && /^\/admin(\/[A-Za-z0-9\-_/]*)?$/.test(from) ? from : undefined;
+  const error = firstString(sp.error);
 
   if (session.ok) {
     redirect(fromValid ?? "/admin");
@@ -35,7 +35,7 @@ export default async function AdminLoginPage({
         <h1 className="text-xl font-extrabold text-slate-900">관리자 로그인</h1>
         <p className="mt-1 text-sm text-slate-600">비밀번호를 입력하세요.</p>
         <div className="mt-5">
-          <LoginForm from={fromValid} />
+          <LoginForm from={fromValid} error={error} />
         </div>
       </div>
     </main>
