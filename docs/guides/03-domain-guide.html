@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>도메인 구매 및 Vercel 연결 가이드</title>
+  <style>
+    /* ── Reset & Base ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @page {
+      size: A4;
+      margin: 20mm 18mm 24mm 18mm;
+    }
+
+    body {
+      font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', sans-serif;
+      font-size: 13.5px;
+      line-height: 1.85;
+      color: #1e293b;
+      background: #ffffff;
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 24px 28px 40px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* ── Colors ────────────────────────────────────────── */
+    :root {
+      --primary: #1e40af;
+      --primary-light: #3b82f6;
+      --primary-bg: #eff6ff;
+      --primary-border: #bfdbfe;
+      --accent: #0369a1;
+      --success: #15803d;
+      --success-bg: #f0fdf4;
+      --success-border: #bbf7d0;
+      --warning: #b45309;
+      --warning-bg: #fffbeb;
+      --warning-border: #fde68a;
+      --danger: #b91c1c;
+      --danger-bg: #fef2f2;
+      --danger-border: #fecaca;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-500: #64748b;
+      --gray-700: #334155;
+      --gray-900: #0f172a;
+    }
+
+    /* ── Cover / Title ────────────────────────────────── */
+    .cover {
+      text-align: center;
+      padding: 48px 20px 40px;
+      margin-bottom: 36px;
+      border-bottom: 3px solid var(--primary);
+    }
+
+    .cover-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .cover h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    .cover .subtitle {
+      font-size: 15px;
+      color: var(--gray-500);
+      margin-bottom: 20px;
+    }
+
+    .cover .meta {
+      display: inline-flex;
+      gap: 20px;
+      font-size: 12.5px;
+      color: var(--gray-500);
+      background: var(--gray-50);
+      padding: 8px 20px;
+      border-radius: 6px;
+    }
+
+    /* ── Table of Contents ────────────────────────────── */
+    .toc {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin-bottom: 40px;
+      page-break-after: auto;
+    }
+
+    .toc h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary-border);
+    }
+
+    .toc ol {
+      list-style: none;
+      counter-reset: toc-counter;
+    }
+
+    .toc ol li {
+      counter-increment: toc-counter;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--gray-200);
+      font-size: 13.5px;
+    }
+
+    .toc ol li:last-child { border-bottom: none; }
+
+    .toc ol li::before {
+      content: counter(toc-counter) ".";
+      display: inline-block;
+      width: 24px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .toc ol li a {
+      color: var(--gray-700);
+      text-decoration: none;
+    }
+
+    .toc ol li a:hover {
+      color: var(--primary);
+    }
+
+    /* ── Section ──────────────────────────────────────── */
+    .section {
+      margin-bottom: 36px;
+      page-break-inside: avoid;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary-border);
+    }
+
+    .section-number {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+
+    .section p {
+      margin-bottom: 12px;
+    }
+
+    /* ── Steps ────────────────────────────────────────── */
+    .steps {
+      margin: 16px 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: step-counter;
+    }
+
+    .steps > li {
+      counter-increment: step-counter;
+      position: relative;
+      padding: 14px 16px 14px 60px;
+      margin-bottom: 10px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      min-height: 48px;
+    }
+
+    .steps > li::before {
+      content: "Step " counter(step-counter);
+      position: absolute;
+      left: 12px;
+      top: 14px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      background: var(--primary-light);
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.3px;
+    }
+
+    .steps > li strong {
+      color: var(--primary);
+    }
+
+    /* ── Flow Arrow ───────────────────────────────────── */
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin: 16px 0;
+    }
+
+    .flow-item {
+      background: var(--primary-bg);
+      border: 1px solid var(--primary-border);
+      color: var(--primary);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+
+    .flow-arrow {
+      color: var(--primary-light);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    /* ── Callout Boxes ────────────────────────────────── */
+    .callout {
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 14px 0;
+      font-size: 13px;
+      line-height: 1.75;
+      display: flex;
+      gap: 10px;
+    }
+
+    .callout-icon {
+      flex-shrink: 0;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .callout-body {
+      flex: 1;
+    }
+
+    .callout-body strong {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .callout.tip {
+      background: var(--primary-bg);
+      border: 1px solid var(--primary-border);
+      color: var(--accent);
+    }
+
+    .callout.warning {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning);
+    }
+
+    .callout.danger {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger);
+    }
+
+    .callout.success {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success);
+    }
+
+    /* ── Code / Mono ──────────────────────────────────── */
+    code {
+      font-family: 'Consolas', 'SF Mono', 'Monaco', 'D2Coding', monospace;
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 12.5px;
+      color: var(--danger);
+      word-break: break-all;
+    }
+
+    .code-block {
+      background: var(--gray-900);
+      color: #e2e8f0;
+      padding: 16px 20px;
+      border-radius: 8px;
+      font-family: 'Consolas', 'SF Mono', 'Monaco', 'D2Coding', monospace;
+      font-size: 12.5px;
+      line-height: 1.9;
+      overflow-x: auto;
+      margin: 14px 0;
+    }
+
+    .code-block .comment {
+      color: #94a3b8;
+    }
+
+    .code-block .highlight {
+      color: #93c5fd;
+      font-weight: 600;
+    }
+
+    /* ── Table ────────────────────────────────────────── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 13px;
+    }
+
+    thead th {
+      background: var(--primary);
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12.5px;
+    }
+
+    thead th:first-child { border-radius: 6px 0 0 0; }
+    thead th:last-child { border-radius: 0 6px 0 0; }
+
+    tbody td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    tbody tr:nth-child(even) {
+      background: var(--gray-50);
+    }
+
+    tbody tr:last-child td:first-child { border-radius: 0 0 0 6px; }
+    tbody tr:last-child td:last-child { border-radius: 0 0 6px 0; }
+
+    /* ── Comparison Box ───────────────────────────────── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 14px 0;
+    }
+
+    .compare-card {
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .compare-card.recommended {
+      border-color: var(--primary);
+      border-width: 2px;
+      background: var(--primary-bg);
+    }
+
+    .compare-card .ext {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .compare-card .desc {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-bottom: 6px;
+    }
+
+    .compare-card .price {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .compare-card .badge {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 6px;
+    }
+
+    /* ── DNS Record Table ─────────────────────────────── */
+    .dns-table {
+      margin: 14px 0;
+    }
+
+    .dns-table table {
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    /* ── Checklist ────────────────────────────────────── */
+    .checklist {
+      list-style: none;
+      padding: 0;
+      margin: 14px 0;
+    }
+
+    .checklist li {
+      padding: 8px 0 8px 28px;
+      position: relative;
+      border-bottom: 1px dashed var(--gray-200);
+    }
+
+    .checklist li:last-child { border-bottom: none; }
+
+    .checklist li::before {
+      content: "\2610";
+      position: absolute;
+      left: 2px;
+      top: 8px;
+      font-size: 16px;
+      color: var(--primary);
+    }
+
+    /* ── Visual Diagram ───────────────────────────────── */
+    .diagram {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 18px 0;
+      text-align: center;
+    }
+
+    .diagram-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .diagram-box {
+      background: #fff;
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      min-width: 100px;
+    }
+
+    .diagram-box.highlight-box {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .diagram-connector {
+      font-size: 22px;
+      color: var(--primary-light);
+      font-weight: 700;
+    }
+
+    .diagram-label {
+      font-size: 11px;
+      color: var(--gray-500);
+      margin-top: 6px;
+    }
+
+    /* ── Separator ────────────────────────────────────── */
+    hr {
+      border: none;
+      border-top: 1px solid var(--gray-200);
+      margin: 30px 0;
+    }
+
+    /* ── Footer ───────────────────────────────────────── */
+    .footer {
+      margin-top: 48px;
+      padding-top: 16px;
+      border-top: 2px solid var(--primary);
+      text-align: center;
+      font-size: 11.5px;
+      color: var(--gray-500);
+      line-height: 1.8;
+    }
+
+    /* ── Print ────────────────────────────────────────── */
+    @media print {
+      body { padding: 0; }
+      .section { page-break-inside: avoid; }
+      .cover { page-break-after: always; }
+    }
+
+    /* ── Sub-steps ────────────────────────────────────── */
+    .sub-steps {
+      margin: 10px 0 4px 8px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .sub-steps li {
+      padding: 4px 0 4px 20px;
+      position: relative;
+      font-size: 13px;
+    }
+
+    .sub-steps li::before {
+      content: "\25B8";
+      position: absolute;
+      left: 4px;
+      color: var(--primary-light);
+      font-size: 12px;
+    }
+
+    /* ── Screenshot placeholder ────────────────────────── */
+    .screenshot {
+      background: var(--gray-100);
+      border: 2px dashed var(--gray-300);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      color: var(--gray-500);
+      font-size: 12px;
+      margin: 12px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================= -->
+  <!-- COVER                                         -->
+  <!-- ============================================= -->
+  <div class="cover">
+    <div class="cover-icon">&#127760;</div>
+    <h1>도메인 구매 &amp; Vercel 연결<br>완벽 가이드</h1>
+    <p class="subtitle">가비아(Gabia)에서 도메인을 구매하고 Vercel 사이트에 연결하는 방법</p>
+    <div class="meta">
+      <span>대상: leak-site.vercel.app</span>
+      <span>|</span>
+      <span>난이도: 초보자</span>
+      <span>|</span>
+      <span>소요시간: 약 30분</span>
+    </div>
+  </div>
+
+  <!-- ============================================= -->
+  <!-- TABLE OF CONTENTS                             -->
+  <!-- ============================================= -->
+  <div class="toc">
+    <h2>&#128366; 목차</h2>
+    <ol>
+      <li><a href="#sec1">도메인이란?</a></li>
+      <li><a href="#sec2">가비아 회원가입</a></li>
+      <li><a href="#sec3">도메인 검색 및 구매</a></li>
+      <li><a href="#sec4">Vercel에 도메인 연결</a></li>
+      <li><a href="#sec5">가비아 DNS 설정</a></li>
+      <li><a href="#sec6">SSL 인증서 (HTTPS)</a></li>
+      <li><a href="#sec7">확인 및 테스트</a></li>
+      <li><a href="#sec8">환경변수 업데이트</a></li>
+      <li><a href="#sec9">주의사항 및 문제 해결</a></li>
+    </ol>
+  </div>
+
+  <!-- ============================================= -->
+  <!-- SECTION 1: 도메인이란?                         -->
+  <!-- ============================================= -->
+  <div class="section" id="sec1">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <h2 class="section-title">도메인이란?</h2>
+    </div>
+
+    <p>
+      <strong>도메인(Domain)</strong>은 인터넷에서 웹사이트를 찾을 때 사용하는 <strong>고유한 주소</strong>입니다.
+      마치 우리가 집을 찾을 때 주소를 사용하는 것처럼, 인터넷에서도 웹사이트마다 고유한 주소가 있습니다.
+    </p>
+
+    <div class="diagram">
+      <p style="font-size: 12px; color: var(--gray-500); margin-bottom: 12px;">도메인은 복잡한 숫자 주소 대신 사람이 기억하기 쉬운 이름입니다</p>
+      <div class="diagram-row">
+        <div class="diagram-box">
+          숫자 주소 (IP)<br>
+          <code style="border: none; background: none; color: var(--primary);">76.76.21.21</code>
+        </div>
+        <div class="diagram-connector">&#10132;</div>
+        <div class="diagram-box highlight-box">
+          도메인 주소<br>
+          <span style="font-size: 14px;">nususigong.com</span>
+        </div>
+      </div>
+      <p class="diagram-label">어려운 숫자 대신 기억하기 쉬운 이름으로 접속할 수 있습니다</p>
+    </div>
+
+    <p><strong>일상에서 보는 도메인 예시:</strong></p>
+    <ul style="margin: 8px 0 16px 20px;">
+      <li><code>naver.com</code> &mdash; 네이버</li>
+      <li><code>google.com</code> &mdash; 구글</li>
+      <li><code>coupang.com</code> &mdash; 쿠팡</li>
+    </ul>
+
+    <p><strong>왜 도메인이 필요한가요?</strong></p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 28%;">이유</th>
+          <th>설명</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>&#127919; 전문성</strong></td>
+          <td>
+            <code>leak-site.vercel.app</code>보다
+            <code>nususigong.com</code>이 훨씬 전문적이고 신뢰감을 줍니다.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>&#128173; 기억하기 쉬움</strong></td>
+          <td>
+            고객이 기억하기 쉬운 짧고 간단한 주소를 사용할 수 있습니다.
+            명함이나 광고에 넣기도 좋습니다.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>&#128200; 마케팅 효과</strong></td>
+          <td>
+            자체 도메인은 브랜드 이미지를 높이고,
+            네이버/구글 검색에서도 더 유리합니다 (SEO 효과).
+          </td>
+        </tr>
+        <tr>
+          <td><strong>&#128274; 소유권</strong></td>
+          <td>
+            <code>vercel.app</code> 주소는 Vercel이 제공하는 것이므로
+            언제든 변경될 수 있지만, 내 도메인은 내가 소유합니다.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <div class="callout-icon">&#128161;</div>
+      <div class="callout-body">
+        <strong>팁</strong>
+        현재 사이트 주소 <code>leak-site.vercel.app</code>은 계속 사용 가능합니다.
+        새 도메인을 연결하면 두 주소 모두 같은 사이트로 접속됩니다.
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ============================================= -->
+  <!-- SECTION 2: 가비아 회원가입                     -->
+  <!-- ============================================= -->
+  <div class="section" id="sec2">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <h2 class="section-title">가비아 회원가입</h2>
+    </div>
+
+    <p>
+      <strong>가비아(Gabia)</strong>는 국내에서 가장 많이 사용되는 도메인 등록 업체입니다.
+      도메인을 구매하려면 먼저 가비아에 회원가입을 해야 합니다.
+    </p>
+
+    <ol class="steps">
+      <li>
+        웹 브라우저에서 <code>gabia.com</code>에 접속합니다.
+        <ul class="sub-steps">
+          <li>크롬, 엣지, 사파리 등 아무 브라우저나 사용 가능합니다.</li>
+        </ul>
+      </li>
+      <li>
+        화면 오른쪽 상단의 <strong>회원가입</strong> 버튼을 클릭합니다.
+      </li>
+      <li>
+        <strong>이용약관에 동의</strong>합니다.
+        <ul class="sub-steps">
+          <li>전체 동의를 체크하면 편리합니다.</li>
+        </ul>
+      </li>
+      <li>
+        <strong>회원 정보를 입력</strong>합니다.
+        <ul class="sub-steps">
+          <li><strong>아이디:</strong> 영문+숫자 조합으로 설정</li>
+          <li><strong>비밀번호:</strong> 영문+숫자+특수문자 조합 (8자 이상)</li>
+          <li><strong>이메일:</strong> 실제 사용하는 이메일 주소 입력 (도메인 관련 알림 수신용)</li>
+          <li><strong>연락처:</strong> 휴대폰 번호 입력</li>
+        </ul>
+      </li>
+      <li>
+        <strong>본인인증</strong>을 진행합니다.
+        <ul class="sub-steps">
+          <li>휴대폰 본인인증 또는 아이핀 인증 중 선택</li>
+          <li>휴대폰 인증이 가장 간편합니다</li>
+        </ul>
+      </li>
+      <li>
+        가입 완료! 입력한 아이디와 비밀번호로 <strong>로그인</strong>합니다.
+      </li>
+    </ol>
+
+    <div class="callout warning">
+      <div class="callout-icon">&#9888;&#65039;</div>
+      <div class="callout-body">
+        <strong>주의</strong>
+        회원가입 시 입력하는 이메일 주소는 반드시 실제 사용하는 것으로 입력하세요.
+        도메인 만료 안내, 인증 메일 등 중요한 알림이 이 이메일로 발송됩니다.
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ============================================= -->
+  <!-- SECTION 3: 도메인 검색 및 구매                 -->
+  <!-- ============================================= -->
+  <div class="section" id="sec3">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <h2 class="section-title">도메인 검색 및 구매</h2>
+    </div>
+
+    <p>
+      이제 원하는 도메인을 검색하고 구매할 차례입니다.
+      도메인은 <strong>전 세계에서 하나만 존재</strong>하기 때문에,
+      이미 다른 사람이 사용 중인 도메인은 구매할 수 없습니다.
+    </p>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 20px 0 10px;">3-1. 도메인 검색</h3>
+
+    <ol class="steps">
+      <li>
+        가비아 홈페이지 메인 화면의 <strong>도메인 검색창</strong>에 원하는 도메인 이름을 입력합니다.
+        <ul class="sub-steps">
+          <li>예시: <code>nususigong</code>, <code>유레카누수</code>, <code>eureka-nusoo</code> 등</li>
+          <li>뒤의 .com, .kr 등은 입력하지 않아도 됩니다.</li>
+        </ul>
+      </li>
+      <li>
+        <strong>검색</strong> 버튼을 클릭하면 사용 가능한 도메인 목록이 표시됩니다.
+        <ul class="sub-steps">
+          <li><span style="color: var(--success); font-weight: 600;">&#9989; 등록 가능</span> &mdash; 구매할 수 있는 도메인</li>
+          <li><span style="color: var(--danger); font-weight: 600;">&#10060; 등록 불가</span> &mdash; 이미 다른 사람이 사용 중인 도메인</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 20px 0 10px;">3-2. 도메인 종류 비교</h3>
+
+    <p>도메인 뒤에 붙는 확장자(.com, .kr 등)를 <strong>최상위 도메인(TLD)</strong>이라고 합니다. 주요 차이점은 다음과 같습니다.</p>
+
+    <div class="compare-grid">
+      <div class="compare-card recommended">
+        <div class="ext">.com</div>
+        <div class="desc">전 세계 공용<br>가장 보편적</div>
+        <div class="price">연 약 11,000 ~ 16,000원</div>
+        <div class="badge">&#11088; 추천</div>
+      </div>
+      <div class="compare-card">
+        <div class="ext">.kr</div>
+        <div class="desc">대한민국 국가 도메인<br>짧고 깔끔</div>
+        <div class="price">연 약 17,000 ~ 22,000원</div>
+      </div>
+      <div class="compare-card">
+        <div class="ext">.co.kr</div>
+        <div class="desc">대한민국 기업용<br>전통적으로 많이 사용</div>
+        <div class="price">연 약 17,000 ~ 22,000원</div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">&#128161;</div>
+      <div class="callout-body">
+        <strong>추천</strong>
+        처음이라면 <strong>.com</strong>을 추천합니다. 전 세계 어디서나 통용되고,
+        가격도 가장 저렴하며, 대부분의 사람들이 가장 익숙하게 느끼는 확장자입니다.
+      </div>
+    </div>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 20px 0 10px;">3-3. 도메인 구매 (결제)</h3>
+
+    <ol class="steps">
+      <li>
+        원하는 도메인 옆의 <strong>선택</strong> 버튼을 클릭합니다.
+      </li>
+      <li>
+        <strong>등록 기간</strong>을 선택합니다.
+        <ul class="sub-steps">
+          <li>최소 1년부터 선택 가능합니다.</li>
+          <li>1년 단위로 갱신할 수 있으므로 처음에는 <strong>1년</strong>을 추천합니다.</li>
+        </ul>
+      </li>
+      <li>
+        장바구니에 담긴 도메인을 확인하고 <strong>결제하기</strong>를 클릭합니다.
+      </li>
+      <li>
+        <strong>결제 수단</strong>을 선택합니다.
+        <ul class="sub-steps">
+          <li>신용카드 / 체크카드</li>
+          <li>무통장입금 (가상계좌)</li>
+          <li>간편결제 (카카오페이, 네이버페이 등)</li>
+        </ul>
+      </li>
+      <li>
+        결제가 완료되면 도메인이 <strong>즉시 등록</strong>됩니다.
+        등록 완료 알림이 이메일로 발송됩니다.
+      </li>
+    </ol>
+
+    <div class="callout warning">
+      <div class="callout-icon">&#9888;&#65039;</div>
+      <div class="callout-body">
+        <strong>자동갱신 설정을 꼭 해주세요!</strong>
+        도메인은 1년마다 갱신해야 합니다. 갱신하지 않으면 도메인이 만료되어
+        사이트에 접속할 수 없게 됩니다. <strong>My가비아 &gt; 도메인 관리</strong>에서
+        자동갱신을 켜두면 만료 전 자동으로 결제되어 안전합니다.
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ============================================= -->
+  <!-- SECTION 4: Vercel에 도메인 연결                -->
+  <!-- ============================================= -->
+  <div class="section" id="sec4">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <h2 class="section-title">Vercel에 도메인 연결</h2>
+    </div>
+
+    <p>
+      도메인을 구매했으면, 이제 Vercel에 "이 도메인을 사용하겠다"고 알려줘야 합니다.
+      아래 순서대로 진행하세요.
+    </p>
+
+    <div class="flow">
+      <span class="flow-item">Vercel 로그인</span>
+      <span class="flow-arrow">&#10132;</span>
+      <span class="flow-item">프로젝트 선택</span>
+      <span class="flow-arrow">&#10132;</span>
+      <span class="flow-item">Settings</span>
+      <span class="flow-arrow">&#10132;</span>
+      <span class="flow-item">Domains</span>
+      <span class="flow-arrow">&#10132;</span>
+      <span class="flow-item">도메인 입력</span>
+    </div>
+
+    <ol class="steps">
+      <li>
+        <strong><code>vercel.com</code></strong>에 접속하여 로그인합니다.
+        <ul class="sub-steps">
+          <li>GitHub 계정으로 로그인하면 됩니다.</li>
+        </ul>
+      </li>
+      <li>
+        대시보드에서 <strong>leak-site</strong> 프로젝트를 클릭합니다.
+      </li>
+      <li>
+        상단 메뉴에서 <strong>Settings</strong> 탭을 클릭합니다.
+      </li>
+      <li>
+        왼쪽 사이드바에서 <strong>Domains</strong>를 클릭합니다.
+      </li>
+      <li>
+        입력창에 구매한 도메인을 입력합니다.
+        <ul class="sub-steps">
+          <li>예: <code>nususigong.com</code></li>
+        </ul>
+        그리고 <strong>Add</strong> 버튼을 클릭합니다.
+      </li>
+      <li>
+        Vercel이 <strong>DNS 설정 안내</strong>를 보여줍니다.
+        <ul class="sub-steps">
+          <li>이 화면에 나오는 정보(A 레코드, CNAME 등)를 메모하거나 화면을 열어둡니다.</li>
+          <li>다음 섹션(가비아 DNS 설정)에서 이 정보를 사용합니다.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <div class="callout-icon">&#128161;</div>
+      <div class="callout-body">
+        <strong>www 서브도메인</strong>
+        Vercel에서 도메인을 추가하면 <code>www.nususigong.com</code>도 함께 추가할지 묻습니다.
+        <strong>"Add www.nususigong.com and redirect to nususigong.com"</strong>을 선택하면
+        www 유무 상관없이 모두 접속 가능하게 됩니다. 이 옵션을 선택하세요.
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <div class="callout-icon">&#9888;&#65039;</div>
+      <div class="callout-body">
+        <strong>아직 사이트가 연결되지 않습니다</strong>
+        이 단계까지만 하면 Vercel 측 설정은 완료되지만, 아직 가비아에서 DNS 설정을 하지 않았으므로
+        도메인으로 접속하면 오류가 뜹니다. 반드시 다음 섹션(5. 가비아 DNS 설정)을 이어서 진행하세요.
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ============================================= -->
+  <!-- SECTION 5: 가비아 DNS 설정                     -->
+  <!-- ============================================= -->
+  <div class="section" id="sec5">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <h2 class="section-title">가비아 DNS 설정</h2>
+    </div>
+
+    <p>
+      이 단계는 가비아에서 "이 도메인은 Vercel 서버로 연결해라"라고 설정하는 과정입니다.
+      <strong>DNS(Domain Name System)</strong>는 도메인 이름을 실제 서버 주소로 변환해주는 시스템입니다.
+    </p>
+
+    <div class="diagram">
+      <p style="font-size: 12px; color: var(--gray-500); margin-bottom: 12px;">DNS 설정의 원리</p>
+      <div class="diagram-row">
+        <div class="diagram-box">
+          사용자가<br><strong>nususigong.com</strong><br>입력
+        </div>
+        <div class="diagram-connector">&#10132;</div>
+        <div class="diagram-box highlight-box">
+          가비아 DNS<br><strong>어디로 보낼까?</strong>
+        </div>
+        <div class="diagram-connector">&#10132;</div>
+        <div class="diagram-box">
+          Vercel 서버<br><code style="border:none; background:none; color: var(--primary);">76.76.21.21</code>
+        </div>
+      </div>
+    </div>
+
+    <ol class="steps">
+      <li>
+        <strong><code>gabia.com</code></strong>에 로그인합니다.
+      </li>
+      <li>
+        오른쪽 상단의 <strong>My가비아</strong>를 클릭합니다.
+      </li>
+      <li>
+        <strong>도메인</strong> 섹션에서 <strong>관리</strong> 버튼을 클릭합니다.
+      </li>
+      <li>
+        구매한 도메인(예: nususigong.com) 옆의 <strong>관리</strong> 버튼을 클릭합니다.
+      </li>
+      <li>
+        <strong>DNS 관리</strong> 또는 <strong>DNS 설정</strong> 버튼을 찾아 클릭합니다.
+        <ul class="sub-steps">
+          <li>"DNS 레코드 설정" 또는 "DNS 관리 툴"이라고 표시될 수도 있습니다.</li>
+        </ul>
+      </li>
+      <li>
+        아래의 <strong>DNS 레코드 2개를 추가</strong>합니다.
+      </li>
+    </ol>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 20px 0 10px;">추가할 DNS 레코드</h3>
+
+    <div class="dns-table">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 18%;">레코드 타입</th>
+            <th style="width: 18%;">호스트/이름</th>
+            <th style="width: 40%;">값/콘텐츠</th>
+            <th>TTL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code style="color: var(--primary); border-color: var(--primary-border); background: var(--primary-bg);">A</code></td>
+            <td><code>@</code></td>
+            <td><code>76.76.21.21</code></td>
+            <td>3600 (기본값)</td>
+          </tr>
+          <tr>
+            <td><code style="color: var(--primary); border-color: var(--primary-border); background: var(--primary-bg);">CNAME</code></td>
+            <td><code>www</code></td>
+            <td><code>cname.vercel-dns.com</code></td>
+            <td>3600 (기본값)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">&#128161;</div>
+      <div class="callout-body">
+        <strong>각 항목의 의미</strong>
+        <ul style="margin: 6px 0 0 16px; padding: 0;">
+          <li><strong>A 레코드</strong>: 도메인(nususigong.com)을 Vercel 서버 IP 주소(76.76.21.21)로 연결합니다.</li>
+          <li><strong>CNAME 레코드</strong>: www.nususigong.com을 Vercel DNS 서버로 연결합니다.</li>
+          <li><strong>@</strong>: "도메인 자체"를 의미합니다 (www 없이 접속할 때).</li>
+          <li><strong>TTL</strong>: DNS 캐시 유지 시간입니다. 기본값(3600초 = 1시간)을 사용하세요.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 20px 0 10px;">DNS 레코드 추가 방법 (가비아 화면)</h3>
+
+    <ol class="steps">
+      <li>
+        DNS 관리 화면에서 <strong>레코드 추가</strong> 또는 <strong>+ 추가</strong> 버튼을 클릭합니다.
+      </li>
+      <li>
+        <strong>첫 번째 레코드 (A 레코드) 입력:</strong>
+        <ul class="sub-steps">
+          <li>타입: <code>A</code> 선택</li>
+          <li>호스트: <code>@</code> 입력</li>
+          <li>값/IP주소: <code>76.76.21.21</code> 입력</li>
+          <li>TTL: 기본값 유지</li>
+        </ul>
+      </li>
+      <li>
+        <strong>두 번째 레코드 (CNAME 레코드) 입력:</strong>
+        <ul class="sub-steps">
+          <li>타입: <code>CNAME</code> 선택</li>
+          <li>호스트: <code>www</code> 입력</li>
+          <li>값/도메인: <code>cname.vercel-dns.com</code> 입력</li>
+          <li>TTL: 기본값 유지</li>
+        </ul>
+      </li>
+      <li>
+        <strong>저장</strong> 또는 <strong>확인</strong> 버튼을 클릭합니다.
+      </li>
+    </ol>
+
+    <div class="callout success">
+      <div class="callout-icon">&#9989;</div>
+      <div class="callout-body">
+        <strong>저장 완료!</strong>
+        DNS 설정이 저장되었습니다. 이제 인터넷 전체에 이 정보가 퍼지는 데 시간이 걸립니다.
+        <strong>보통 10분 ~ 1시간</strong> 정도면 적용되지만, 최대 <strong>48시간</strong>까지 소요될 수 있습니다.
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <div class="callout-icon">&#9888;&#65039;</div>
+      <div class="callout-body">
+        <strong>기존 DNS 레코드 확인</strong>
+        만약 이미 A 레코드나 CNAME 레코드가 있다면, 기존 값을 위의 값으로 <strong>수정</strong>하세요.
+        같은 타입의 레코드가 중복되면 문제가 발생할 수 있습니다.
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ============================================= -->
+  <!-- SECTION 6: SSL 인증서                          -->
+  <!-- ============================================= -->
+  <div class="section" id="sec6">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <h2 class="section-title">SSL 인증서 (HTTPS)</h2>
+    </div>
+
+    <p>
+      <strong>SSL 인증서</strong>는 사이트와 방문자 사이의 통신을 암호화하여 보안을 강화하는 기술입니다.
+      SSL이 적용된 사이트는 주소가 <code>https://</code>로 시작하며,
+      브라우저 주소창에 <strong>자물쇠 아이콘</strong>이 표시됩니다.
+    </p>
+
+    <div class="callout success">
+      <div class="callout-icon">&#127881;</div>
+      <div class="callout-body">
+        <strong>좋은 소식: 별도 설정이 필요 없습니다!</strong>
+        Vercel은 도메인을 연결하면 <strong>자동으로 무료 SSL 인증서</strong>를 발급해줍니다.
+        별도의 구매나 설정 없이, DNS 연결이 완료되면 자동으로 HTTPS가 활성화됩니다.
+      </div>
+    </div>
+
+    <p><strong>SSL 적용 확인 방법:</strong></p>
+    <ol class="steps">
+      <li>
+        브라우저에서 <code>https://nususigong.com</code> (본인의 도메인)으로 접속합니다.
+      </li>
+      <li>
+        주소창 왼쪽에 <strong>자물쇠 아이콘 &#128274;</strong>이 표시되는지 확인합니다.
+      </li>
+      <li>
+        자물쇠 아이콘을 클릭하면 "연결이 안전합니다" 또는 "Connection is secure" 메시지가 나타납니다.
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <div class="callout-icon">&#128161;</div>
+      <div class="callout-body">
+        <strong>팁</strong>
+        SSL 인증서 발급에는 DNS 설정 완료 후 <strong>몇 분 ~ 최대 1시간</strong> 정도 소요될 수 있습니다.
+        만약 "이 사이트는 안전하지 않습니다" 경고가 뜨면, 조금 기다린 후 다시 시도하세요.
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ============================================= -->
+  <!-- SECTION 7: 확인 및 테스트                      -->
+  <!-- ============================================= -->
+  <div class="section" id="sec7">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <h2 class="section-title">확인 및 테스트</h2>
+    </div>
+
+    <p>
+      모든 설정이 완료되었습니다! 이제 도메인이 제대로 작동하는지 확인해봅시다.
+      아래 체크리스트를 하나씩 확인하세요.
+    </p>
+
+    <ul class="checklist">
+      <li>
+        <strong>도메인 접속 확인</strong><br>
+        브라우저에서 <code>nususigong.com</code> (본인의 도메인)을 입력하여 사이트가 정상적으로 표시되는지 확인합니다.
+      </li>
+      <li>
+        <strong>www 접속 확인</strong><br>
+        <code>www.nususigong.com</code>으로도 접속해봅니다. 같은 사이트가 표시되어야 합니다.
+      </li>
+      <li>
+        <strong>HTTPS 확인</strong><br>
+        주소창에 자물쇠 아이콘이 표시되고, <code>https://</code>로 시작하는지 확인합니다.
+      </li>
+      <li>
+        <strong>모바일 접속 확인</strong><br>
+        스마트폰에서도 도메인을 입력하여 사이트가 잘 보이는지 확인합니다.
+      </li>
+      <li>
+        <strong>기존 주소 확인</strong><br>
+        <code>leak-site.vercel.app</code>으로도 여전히 접속 가능한지 확인합니다.
+      </li>
+    </ul>
+
+    <div class="callout tip">
+      <div class="callout-icon">&#128161;</div>
+      <div class="callout-body">
+        <strong>Vercel 대시보드에서 상태 확인</strong>
+        Vercel 대시보드 &gt; 프로젝트 &gt; Settings &gt; Domains에서 도메인 상태를 확인할 수 있습니다.
+        <ul style="margin: 6px 0 0 16px;">
+          <li><span style="color: var(--success); font-weight: 600;">&#9679; Valid Configuration</span> &mdash; 정상 연결 완료</li>
+          <li><span style="color: var(--warning); font-weight: 600;">&#9679; Pending Verification</span> &mdash; DNS 설정 대기 중 (시간이 좀 더 필요합니다)</li>
+          <li><span style="color: var(--danger); font-weight: 600;">&#9679; Invalid Configuration</span> &mdash; DNS 설정 오류 (설정값을 다시 확인하세요)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <div class="callout-icon">&#9888;&#65039;</div>
+      <div class="callout-body">
+        <strong>접속이 안 되나요?</strong>
+        DNS 변경 후 최대 48시간까지 소요될 수 있습니다. 1시간 정도 기다린 후 다시 시도해보세요.
+        그래도 안 되면 <strong>섹션 5의 DNS 레코드 값</strong>이 정확한지 다시 확인하세요.
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ============================================= -->
+  <!-- SECTION 8: 환경변수 업데이트                   -->
+  <!-- ============================================= -->
+  <div class="section" id="sec8">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <h2 class="section-title">환경변수 업데이트</h2>
+    </div>
+
+    <p>
+      사이트 내부에서 사용하는 주소(URL)도 새 도메인으로 바꿔줘야 합니다.
+      이 설정을 하지 않으면 사이트 내 일부 기능(공유 링크, SEO 등)이
+      여전히 이전 주소(<code>leak-site.vercel.app</code>)를 사용할 수 있습니다.
+    </p>
+
+    <div class="flow">
+      <span class="flow-item">Vercel 대시보드</span>
+      <span class="flow-arrow">&#10132;</span>
+      <span class="flow-item">Settings</span>
+      <span class="flow-arrow">&#10132;</span>
+      <span class="flow-item">Environment Variables</span>
+      <span class="flow-arrow">&#10132;</span>
+      <span class="flow-item">값 수정</span>
+      <span class="flow-arrow">&#10132;</span>
+      <span class="flow-item">재배포</span>
+    </div>
+
+    <ol class="steps">
+      <li>
+        <strong>Vercel 대시보드</strong>에서 <strong>leak-site</strong> 프로젝트를 선택합니다.
+      </li>
+      <li>
+        상단 메뉴에서 <strong>Settings</strong> 탭을 클릭합니다.
+      </li>
+      <li>
+        왼쪽 사이드바에서 <strong>Environment Variables</strong>를 클릭합니다.
+      </li>
+      <li>
+        환경변수 목록에서 <code>NEXT_PUBLIC_SITE_URL</code>을 찾습니다.
+        <ul class="sub-steps">
+          <li>없으면 새로 추가합니다.</li>
+        </ul>
+      </li>
+      <li>
+        값을 새 도메인으로 변경합니다.
+      </li>
+    </ol>
+
+    <div class="code-block">
+      <span class="comment"># 변경 전 (기존 값)</span><br>
+      NEXT_PUBLIC_SITE_URL=<span class="highlight">https://leak-site.vercel.app</span><br>
+      <br>
+      <span class="comment"># 변경 후 (새 도메인)</span><br>
+      NEXT_PUBLIC_SITE_URL=<span class="highlight">https://nususigong.com</span>
+    </div>
+
+    <ol class="steps" style="counter-reset: step-counter 5;">
+      <li>
+        <strong>Save</strong> 버튼을 클릭하여 저장합니다.
+      </li>
+      <li>
+        <strong>재배포</strong>를 합니다.
+        <ul class="sub-steps">
+          <li>상단 메뉴에서 <strong>Deployments</strong> 탭을 클릭합니다.</li>
+          <li>가장 최신 배포(맨 위) 오른쪽의 <strong>점 세 개 (&#8942;)</strong> 메뉴를 클릭합니다.</li>
+          <li><strong>Redeploy</strong>를 선택합니다.</li>
+          <li>확인 팝업에서 <strong>Redeploy</strong> 버튼을 클릭합니다.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <div class="callout success">
+      <div class="callout-icon">&#9989;</div>
+      <div class="callout-body">
+        <strong>완료!</strong>
+        재배포가 완료되면 (보통 1~2분 소요) 사이트가 새 도메인 주소를 올바르게 사용하게 됩니다.
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ============================================= -->
+  <!-- SECTION 9: 주의사항                            -->
+  <!-- ============================================= -->
+  <div class="section" id="sec9">
+    <div class="section-header">
+      <div class="section-number">9</div>
+      <h2 class="section-title">주의사항 및 문제 해결</h2>
+    </div>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 16px 0 10px;">&#128197; 도메인 만료 관리</h3>
+    <p>
+      도메인은 <strong>영구 소유가 아닌 임대</strong> 개념입니다.
+      매년 갱신 비용을 지불해야 하며, 갱신하지 않으면 도메인이 만료되어
+      다른 사람이 구매할 수 있게 됩니다.
+    </p>
+
+    <div class="callout danger">
+      <div class="callout-icon">&#9888;&#65039;</div>
+      <div class="callout-body">
+        <strong>매우 중요: 자동갱신을 반드시 설정하세요!</strong>
+        도메인이 만료되면 사이트에 접속할 수 없게 되고,
+        다른 사람이 그 도메인을 구매해버리면 되찾기 매우 어렵습니다.
+        <strong>My가비아 &gt; 도메인 관리 &gt; 자동갱신 설정</strong>을 꼭 켜두세요.
+      </div>
+    </div>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 20px 0 10px;">&#9200; DNS 반영 시간</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>상황</th>
+          <th>예상 소요 시간</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>DNS 레코드 최초 설정</td>
+          <td>보통 <strong>10분 ~ 1시간</strong> (최대 48시간)</td>
+        </tr>
+        <tr>
+          <td>DNS 레코드 수정</td>
+          <td>보통 <strong>10분 ~ 2시간</strong> (최대 48시간)</td>
+        </tr>
+        <tr>
+          <td>SSL 인증서 발급</td>
+          <td>DNS 연결 후 <strong>수 분 ~ 1시간</strong></td>
+        </tr>
+        <tr>
+          <td>Vercel 재배포</td>
+          <td><strong>1~2분</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 20px 0 10px;">&#128295; 자주 발생하는 문제와 해결 방법</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 35%;">문제</th>
+          <th>해결 방법</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>도메인으로 접속하면 "사이트에 연결할 수 없음"</td>
+          <td>
+            DNS 설정이 아직 반영되지 않았을 수 있습니다. 1시간 후 다시 시도하세요.
+            그래도 안 되면 가비아 DNS 레코드 값이 정확한지 확인하세요.
+          </td>
+        </tr>
+        <tr>
+          <td>Vercel에서 "Invalid Configuration" 표시</td>
+          <td>
+            가비아 DNS 레코드의 값이 잘못되었을 가능성이 높습니다.
+            A 레코드가 <code>76.76.21.21</code>로, CNAME이 <code>cname.vercel-dns.com</code>으로
+            정확히 설정되어 있는지 확인하세요.
+          </td>
+        </tr>
+        <tr>
+          <td>"이 연결은 안전하지 않습니다" 경고</td>
+          <td>
+            SSL 인증서가 아직 발급되지 않았습니다.
+            DNS 설정 후 최대 1시간 기다려주세요. Vercel이 자동으로 발급합니다.
+          </td>
+        </tr>
+        <tr>
+          <td>www는 되는데 www 없이는 안 됨 (또는 반대)</td>
+          <td>
+            A 레코드(@)와 CNAME 레코드(www) 둘 다 올바르게 설정되어 있는지 확인하세요.
+          </td>
+        </tr>
+        <tr>
+          <td>이전 <code>vercel.app</code> 주소로 접속 안 됨</td>
+          <td>
+            이런 경우는 거의 없지만, Vercel 대시보드에서 <code>leak-site.vercel.app</code>이
+            도메인 목록에 여전히 있는지 확인하세요. 삭제하지 마세요.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 20px 0 10px;">&#128222; 도움이 필요할 때</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>문의처</th>
+          <th>연락 방법</th>
+          <th>담당 범위</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>가비아 고객센터</strong></td>
+          <td>
+            전화: <code>1544-4370</code><br>
+            평일 09:00 ~ 18:00
+          </td>
+          <td>도메인 구매, DNS 설정, 결제 관련</td>
+        </tr>
+        <tr>
+          <td><strong>Vercel 지원</strong></td>
+          <td>
+            <code>vercel.com/help</code><br>
+            영문 온라인 채팅/이메일
+          </td>
+          <td>Vercel 도메인 연결, SSL, 배포 관련</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <div class="callout-icon">&#128161;</div>
+      <div class="callout-body">
+        <strong>가비아 고객센터 이용 팁</strong>
+        전화 연결 후 "도메인 기술 상담"을 선택하세요.
+        "도메인에 DNS를 설정하려고 하는데 도움이 필요합니다"라고 말씀하시면 친절하게 안내받으실 수 있습니다.
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ============================================= -->
+  <!-- SUMMARY                                       -->
+  <!-- ============================================= -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number" style="background: var(--success);">&#10003;</div>
+      <h2 class="section-title">전체 과정 요약</h2>
+    </div>
+
+    <div class="flow" style="justify-content: center; padding: 16px 0;">
+      <span class="flow-item">&#9312; 가비아 가입</span>
+      <span class="flow-arrow">&#10132;</span>
+      <span class="flow-item">&#9313; 도메인 구매</span>
+      <span class="flow-arrow">&#10132;</span>
+      <span class="flow-item">&#9314; Vercel에 도메인 추가</span>
+      <span class="flow-arrow">&#10132;</span>
+      <span class="flow-item">&#9315; 가비아 DNS 설정</span>
+      <span class="flow-arrow">&#10132;</span>
+      <span class="flow-item">&#9316; 환경변수 수정 &amp; 재배포</span>
+    </div>
+
+    <div class="callout success" style="text-align: center;">
+      <div class="callout-body">
+        <strong style="font-size: 15px;">축하합니다! &#127881;</strong><br>
+        모든 과정을 완료하면 <code>nususigong.com</code> (본인의 도메인)으로<br>
+        사이트에 접속할 수 있게 됩니다.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================= -->
+  <!-- FOOTER                                        -->
+  <!-- ============================================= -->
+  <div class="footer">
+    <p><strong>도메인 구매 &amp; Vercel 연결 가이드</strong></p>
+    <p>작성일: 2026년 5월 26일 | 대상 프로젝트: leak-site.vercel.app</p>
+    <p>이 문서의 내용은 가비아 및 Vercel의 인터페이스 변경에 따라 일부 달라질 수 있습니다.</p>
+  </div>
+
+</body>
+</html>
