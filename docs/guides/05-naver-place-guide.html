@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>네이버 플레이스 등록 가이드 - 유레카 솔루션</title>
+  <style>
+    /* ── Reset & Base ────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Pretendard', system-ui, -apple-system, 'Segoe UI', 'Malgun Gothic', '맑은 고딕', sans-serif;
+      font-size: 13px;
+      line-height: 1.8;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+
+    /* ── Page Container (A4) ─────────────────────────── */
+    .page {
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 24mm 20mm;
+      background: #fff;
+    }
+
+    @media print {
+      body { background: #fff; }
+      .page { padding: 15mm 18mm; margin: 0; max-width: none; }
+      .toc { page-break-after: always; }
+      .section { page-break-inside: avoid; }
+    }
+
+    /* ── Header ──────────────────────────────────────── */
+    .header {
+      border-bottom: 4px solid #03c75a;
+      padding-bottom: 18px;
+      margin-bottom: 32px;
+    }
+
+    .header-badge {
+      display: inline-block;
+      background: #03c75a;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 3px;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .header-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #03c75a;
+      letter-spacing: -0.5px;
+      line-height: 1.3;
+    }
+
+    .header-sub {
+      font-size: 14px;
+      color: #64748b;
+      margin-top: 6px;
+    }
+
+    .header-meta {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    /* ── Business Info Card ───────────────────────────── */
+    .biz-card {
+      border: 2px solid #03c75a;
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin-bottom: 32px;
+      background: #f0fdf4;
+    }
+
+    .biz-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #03c75a;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #bbf7d0;
+    }
+
+    .biz-card dl {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 6px 16px;
+      font-size: 13px;
+    }
+
+    .biz-card dt {
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .biz-card dd {
+      font-weight: 500;
+      color: #1e293b;
+    }
+
+    /* ── Table of Contents ────────────────────────────── */
+    .toc {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 22px 28px;
+      margin-bottom: 36px;
+      background: #fafbfc;
+    }
+
+    .toc-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #03c75a;
+    }
+
+    .toc ol {
+      list-style: none;
+      counter-reset: toc-counter;
+      padding: 0;
+    }
+
+    .toc li {
+      counter-increment: toc-counter;
+      padding: 5px 0;
+      font-size: 13px;
+      border-bottom: 1px dotted #e2e8f0;
+    }
+
+    .toc li:last-child { border-bottom: none; }
+
+    .toc li::before {
+      content: counter(toc-counter) ".";
+      display: inline-block;
+      width: 28px;
+      font-weight: 700;
+      color: #03c75a;
+    }
+
+    .toc a {
+      color: #334155;
+      text-decoration: none;
+    }
+
+    .toc a:hover {
+      color: #03c75a;
+      text-decoration: underline;
+    }
+
+    /* ── Sections ─────────────────────────────────────── */
+    .section {
+      margin-bottom: 32px;
+      page-break-inside: avoid;
+    }
+
+    .section-heading {
+      font-size: 20px;
+      font-weight: 800;
+      color: #03c75a;
+      border-left: 5px solid #03c75a;
+      padding-left: 14px;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .section-num {
+      display: inline-block;
+      min-width: 32px;
+      color: #03c75a;
+    }
+
+    /* ── Subsections ──────────────────────────────────── */
+    .sub-heading {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 18px 0 10px 0;
+      padding-left: 8px;
+      border-left: 3px solid #86efac;
+    }
+
+    /* ── Paragraphs ───────────────────────────────────── */
+    p {
+      margin-bottom: 10px;
+      text-align: justify;
+    }
+
+    /* ── Lists ─────────────────────────────────────────── */
+    ul, ol {
+      margin: 10px 0 14px 20px;
+    }
+
+    li {
+      margin-bottom: 6px;
+      line-height: 1.7;
+    }
+
+    li strong {
+      color: #0f172a;
+    }
+
+    /* ── Step Boxes ────────────────────────────────────── */
+    .steps {
+      list-style: none;
+      counter-reset: step-counter;
+      padding: 0;
+      margin: 14px 0;
+    }
+
+    .steps li {
+      counter-increment: step-counter;
+      position: relative;
+      padding: 12px 16px 12px 52px;
+      margin-bottom: 8px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      border-left: 3px solid #03c75a;
+      min-height: 44px;
+    }
+
+    .steps li::before {
+      content: "Step " counter(step-counter);
+      position: absolute;
+      left: 10px;
+      top: 12px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #fff;
+      background: #03c75a;
+      padding: 2px 6px;
+      border-radius: 3px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── Callout Boxes ────────────────────────────────── */
+    .callout {
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .callout-tip {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-left: 4px solid #03c75a;
+    }
+
+    .callout-tip::before {
+      content: "TIP";
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      color: #03c75a;
+      background: #dcfce7;
+      padding: 1px 6px;
+      border-radius: 3px;
+      margin-right: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .callout-warn {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 4px solid #f59e0b;
+    }
+
+    .callout-warn::before {
+      content: "주의";
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      color: #d97706;
+      background: #fef3c7;
+      padding: 1px 6px;
+      border-radius: 3px;
+      margin-right: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .callout-info {
+      background: #eff6ff;
+      border: 1px solid #93c5fd;
+      border-left: 4px solid #3b82f6;
+    }
+
+    .callout-info::before {
+      content: "참고";
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      color: #2563eb;
+      background: #dbeafe;
+      padding: 1px 6px;
+      border-radius: 3px;
+      margin-right: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Quoted / Example Blocks ──────────────────────── */
+    blockquote {
+      margin: 12px 0;
+      padding: 14px 18px;
+      background: #f1f5f9;
+      border-left: 4px solid #94a3b8;
+      border-radius: 0 6px 6px 0;
+      font-size: 13px;
+      color: #475569;
+      font-style: italic;
+    }
+
+    blockquote .label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      color: #64748b;
+      font-style: normal;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    /* ── Tables ────────────────────────────────────────── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 12.5px;
+    }
+
+    th {
+      background: #03c75a;
+      color: #fff;
+      font-weight: 700;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 12px;
+    }
+
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    /* ── Input Field Indicator ─────────────────────────── */
+    .field {
+      display: inline-block;
+      background: #e2e8f0;
+      color: #334155;
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      margin: 0 2px;
+    }
+
+    .url {
+      color: #03c75a;
+      font-weight: 600;
+      text-decoration: none;
+      border-bottom: 1px dashed #03c75a;
+    }
+
+    /* ── Keyword Tags ─────────────────────────────────── */
+    .tag {
+      display: inline-block;
+      background: #dcfce7;
+      color: #166534;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      margin: 2px 3px;
+      border: 1px solid #bbf7d0;
+    }
+
+    /* ── Checklist ─────────────────────────────────────── */
+    .checklist {
+      list-style: none;
+      padding: 0;
+      margin: 12px 0;
+    }
+
+    .checklist li {
+      padding: 6px 0 6px 28px;
+      position: relative;
+      border-bottom: 1px dotted #e2e8f0;
+    }
+
+    .checklist li::before {
+      content: "☐";
+      position: absolute;
+      left: 4px;
+      top: 6px;
+      font-size: 14px;
+      color: #03c75a;
+    }
+
+    /* ── Divider ───────────────────────────────────────── */
+    hr {
+      border: none;
+      border-top: 1px solid #e2e8f0;
+      margin: 28px 0;
+    }
+
+    /* ── Footer ────────────────────────────────────────── */
+    .footer {
+      margin-top: 48px;
+      padding-top: 16px;
+      border-top: 2px solid #03c75a;
+      font-size: 11px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-brand {
+      font-weight: 700;
+      color: #03c75a;
+    }
+
+    /* ── Highlight ─────────────────────────────────────── */
+    .highlight {
+      background: #dcfce7;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+
+    /* ── Screenshot Placeholder ────────────────────────── */
+    .screenshot-placeholder {
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 28px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+      margin: 12px 0;
+      background: #f8fafc;
+    }
+
+    .screenshot-placeholder span {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- ═══════════════════ HEADER ═══════════════════ -->
+    <div class="header">
+      <div class="header-badge">STEP-BY-STEP GUIDE</div>
+      <div class="header-title">네이버 플레이스 등록 가이드</div>
+      <div class="header-sub">네이버 검색 &amp; 지도에 우리 업체를 등록하는 완전 초보 가이드</div>
+      <div class="header-meta">유레카 솔루션 | 2026년 5월 기준 | 문서번호 GUIDE-05</div>
+    </div>
+
+    <!-- ═══════════════════ BUSINESS INFO ═══════════════════ -->
+    <div class="biz-card">
+      <div class="biz-card-title">등록할 업체 정보</div>
+      <dl>
+        <dt>상호명</dt>
+        <dd>유레카 솔루션</dd>
+        <dt>업종</dt>
+        <dd>누수탐지 / 배관 / 방수 / 설비</dd>
+        <dt>주소</dt>
+        <dd>서울특별시 도봉구 도봉로 104길 49-21, 301동</dd>
+        <dt>전화번호</dt>
+        <dd>010-5700-4026</dd>
+        <dt>서비스 지역</dt>
+        <dd>서울 / 경기 / 인천 전 지역</dd>
+        <dt>웹사이트</dt>
+        <dd>leak-site.vercel.app</dd>
+      </dl>
+    </div>
+
+    <!-- ═══════════════════ TABLE OF CONTENTS ═══════════════════ -->
+    <div class="toc">
+      <div class="toc-title">목차</div>
+      <ol>
+        <li><a href="#sec1">네이버 플레이스란?</a></li>
+        <li><a href="#sec2">네이버 계정 준비</a></li>
+        <li><a href="#sec3">스마트플레이스 등록 (핵심!)</a></li>
+        <li><a href="#sec4">사업자 인증</a></li>
+        <li><a href="#sec5">플레이스 최적화</a></li>
+        <li><a href="#sec6">예약 / 톡톡 설정</a></li>
+        <li><a href="#sec7">리뷰 관리</a></li>
+        <li><a href="#sec8">소식 / 블로그 연동</a></li>
+        <li><a href="#sec9">통계 확인</a></li>
+        <li><a href="#sec10">주의사항</a></li>
+      </ol>
+    </div>
+
+    <!-- ═══════════════════ SECTION 1 ═══════════════════ -->
+    <div class="section" id="sec1">
+      <h2 class="section-heading"><span class="section-num">1.</span> 네이버 플레이스란?</h2>
+
+      <p>
+        <strong>네이버 플레이스</strong>는 네이버 검색 결과와 네이버 지도에 우리 업체 정보(상호, 전화번호, 주소, 영업시간 등)를
+        무료로 노출시켜 주는 서비스입니다. 쉽게 말해 <span class="highlight">"네이버에 우리 가게를 등록하는 것"</span>입니다.
+      </p>
+
+      <p><strong>왜 반드시 등록해야 하나요?</strong></p>
+
+      <ul>
+        <li><strong>국내 검색 점유율 1위:</strong> 한국 사람 대부분이 네이버로 검색합니다. "도봉구 누수탐지"를 검색하면 네이버 플레이스에 등록된 업체가 가장 먼저 보입니다.</li>
+        <li><strong>완전 무료:</strong> 등록비, 월 이용료 모두 0원입니다. 별도의 광고비를 내지 않아도 됩니다.</li>
+        <li><strong>전화 유입 증가:</strong> 플레이스에 등록하면 "전화하기" 버튼이 표시되어 고객이 바로 전화할 수 있습니다.</li>
+        <li><strong>신뢰도 상승:</strong> 네이버에 정식 등록된 업체는 고객에게 더 믿음직스러워 보입니다.</li>
+        <li><strong>리뷰 수집:</strong> 고객 리뷰를 받을 수 있어 입소문 효과를 얻을 수 있습니다.</li>
+      </ul>
+
+      <div class="callout callout-tip">
+        네이버 플레이스에 등록하면 네이버 지도 앱에서도 자동으로 노출됩니다. 별도 등록이 필요 없습니다.
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ═══════════════════ SECTION 2 ═══════════════════ -->
+    <div class="section" id="sec2">
+      <h2 class="section-heading"><span class="section-num">2.</span> 네이버 계정 준비</h2>
+
+      <p>네이버 플레이스를 등록하려면 <strong>네이버 아이디(계정)</strong>가 필요합니다. 아래 순서대로 준비하세요.</p>
+
+      <div class="sub-heading">이미 네이버 아이디가 있는 경우</div>
+      <p>기존에 사용하던 개인 네이버 아이디로도 등록이 가능합니다. 하지만 아래와 같은 이유로 <strong>사업자 전용 계정을 새로 만드는 것을 추천</strong>합니다.</p>
+
+      <ul>
+        <li>개인 메일/블로그와 사업용 관리가 섞이지 않습니다.</li>
+        <li>나중에 직원이나 대행사에 관리를 넘길 때 편리합니다.</li>
+        <li>사업 관련 알림만 따로 받을 수 있습니다.</li>
+      </ul>
+
+      <div class="sub-heading">새 계정 만들기 (2분 소요)</div>
+      <ol class="steps">
+        <li>PC 또는 스마트폰 브라우저에서 <span class="url">naver.com</span>에 접속합니다.</li>
+        <li>우측 상단 <strong>"로그인"</strong> 버튼을 클릭한 뒤, 화면 하단의 <strong>"회원가입"</strong>을 클릭합니다.</li>
+        <li>이용약관에 모두 동의한 후 <strong>"확인"</strong>을 누릅니다.</li>
+        <li>아이디, 비밀번호, 이름, 생년월일, 휴대전화 번호를 입력합니다.<br>
+          <em>아이디 예시:</em> <span class="field">eureka_solution</span> 또는 <span class="field">eureka_biz</span></li>
+        <li>휴대전화 인증번호를 입력하고 <strong>"가입하기"</strong>를 클릭하면 완료됩니다.</li>
+      </ol>
+
+      <div class="callout callout-tip">
+        아이디와 비밀번호는 반드시 메모해 두세요. 나중에 스마트플레이스 관리, 블로그 연동, 네이버 톡톡 등 모든 서비스에 이 계정을 사용합니다.
+      </div>
+
+      <div class="callout callout-warn">
+        타인의 명의나 가상 번호로 가입하면 추후 사업자 인증이 거부될 수 있습니다. 반드시 본인 명의 휴대전화로 가입하세요.
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ═══════════════════ SECTION 3 ═══════════════════ -->
+    <div class="section" id="sec3">
+      <h2 class="section-heading"><span class="section-num">3.</span> 스마트플레이스 등록 (핵심!)</h2>
+
+      <p>
+        이 단계가 가장 중요합니다. <strong>네이버 스마트플레이스</strong> 사이트에서 업체 정보를 입력하면 네이버 검색과 지도에 노출됩니다.
+        아래 순서를 하나씩 따라 하세요.
+      </p>
+
+      <div class="sub-heading">스마트플레이스 사이트 접속</div>
+      <ol class="steps">
+        <li>PC 브라우저(크롬 추천)를 열고 주소창에 <span class="url">smartplace.naver.com</span>을 입력합니다.</li>
+        <li>위에서 만든 네이버 아이디로 <strong>로그인</strong>합니다.</li>
+        <li>메인 화면에서 <strong>"업체 등록하기"</strong> 버튼(초록색)을 클릭합니다.</li>
+      </ol>
+
+      <div class="sub-heading">업체 기본 정보 입력</div>
+      <p>아래 표를 참고하여 각 항목을 입력하세요. 우리 업체 정보를 미리 정리해 두었습니다.</p>
+
+      <table>
+        <tr>
+          <th style="width:30%;">입력 항목</th>
+          <th>입력할 내용</th>
+        </tr>
+        <tr>
+          <td><strong>업체명(상호)</strong></td>
+          <td><span class="field">유레카 솔루션</span></td>
+        </tr>
+        <tr>
+          <td><strong>업종 선택</strong></td>
+          <td><strong>생활서비스</strong> &rarr; <strong>배관/설비</strong> (또는 누수탐지)<br>
+            <em>* "배관/설비"를 먼저 검색해 보세요. 없으면 "누수" 또는 "생활서비스"로 검색합니다.</em></td>
+        </tr>
+        <tr>
+          <td><strong>주소</strong></td>
+          <td><span class="field">서울특별시 도봉구 도봉로 104길 49-21</span><br>
+            상세주소: <span class="field">301동</span></td>
+        </tr>
+        <tr>
+          <td><strong>전화번호</strong></td>
+          <td><span class="field">010-5700-4026</span></td>
+        </tr>
+        <tr>
+          <td><strong>영업시간</strong></td>
+          <td>
+            <strong>24시간 영업</strong> 또는 원하는 시간대 설정<br>
+            <em>* 누수탐지 업종 특성상 "24시간 영업"을 추천합니다.</em>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>웹사이트 URL</strong></td>
+          <td><span class="field">https://leak-site.vercel.app</span></td>
+        </tr>
+      </table>
+
+      <div class="sub-heading">업종 선택 상세 안내</div>
+      <p>업종 선택이 가장 헷갈리는 부분입니다. 아래 순서대로 시도하세요.</p>
+
+      <ol class="steps">
+        <li>업종 검색창에 <span class="field">배관</span>을 입력합니다.</li>
+        <li>검색 결과에서 <strong>"배관/설비"</strong> 또는 <strong>"수도/배관"</strong> 항목을 선택합니다.</li>
+        <li>만약 찾기 어려우면 <span class="field">누수</span>를 검색하여 <strong>"누수탐지"</strong>를 선택합니다.</li>
+        <li>그래도 없으면 <strong>"생활서비스"</strong> 대분류 아래에서 가장 비슷한 항목을 선택합니다.</li>
+      </ol>
+
+      <div class="callout callout-info">
+        업종은 나중에 수정할 수 있으니 너무 고민하지 마세요. 일단 가장 비슷한 것을 선택하면 됩니다.
+      </div>
+
+      <div class="sub-heading">영업시간 설정 방법</div>
+      <ol class="steps">
+        <li>"영업시간" 항목에서 <strong>"직접 입력"</strong>을 선택합니다.</li>
+        <li>24시간 운영이면 <strong>"24시간 영업"</strong>에 체크합니다.</li>
+        <li>특정 시간대만 운영하면 시작 시간과 종료 시간을 설정합니다.<br>
+          <em>예: 오전 8:00 ~ 오후 10:00</em></li>
+        <li>휴무일이 있으면 해당 요일을 선택합니다.<br>
+          <em>* "연중무휴"를 추천합니다. 긴급 출동 업종이므로 고객 신뢰에 도움이 됩니다.</em></li>
+      </ol>
+
+      <div class="sub-heading">최종 제출</div>
+      <ol class="steps">
+        <li>모든 항목을 입력한 후 화면 하단의 <strong>"등록 신청"</strong> 버튼을 클릭합니다.</li>
+        <li>"정보가 정확한지 확인하세요" 팝업이 뜨면 내용을 다시 한번 확인하고 <strong>"확인"</strong>을 누릅니다.</li>
+        <li><strong>"등록 신청이 완료되었습니다"</strong> 메시지가 나타나면 성공입니다!</li>
+      </ol>
+
+      <div class="callout callout-tip">
+        등록 신청 후 네이버 내부 심사를 거칩니다. 심사 결과는 네이버 메일 또는 알림으로 받을 수 있으며, 보통 <strong>1~3 영업일</strong>이 걸립니다.
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ═══════════════════ SECTION 4 ═══════════════════ -->
+    <div class="section" id="sec4">
+      <h2 class="section-heading"><span class="section-num">4.</span> 사업자 인증</h2>
+
+      <p>
+        업체 등록이 승인되면 <strong>사업자 인증</strong>을 해야 모든 기능을 사용할 수 있습니다.
+        사업자 인증을 하지 않아도 기본 노출은 되지만, 인증하면 <span class="highlight">"인증업체"</span> 배지가 표시되어 고객 신뢰도가 크게 올라갑니다.
+      </p>
+
+      <div class="sub-heading">사업자 인증 절차</div>
+      <ol class="steps">
+        <li><span class="url">smartplace.naver.com</span>에 로그인한 후, 등록한 업체의 <strong>"관리"</strong> 페이지로 들어갑니다.</li>
+        <li>좌측 메뉴에서 <strong>"사업자 인증"</strong> 또는 <strong>"업체 인증"</strong>을 클릭합니다.</li>
+        <li><strong>사업자등록증 사본</strong>을 업로드합니다.<br>
+          <em>* 스마트폰으로 사업자등록증을 촬영해도 됩니다. 단, 글자가 선명하게 보여야 합니다.</em></li>
+        <li>사업자등록번호, 대표자명이 자동으로 입력되는지 확인합니다.</li>
+        <li><strong>"인증 요청"</strong> 버튼을 클릭합니다.</li>
+      </ol>
+
+      <div class="sub-heading">심사 기간 및 결과</div>
+      <table>
+        <tr>
+          <th>항목</th>
+          <th>내용</th>
+        </tr>
+        <tr>
+          <td>심사 기간</td>
+          <td><strong>1~3 영업일</strong> (보통 1~2일 내 완료)</td>
+        </tr>
+        <tr>
+          <td>결과 알림</td>
+          <td>네이버 메일 + 스마트플레이스 알림</td>
+        </tr>
+        <tr>
+          <td>승인 후</td>
+          <td>업체 정보가 네이버 검색/지도에 정식 노출 시작</td>
+        </tr>
+        <tr>
+          <td>반려 시</td>
+          <td>반려 사유 확인 후 수정하여 재신청 가능</td>
+        </tr>
+      </table>
+
+      <div class="callout callout-warn">
+        사업자등록증 사본이 흐리거나, 상호명이 입력한 정보와 다르면 반려될 수 있습니다. 업로드 전에 사진이 선명한지, 상호명이 <strong>"유레카 솔루션"</strong>으로 일치하는지 꼭 확인하세요.
+      </div>
+
+      <div class="callout callout-tip">
+        사업자등록증이 아직 없는 경우, 사업자 등록 없이도 기본적인 플레이스 등록은 가능합니다. 다만, 인증 배지가 표시되지 않아 신뢰도 면에서 불리할 수 있습니다.
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ═══════════════════ SECTION 5 ═══════════════════ -->
+    <div class="section" id="sec5">
+      <h2 class="section-heading"><span class="section-num">5.</span> 플레이스 최적화</h2>
+
+      <p>
+        등록만 하면 끝이 아닙니다! 아래 항목들을 꼼꼼히 설정해야 검색 노출이 잘 되고, 고객이 전화할 확률이 높아집니다.
+        이 단계를 <strong>"플레이스 최적화"</strong>라고 합니다.
+      </p>
+
+      <!-- 5-1. 대표 사진 -->
+      <div class="sub-heading">5-1. 대표 사진 등록</div>
+      <p>사진이 있는 플레이스는 없는 것보다 <strong>클릭률이 2~3배</strong> 높습니다. 아래와 같은 사진을 최소 5장 이상 등록하세요.</p>
+
+      <ul>
+        <li><strong>작업 현장 사진:</strong> 실제 누수탐지 작업 중인 모습 (장비 사용 장면)</li>
+        <li><strong>장비 사진:</strong> 비파괴 탐지 장비, 열화상 카메라 등 전문 장비</li>
+        <li><strong>전문가 모습:</strong> 유니폼이나 작업복을 입고 있는 모습 (신뢰감 UP)</li>
+        <li><strong>시공 전/후 비교:</strong> 작업 전과 후가 확연히 다른 사진</li>
+        <li><strong>회사 로고:</strong> 유레카 솔루션 로고 이미지</li>
+      </ul>
+
+      <div class="callout callout-tip">
+        사진은 가로 방향(횡형)으로 촬영하세요. 세로 사진은 썸네일에서 잘려 보일 수 있습니다. 해상도는 최소 1080x720 이상을 추천합니다.
+      </div>
+
+      <!-- 5-2. 서비스 메뉴 -->
+      <div class="sub-heading">5-2. 서비스 메뉴 등록</div>
+      <p>플레이스에 제공하는 서비스를 "메뉴"로 등록할 수 있습니다. 고객이 어떤 서비스를 제공하는지 한눈에 볼 수 있습니다.</p>
+
+      <table>
+        <tr>
+          <th>서비스(메뉴) 이름</th>
+          <th>가격</th>
+          <th>설명 (선택사항)</th>
+        </tr>
+        <tr>
+          <td>누수탐지</td>
+          <td>현장 견적</td>
+          <td>비파괴 정밀 장비로 누수 위치 탐지</td>
+        </tr>
+        <tr>
+          <td>변기 수리 / 교체</td>
+          <td>현장 견적</td>
+          <td>변기 누수, 막힘, 교체 전문</td>
+        </tr>
+        <tr>
+          <td>싱크대 누수 / 막힘</td>
+          <td>현장 견적</td>
+          <td>싱크대 배관 누수 및 막힘 해결</td>
+        </tr>
+        <tr>
+          <td>동파 / 해빙 복구</td>
+          <td>현장 견적</td>
+          <td>겨울철 동파 배관 해빙 및 복구</td>
+        </tr>
+        <tr>
+          <td>난방배관 청소</td>
+          <td>현장 견적</td>
+          <td>난방 효율 개선을 위한 배관 청소</td>
+        </tr>
+        <tr>
+          <td>고압세척</td>
+          <td>현장 견적</td>
+          <td>고압 장비를 활용한 배관 세척</td>
+        </tr>
+      </table>
+
+      <ol class="steps">
+        <li>스마트플레이스 관리 페이지에서 <strong>"메뉴/서비스"</strong> 탭을 클릭합니다.</li>
+        <li><strong>"메뉴 추가"</strong> 버튼을 클릭합니다.</li>
+        <li>위 표의 서비스 이름과 가격(현장 견적)을 입력합니다.</li>
+        <li>각 서비스에 대한 간단한 설명을 추가합니다.</li>
+        <li>가능하다면 각 서비스별 대표 사진도 등록합니다.</li>
+        <li>모든 서비스를 입력한 후 <strong>"저장"</strong>을 클릭합니다.</li>
+      </ol>
+
+      <div class="callout callout-info">
+        "현장 견적"이라고 입력하면 가격 대신 텍스트가 표시됩니다. 고정 가격이 있다면 숫자로 입력해도 됩니다.
+      </div>
+
+      <!-- 5-3. 소개글 -->
+      <div class="sub-heading">5-3. 소개글 작성</div>
+      <p>플레이스 상단에 표시되는 업체 소개글입니다. 핵심 강점을 짧고 임팩트 있게 작성하세요.</p>
+
+      <blockquote>
+        <span class="label">추천 소개글 예시</span>
+        서울 / 경기 / 인천 24시간 긴급 출동! 비파괴 정밀 장비로 누수를 찾고 최소 시공으로 해결합니다. 미해결 시 비용 0원, 1년 무상 A/S 보장.
+      </blockquote>
+
+      <p><strong>소개글 작성 포인트:</strong></p>
+      <ul>
+        <li><strong>서비스 지역</strong>을 명시합니다 (서울/경기/인천).</li>
+        <li><strong>24시간 긴급 출동</strong>을 강조합니다.</li>
+        <li><strong>비파괴 / 정밀 장비</strong> 등 전문성을 어필합니다.</li>
+        <li><strong>미해결 시 비용 0원</strong> 같은 고객 안심 문구를 넣습니다.</li>
+        <li><strong>A/S 보장</strong>으로 신뢰를 줍니다.</li>
+      </ul>
+
+      <!-- 5-4. 키워드 태그 -->
+      <div class="sub-heading">5-4. 키워드 태그 설정</div>
+      <p>키워드 태그를 설정하면 해당 키워드로 검색할 때 노출 확률이 높아집니다. 아래 키워드를 모두 등록하세요.</p>
+
+      <p>
+        <span class="tag">누수탐지</span>
+        <span class="tag">누수수리</span>
+        <span class="tag">배관수리</span>
+        <span class="tag">변기수리</span>
+        <span class="tag">24시간출동</span>
+        <span class="tag">수도배관</span>
+        <span class="tag">방수공사</span>
+        <span class="tag">동파해빙</span>
+        <span class="tag">고압세척</span>
+        <span class="tag">난방배관</span>
+      </p>
+
+      <div class="callout callout-tip">
+        키워드는 고객이 실제로 검색할 만한 단어를 넣어야 합니다. "도봉구 누수", "서울 배관수리" 등 지역명 + 서비스명 조합도 효과적입니다.
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ═══════════════════ SECTION 6 ═══════════════════ -->
+    <div class="section" id="sec6">
+      <h2 class="section-heading"><span class="section-num">6.</span> 예약 / 톡톡 설정</h2>
+
+      <p>
+        고객이 플레이스에서 바로 문의하거나 예약할 수 있도록 설정합니다.
+        이 기능을 켜면 <strong>전화 문의 외에도 채팅으로 상담</strong>을 받을 수 있어 고객 접점이 늘어납니다.
+      </p>
+
+      <!-- 6-1. 네이버 톡톡 -->
+      <div class="sub-heading">6-1. 네이버 톡톡 연동</div>
+      <p><strong>네이버 톡톡</strong>은 고객이 카카오톡처럼 채팅으로 문의할 수 있는 기능입니다.</p>
+
+      <ol class="steps">
+        <li>스마트플레이스 관리 페이지에서 <strong>"톡톡"</strong> 메뉴를 클릭합니다.</li>
+        <li><strong>"톡톡 시작하기"</strong> 또는 <strong>"톡톡 연동"</strong> 버튼을 클릭합니다.</li>
+        <li>이용약관에 동의하고 톡톡 채널을 개설합니다.</li>
+        <li>플레이스에 톡톡 버튼이 자동으로 추가됩니다.</li>
+        <li>톡톡 알림 설정에서 <strong>"모바일 알림"</strong>을 켜서 고객 메시지를 실시간으로 받으세요.</li>
+      </ol>
+
+      <div class="callout callout-tip">
+        톡톡으로 문의가 오면 최대한 <strong>빠르게 답변</strong>하세요. 응답 속도가 빠를수록 "응답률" 지표가 올라가고, 이는 검색 노출에도 긍정적 영향을 줍니다.
+      </div>
+
+      <!-- 6-2. 전화 예약 -->
+      <div class="sub-heading">6-2. 전화 예약 설정</div>
+      <ol class="steps">
+        <li>관리 페이지에서 <strong>"예약"</strong> 메뉴를 클릭합니다.</li>
+        <li><strong>"전화 예약"</strong> 항목을 활성화합니다.</li>
+        <li>전화번호 <span class="field">010-5700-4026</span>이 정확히 입력되어 있는지 확인합니다.</li>
+      </ol>
+
+      <!-- 6-3. 간편 예약 (선택) -->
+      <div class="sub-heading">6-3. 간편 예약 설정 (선택사항)</div>
+      <p>
+        간편 예약은 고객이 원하는 날짜와 시간을 선택하여 예약하는 기능입니다.
+        누수탐지 업종의 경우 현장 상황에 따라 일정이 유동적이므로, <strong>전화 예약만 사용해도 충분</strong>합니다.
+      </p>
+      <p>간편 예약을 사용하려면:</p>
+      <ol class="steps">
+        <li>"예약" 메뉴에서 <strong>"간편 예약"</strong>을 선택합니다.</li>
+        <li>예약 가능한 시간대와 예약 단위(30분/1시간)를 설정합니다.</li>
+        <li>예약 자동 확인 또는 수동 확인을 선택합니다. (수동 확인 추천)</li>
+      </ol>
+
+      <div class="callout callout-info">
+        간편 예약을 사용하면 예약 관리를 꼼꼼히 해야 합니다. 예약 후 미확인/미응답 시 패널티를 받을 수 있으므로, 관리가 어려우면 전화 예약만 사용하세요.
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ═══════════════════ SECTION 7 ═══════════════════ -->
+    <div class="section" id="sec7">
+      <h2 class="section-heading"><span class="section-num">7.</span> 리뷰 관리</h2>
+
+      <p>
+        리뷰는 네이버 플레이스에서 <strong>가장 중요한 요소</strong> 중 하나입니다.
+        리뷰 수가 많고 평점이 높을수록 검색 결과 상단에 노출될 확률이 높아지고, 고객의 선택을 받기 쉬워집니다.
+      </p>
+
+      <!-- 7-1. 리뷰 요청 -->
+      <div class="sub-heading">7-1. 리뷰 요청 방법</div>
+
+      <p><strong>영수증 리뷰 (가장 효과적):</strong></p>
+      <ul>
+        <li>작업 완료 후 고객에게 영수증(견적서)을 발행합니다.</li>
+        <li>고객이 네이버에서 업체명을 검색 &rarr; 플레이스 &rarr; "리뷰 작성"을 클릭하여 영수증을 인증하고 리뷰를 남깁니다.</li>
+        <li>영수증 리뷰는 신뢰도가 높아 다른 고객에게 강한 설득력을 가집니다.</li>
+      </ul>
+
+      <p><strong>방문자 리뷰:</strong></p>
+      <ul>
+        <li>고객이 영수증 없이도 플레이스에서 리뷰를 작성할 수 있습니다.</li>
+        <li>작업 완료 후 문자로 리뷰 요청 메시지를 보내면 효과적입니다.</li>
+      </ul>
+
+      <blockquote>
+        <span class="label">리뷰 요청 문자 예시</span>
+        [유레카 솔루션] 안녕하세요, 오늘 작업해 드린 유레카 솔루션입니다. 만족스러우셨다면 네이버에서 "유레카 솔루션"을 검색하신 후 리뷰 한 줄 부탁드립니다. 소중한 후기가 저희에게 큰 힘이 됩니다. 감사합니다!
+      </blockquote>
+
+      <!-- 7-2. 리뷰 답글 -->
+      <div class="sub-heading">7-2. 리뷰 답글 작성 방법</div>
+      <p>모든 리뷰에 답글을 다는 것이 중요합니다. 답글이 있는 업체는 고객 관리를 잘하는 인상을 줍니다.</p>
+
+      <ol class="steps">
+        <li>스마트플레이스 관리 페이지에서 <strong>"리뷰 관리"</strong>를 클릭합니다.</li>
+        <li>새로운 리뷰가 있으면 <strong>"답글 작성"</strong>을 클릭합니다.</li>
+        <li>감사 인사와 함께 간단하고 정성스러운 답글을 작성합니다.</li>
+      </ol>
+
+      <blockquote>
+        <span class="label">긍정 리뷰 답글 예시</span>
+        소중한 후기 감사합니다! 빠른 시간 안에 누수 원인을 찾아드릴 수 있어 다행입니다. 혹시 추가 문제가 생기시면 언제든 연락 주세요. 1년 무상 A/S 보장해 드립니다. 감사합니다!
+      </blockquote>
+
+      <blockquote>
+        <span class="label">부정 리뷰 답글 예시</span>
+        불편을 드려 진심으로 죄송합니다. 말씀하신 부분 확인 후 즉시 개선하겠습니다. 추가 조치가 필요하시면 010-5700-4026으로 연락 주시면 신속히 대응하겠습니다. 감사합니다.
+      </blockquote>
+
+      <!-- 7-3. 리뷰 늘리기 팁 -->
+      <div class="sub-heading">7-3. 긍정적 리뷰 늘리기 팁</div>
+      <ul>
+        <li><strong>작업 품질이 최우선:</strong> 완벽한 작업이 최고의 리뷰 마케팅입니다.</li>
+        <li><strong>작업 후 즉시 요청:</strong> 고객 만족도가 가장 높은 직후에 리뷰를 요청하세요.</li>
+        <li><strong>간편한 경로 안내:</strong> "네이버에서 유레카 솔루션 검색 &rarr; 리뷰 작성"이라고 구체적으로 안내하세요.</li>
+        <li><strong>명함에 QR코드:</strong> 플레이스 페이지로 연결되는 QR코드를 명함에 넣으면 효과적입니다.</li>
+        <li><strong>모든 리뷰에 답글:</strong> 답글을 꾸준히 달면 추가 리뷰 작성 확률이 높아집니다.</li>
+      </ul>
+
+      <div class="callout callout-warn">
+        <strong>허위 리뷰 절대 금지!</strong> 지인에게 가짜 리뷰를 부탁하거나, 리뷰 대가로 금전/서비스를 제공하면 네이버 정책 위반으로 플레이스가 삭제될 수 있습니다.
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ═══════════════════ SECTION 8 ═══════════════════ -->
+    <div class="section" id="sec8">
+      <h2 class="section-heading"><span class="section-num">8.</span> 소식 / 블로그 연동</h2>
+
+      <p>
+        플레이스에 "소식"을 게시하거나 네이버 블로그를 연동하면 업체 정보가 더 풍부해지고 검색 노출이 증가합니다.
+      </p>
+
+      <!-- 8-1. 네이버 블로그 연동 -->
+      <div class="sub-heading">8-1. 네이버 블로그 연동</div>
+      <ol class="steps">
+        <li>먼저 네이버 블로그를 개설합니다. <span class="url">blog.naver.com</span>에서 동일한 네이버 계정으로 블로그를 만듭니다.</li>
+        <li>블로그 이름을 <span class="field">유레카 솔루션 - 누수탐지 전문</span> 등으로 설정합니다.</li>
+        <li>스마트플레이스 관리 페이지 &rarr; <strong>"소식/블로그"</strong> 메뉴에서 <strong>"블로그 연동"</strong>을 클릭합니다.</li>
+        <li>연동할 블로그 주소를 선택하면 완료됩니다.</li>
+      </ol>
+
+      <div class="callout callout-tip">
+        블로그에 작성한 글이 플레이스에도 자동으로 노출됩니다. 블로그 포스팅 = 플레이스 콘텐츠 추가, 일석이조의 효과를 얻을 수 있습니다.
+      </div>
+
+      <!-- 8-2. 소식 게시 -->
+      <div class="sub-heading">8-2. 소식 게시</div>
+      <p>"소식" 기능으로 플레이스에 직접 게시물을 올릴 수 있습니다. 아래와 같은 내용을 올려보세요.</p>
+
+      <ul>
+        <li><strong>시공 사례:</strong> "도봉구 아파트 욕실 누수탐지 완료 - 비파괴 공법으로 당일 해결!"</li>
+        <li><strong>이벤트:</strong> "겨울철 동파 예방 점검 무료 상담 진행 중!"</li>
+        <li><strong>전문 정보:</strong> "변기 물 새는 원인 5가지와 자가 점검 방법"</li>
+        <li><strong>시즌 안내:</strong> "장마철 누수 증가! 미리 점검받으세요."</li>
+      </ul>
+
+      <div class="sub-heading">8-3. 포스팅 주기 및 팁</div>
+      <table>
+        <tr>
+          <th>항목</th>
+          <th>추천 내용</th>
+        </tr>
+        <tr>
+          <td>포스팅 주기</td>
+          <td><strong>주 1~2회</strong> (최소 주 1회 유지)</td>
+        </tr>
+        <tr>
+          <td>글 분량</td>
+          <td>사진 3~5장 + 텍스트 500자 이상</td>
+        </tr>
+        <tr>
+          <td>사진 필수</td>
+          <td>현장 사진이 있는 글이 노출에 유리</td>
+        </tr>
+        <tr>
+          <td>키워드 포함</td>
+          <td>제목과 본문에 "누수탐지", "배관수리" 등 키워드를 자연스럽게 포함</td>
+        </tr>
+      </table>
+
+      <blockquote>
+        <span class="label">블로그 포스팅 제목 예시</span>
+        [도봉구 누수탐지] 아파트 욕실 천장 누수, 비파괴 장비로 30분 만에 원인 발견!
+      </blockquote>
+
+      <div class="callout callout-info">
+        블로그 포스팅을 꾸준히 하면 네이버 검색에서 플레이스뿐 아니라 블로그 탭에서도 노출됩니다. 두 채널에서 동시에 고객을 유입할 수 있습니다.
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ═══════════════════ SECTION 9 ═══════════════════ -->
+    <div class="section" id="sec9">
+      <h2 class="section-heading"><span class="section-num">9.</span> 통계 확인</h2>
+
+      <p>
+        스마트플레이스는 무료로 <strong>방문 통계</strong>를 제공합니다. 이 데이터를 통해 어떤 검색어로 고객이 유입되는지,
+        얼마나 많은 사람이 전화를 거는지 등을 파악할 수 있습니다.
+      </p>
+
+      <div class="sub-heading">통계 확인 방법</div>
+      <ol class="steps">
+        <li><span class="url">smartplace.naver.com</span>에 로그인합니다.</li>
+        <li>등록한 업체의 관리 페이지로 이동합니다.</li>
+        <li>좌측 메뉴에서 <strong>"통계"</strong>를 클릭합니다.</li>
+        <li>기간(오늘/이번 주/이번 달/직접 설정)을 선택하여 원하는 데이터를 확인합니다.</li>
+      </ol>
+
+      <div class="sub-heading">주요 확인 지표</div>
+      <table>
+        <tr>
+          <th>지표</th>
+          <th>의미</th>
+          <th>활용 방법</th>
+        </tr>
+        <tr>
+          <td><strong>노출 수</strong></td>
+          <td>검색 결과에 우리 업체가 표시된 횟수</td>
+          <td>노출이 적으면 키워드/소개글 최적화 필요</td>
+        </tr>
+        <tr>
+          <td><strong>클릭 수</strong></td>
+          <td>플레이스를 클릭한 횟수</td>
+          <td>클릭률이 낮으면 대표 사진/업체명 개선 필요</td>
+        </tr>
+        <tr>
+          <td><strong>전화 수</strong></td>
+          <td>"전화하기" 버튼을 누른 횟수</td>
+          <td>실제 고객 전환의 핵심 지표</td>
+        </tr>
+        <tr>
+          <td><strong>길안내 수</strong></td>
+          <td>길안내를 요청한 횟수</td>
+          <td>방문 고객 파악 (출장 서비스에는 참고용)</td>
+        </tr>
+        <tr>
+          <td><strong>검색어 분석</strong></td>
+          <td>어떤 키워드로 검색해서 유입되었는지</td>
+          <td>효과적인 키워드 파악 &rarr; 블로그 주제 선정에 활용</td>
+        </tr>
+      </table>
+
+      <div class="callout callout-tip">
+        <strong>매주 월요일 통계를 확인하는 습관</strong>을 들이세요. 데이터를 보며 "지난주보다 전화가 줄었다면 무엇이 달라졌는지"를 분석하고 개선하면 꾸준히 성과가 올라갑니다.
+      </div>
+
+      <div class="callout callout-info">
+        통계에서 "누수탐지 도봉구" 같은 검색어가 많이 보이면, 해당 키워드로 블로그 글을 더 작성하세요. 이미 검색되고 있는 키워드를 강화하는 것이 가장 효과적입니다.
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ═══════════════════ SECTION 10 ═══════════════════ -->
+    <div class="section" id="sec10">
+      <h2 class="section-heading"><span class="section-num">10.</span> 주의사항</h2>
+
+      <p>네이버 플레이스를 잘 유지하기 위해 반드시 지켜야 할 사항들입니다.</p>
+
+      <div class="sub-heading">10-1. 정보 최신 유지</div>
+      <ul>
+        <li><strong>영업시간 변경 시</strong> 즉시 플레이스에 반영하세요. 고객이 영업시간을 보고 전화했는데 안 받으면 신뢰를 잃습니다.</li>
+        <li><strong>전화번호가 변경되면</strong> 가장 먼저 플레이스를 수정하세요. 잘못된 번호로 연결이 안 되면 고객을 잃습니다.</li>
+        <li><strong>주소 변경, 서비스 추가/변경</strong> 등도 바로바로 업데이트하세요.</li>
+      </ul>
+
+      <div class="sub-heading">10-2. 사진 주기적 업데이트</div>
+      <ul>
+        <li>새로운 시공 사례가 생기면 사진을 추가하세요.</li>
+        <li><strong>최소 월 1회</strong> 새로운 사진을 올리는 것을 추천합니다.</li>
+        <li>오래되고 품질이 낮은 사진은 교체하세요.</li>
+        <li>계절에 맞는 사진(겨울 동파 복구, 여름 장마 방수 등)을 올리면 효과적입니다.</li>
+      </ul>
+
+      <div class="sub-heading">10-3. 절대 하면 안 되는 것</div>
+      <div class="callout callout-warn">
+        <strong>아래 행위는 네이버 정책 위반으로 플레이스가 삭제되거나 노출이 제한될 수 있습니다.</strong>
+        <ul style="margin-top: 8px;">
+          <li>허위 리뷰 작성 또는 리뷰 대가 제공</li>
+          <li>허위 업체 정보 등록 (가짜 주소, 허위 상호 등)</li>
+          <li>여러 개의 동일 업체를 중복 등록</li>
+          <li>타인의 사진을 무단으로 사용</li>
+          <li>부적절한 키워드 남용 (관련 없는 키워드 삽입)</li>
+        </ul>
+      </div>
+
+      <div class="sub-heading">10-4. 유지 관리 체크리스트</div>
+      <p>아래 체크리스트를 정기적으로 확인하세요.</p>
+
+      <ul class="checklist">
+        <li>전화번호가 정확하게 등록되어 있는가?</li>
+        <li>영업시간이 최신 상태인가?</li>
+        <li>이번 달 새로운 사진을 올렸는가?</li>
+        <li>이번 주 블로그 포스팅 또는 소식을 게시했는가?</li>
+        <li>답글을 달지 않은 리뷰가 있는가?</li>
+        <li>톡톡 미확인 메시지가 있는가?</li>
+        <li>통계를 확인하고 개선점을 파악했는가?</li>
+        <li>서비스 메뉴에 변경 사항이 있는가?</li>
+      </ul>
+    </div>
+
+    <hr>
+
+    <!-- ═══════════════════ SUMMARY ═══════════════════ -->
+    <div class="section">
+      <h2 class="section-heading" style="color: #1e293b; border-left-color: #1e293b;">전체 등록 흐름 요약</h2>
+
+      <table>
+        <tr>
+          <th style="width: 8%; background: #1e293b;">순서</th>
+          <th style="width: 30%; background: #1e293b;">단계</th>
+          <th style="width: 15%; background: #1e293b;">소요 시간</th>
+          <th style="background: #1e293b;">비고</th>
+        </tr>
+        <tr>
+          <td style="text-align:center; font-weight:700; color:#03c75a;">1</td>
+          <td>네이버 계정 만들기</td>
+          <td>2분</td>
+          <td>이미 있으면 건너뛰기</td>
+        </tr>
+        <tr>
+          <td style="text-align:center; font-weight:700; color:#03c75a;">2</td>
+          <td>스마트플레이스 업체 등록</td>
+          <td>10~15분</td>
+          <td>이 가이드 3장 참고</td>
+        </tr>
+        <tr>
+          <td style="text-align:center; font-weight:700; color:#03c75a;">3</td>
+          <td>사업자 인증</td>
+          <td>5분 + 심사 1~3일</td>
+          <td>사업자등록증 필요</td>
+        </tr>
+        <tr>
+          <td style="text-align:center; font-weight:700; color:#03c75a;">4</td>
+          <td>사진/메뉴/소개글 최적화</td>
+          <td>20~30분</td>
+          <td>사진 미리 준비</td>
+        </tr>
+        <tr>
+          <td style="text-align:center; font-weight:700; color:#03c75a;">5</td>
+          <td>톡톡/예약 설정</td>
+          <td>5~10분</td>
+          <td>선택사항 포함</td>
+        </tr>
+        <tr>
+          <td style="text-align:center; font-weight:700; color:#03c75a;">6</td>
+          <td>블로그 연동</td>
+          <td>5분</td>
+          <td>블로그 미개설 시 추가 시간</td>
+        </tr>
+        <tr>
+          <td style="text-align:center; font-weight:700; color:#03c75a;">7</td>
+          <td>지속 관리 (리뷰/소식/통계)</td>
+          <td>주 30분~1시간</td>
+          <td>꾸준히!</td>
+        </tr>
+      </table>
+
+      <div class="callout callout-tip">
+        처음 등록부터 최적화까지 총 <strong>약 1시간</strong>이면 충분합니다. 사업자 인증 심사(1~3일)를 제외하면 하루 안에 모든 설정을 완료할 수 있습니다!
+      </div>
+    </div>
+
+    <!-- ═══════════════════ FOOTER ═══════════════════ -->
+    <div class="footer">
+      <div>
+        <span class="footer-brand">유레카 솔루션</span> | 네이버 플레이스 등록 가이드<br>
+        문의: 010-5700-4026 | leak-site.vercel.app
+      </div>
+      <div style="text-align: right;">
+        문서번호: GUIDE-05<br>
+        작성일: 2026년 5월
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
