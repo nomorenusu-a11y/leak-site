@@ -87,7 +87,7 @@ export function StickyBottomCTA() {
               </a>
             ) : (
               <span className="text-xl font-black tracking-tight text-highlight-300">
-                010-5700-4026
+                010-7543-7711
               </span>
             )}
           </div>
