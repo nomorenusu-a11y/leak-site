@@ -9,6 +9,7 @@ import { Container } from "@/components/ui/Container";
 import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
 import { PostContent } from "@/components/posts/PostContent";
+import { CaseStudyArticle } from "@/components/posts/CaseStudyArticle";
 import { PostGallery } from "@/components/posts/PostGallery";
 import { RelatedPosts } from "@/components/posts/RelatedPosts";
 import { PostViewTracker } from "@/components/posts/PostViewTracker";
@@ -27,6 +28,7 @@ import { articleJsonLd } from "@/lib/seo/schema";
 import { siteConfig } from "@/lib/env";
 import { formatDateYMD } from "@/lib/time";
 import { hasInlinePostImages } from "@/lib/post-inline-images";
+import { getCaseStudyDraft } from "@/data/case-drafts";
 
 export const revalidate = 3600;
 
@@ -43,18 +45,20 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) return { title: "찾을 수 없음" };
-  const description = post.excerpt || markdownToPlainText(post.content, 160);
+  const caseDraft = getCaseStudyDraft(slug);
+  const title = caseDraft?.title ?? post.title;
+  const description = caseDraft?.excerpt ?? post.excerpt ?? markdownToPlainText(post.content, 160);
   const url = `${siteConfig.url}/posts/${post.slug}`;
   // broken placeholder URL 방어 — placehold.co는 OG/twitter image에서 제외
   const isValidCover = post.cover_image_url && !/placehold\.co/i.test(post.cover_image_url);
   const images = isValidCover ? [post.cover_image_url as string] : undefined;
   return {
-    title: post.title,
+    title,
     description,
     alternates: { canonical: `/posts/${post.slug}` },
     openGraph: {
       type: "article",
-      title: post.title,
+      title,
       description,
       url,
       images,
@@ -63,7 +67,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: post.title,
+      title,
       description,
       images,
     },
@@ -74,6 +78,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) notFound();
+  const caseDraft = getCaseStudyDraft(slug);
 
   const [images, related, adjacent] = await Promise.all([
     getPostImages(post.id),
@@ -85,6 +90,10 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
   const region = candidate && (await getPublicRegionContent(candidate)) ? candidate : undefined;
   const shareUrl = `${siteConfig.url}/posts/${post.slug}`;
   const hasInlineImages = hasInlinePostImages(post.content, images);
+  const isStructuredCaseStudy = Boolean(
+    caseDraft && caseDraft.steps.every((step) => images.some((image) => image.id === step.imageId)),
+  );
+  const displayPost = caseDraft ? { ...post, title: caseDraft.title, excerpt: caseDraft.excerpt } : post;
 
   return (
     <>
@@ -94,7 +103,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
         dangerouslySetInnerHTML={{
           __html: safeJsonLd(
             articleJsonLd(
-              post,
+              displayPost,
               region
                 ? regionAncestors(region)
                     .map((r) => r.name)
@@ -118,7 +127,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
             <Container>
               {region && (
                 <div className="mb-5">
-                  <RegionBreadcrumbs region={region} postTitle={post.title} />
+                  <RegionBreadcrumbs region={region} postTitle={displayPost.title} />
                 </div>
               )}
               <div className="flex flex-wrap items-center gap-1.5 text-sm">
@@ -132,7 +141,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
                 ))}
               </div>
               <h1 className="mt-3 text-3xl leading-tight font-extrabold text-slate-900 sm:text-4xl">
-                {post.title}
+                {displayPost.title}
               </h1>
               <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
                 <p className="text-sm text-slate-600">
@@ -140,18 +149,29 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
                   {post.category && <span className="ml-2 text-slate-400">·</span>}
                   {post.category && <span className="ml-2">{post.category}</span>}
                 </p>
-                <SharePost url={shareUrl} title={post.title} />
+                <SharePost url={shareUrl} title={displayPost.title} />
               </div>
             </Container>
           </header>
           <Container className="max-w-3xl py-10">
-            <PostContent
-              content={post.content}
-              images={images}
-              inlineCta={hasInlineImages ? <PostCTABlock slug={post.slug} /> : undefined}
-            />
-            {!hasInlineImages && <PostGallery images={images} />}
-            {!hasInlineImages && <PostCTABlock slug={post.slug} />}
+            {caseDraft && isStructuredCaseStudy ? (
+              <CaseStudyArticle
+                draft={caseDraft}
+                images={images}
+                inlineCta={<PostCTABlock slug={post.slug} />}
+                endCta={<PostCTABlock slug={post.slug} />}
+              />
+            ) : (
+              <>
+                <PostContent
+                  content={post.content}
+                  images={images}
+                  inlineCta={hasInlineImages ? <PostCTABlock slug={post.slug} /> : undefined}
+                />
+                {!hasInlineImages && <PostGallery images={images} />}
+                {!hasInlineImages && <PostCTABlock slug={post.slug} />}
+              </>
+            )}
             <PostNav prev={adjacent.prev} next={adjacent.next} />
           </Container>
         </article>
