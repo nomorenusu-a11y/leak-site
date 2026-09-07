@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { createPost, updatePost } from "@/app/admin/posts/actions";
 import type { PostFormFieldErrors } from "@/app/admin/posts/types";
 import { MarkdownEditor } from "./MarkdownEditor";
@@ -41,6 +41,7 @@ export function PostForm({ mode, post, images = [] }: Props) {
   const [slug, setSlug] = useState(post?.slug ?? "");
   const [slugDirty, setSlugDirty] = useState(Boolean(post?.slug));
   const [content, setContent] = useState(post?.content ?? "");
+  const contentTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   function onTitleChange(v: string) {
     setTitle(v);
@@ -163,15 +164,32 @@ export function PostForm({ mode, post, images = [] }: Props) {
         />
       </Field>
 
-      <MarkdownEditor value={content} onChange={setContent} error={fieldErrors.content} />
+      <MarkdownEditor
+        value={content}
+        onChange={setContent}
+        error={fieldErrors.content}
+        textareaRef={contentTextareaRef}
+      />
 
       {mode === "edit" && post && (
         <PostImagesUploader
           postId={post.id}
           initial={images}
-          onInsertMarker={(marker) =>
-            setContent((current) => `${current.trimEnd()}\n\n${marker}\n`)
-          }
+          onInsertMarker={(marker) => {
+            const textarea = contentTextareaRef.current;
+            const selectionStart = textarea?.selectionStart ?? content.length;
+            const selectionEnd = textarea?.selectionEnd ?? selectionStart;
+            setContent((current) => {
+              const next = `${current.slice(0, selectionStart)}\n\n${marker}\n\n${current.slice(selectionEnd)}`;
+              requestAnimationFrame(() => {
+                if (!textarea) return;
+                const cursor = selectionStart + marker.length + 4;
+                textarea.focus();
+                textarea.setSelectionRange(cursor, cursor);
+              });
+              return next;
+            });
+          }}
         />
       )}
 

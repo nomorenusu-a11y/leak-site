@@ -9,7 +9,7 @@ import { SANITIZE_SCHEMA } from "@/lib/markdown";
  */
 export function PostBody({ content }: { content: string }) {
   return (
-    <div className="prose prose-slate max-w-none prose-headings:font-extrabold prose-headings:text-slate-900 prose-a:text-brand-700 prose-strong:text-slate-900 prose-img:rounded-xl">
+    <div className="prose prose-slate max-w-none prose-p:text-[15px] prose-p:leading-7 prose-headings:font-extrabold prose-headings:text-slate-900 prose-h2:mt-10 prose-h2:text-2xl prose-h3:mt-7 prose-a:text-brand-700 prose-strong:text-slate-900 prose-img:rounded-xl sm:prose-p:text-base sm:prose-p:leading-8">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[[rehypeSanitize, SANITIZE_SCHEMA]]}

@@ -1,5 +1,6 @@
 "use client";
 
+import type { RefObject } from "react";
 import { useState } from "react";
 import { PostBody } from "@/components/posts/PostBody";
 
@@ -7,15 +8,18 @@ export function MarkdownEditor({
   value,
   onChange,
   error,
+  textareaRef,
 }: {
   value: string;
   onChange: (next: string) => void;
   error?: string;
+  textareaRef?: RefObject<HTMLTextAreaElement | null>;
 }) {
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
 
   const editor = (
     <textarea
+      ref={textareaRef}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       rows={20}
@@ -58,7 +62,7 @@ export function MarkdownEditor({
         </div>
       </div>
       <p className="mb-2 text-xs leading-5 text-slate-500">
-        사진 카드의 <strong>본문에 삽입</strong>을 누르면 본문 끝에 사진 마커가 추가됩니다. 필요한 문단 아래로 옮기면 글 → 사진 → 설명 순서로 노출됩니다.
+        사진 카드의 <strong>본문에 삽입</strong>을 누르면 현재 커서 위치에 사진이 들어갑니다. 각 단계는 <strong>짧은 설명 → 사진 → 다음 설명</strong> 순서로 배치하세요.
       </p>
       {/* desktop: split */}
       <div className="hidden md:grid md:grid-cols-2 md:gap-3">
