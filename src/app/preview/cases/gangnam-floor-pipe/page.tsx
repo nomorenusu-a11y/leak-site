@@ -39,6 +39,7 @@ export default async function GangnamFloorPipePreviewPage() {
               draft={gangnamFloorPipeStructuredDraft}
               images={images}
               inlineCta={<PostCTABlock slug={post.slug} />}
+              endCta={<PostCTABlock slug={post.slug} />}
             />
           </Container>
         </article>

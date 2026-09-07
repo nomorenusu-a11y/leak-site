@@ -7,10 +7,12 @@ export function CaseStudyArticle({
   draft,
   images,
   inlineCta,
+  endCta,
 }: {
   draft: CaseStudyDraft;
   images: PostImage[];
   inlineCta?: ReactNode;
+  endCta?: ReactNode;
 }) {
   const imageById = new Map(images.map((image) => [image.id, image]));
   const ctaAfterStep = Math.max(1, Math.ceil(draft.steps.length / 2));
@@ -58,6 +60,7 @@ export function CaseStudyArticle({
           ))}
         </ul>
         <p className="mt-5">{draft.closing}</p>
+        {endCta}
       </section>
     </div>
   );
