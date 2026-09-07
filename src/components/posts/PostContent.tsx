@@ -55,7 +55,6 @@ export function PostContent({
           </div>
           {explanation && (
             <figcaption className="border-t border-slate-100 px-4 py-3.5 text-sm leading-6 text-slate-700">
-              <span className="mr-2 font-bold text-slate-900">사진에서 확인한 내용</span>
               {explanation}
             </figcaption>
           )}
