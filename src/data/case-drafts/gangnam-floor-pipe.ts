@@ -1,7 +1,7 @@
 /** Preview-only editorial draft. Every statement is constrained to the supplied field photos. */
 export const gangnamFloorPipeDraft = {
   sourceSlug: "post-ms731cj6-2t4x6k",
-  title: "강남구 바닥 매립배관 누수 점검 및 부분 보수 사례",
+  title: "강남구 누수탐지 | 바닥 매립배관 누수 점검 및 부분 보수 사례",
   excerpt:
     "서울 강남구 현장에서 바닥 마감재 젖음과 매립배관 주변 물고임을 확인한 뒤, 필요한 구간을 개방해 배관 상태를 점검하고 부분 보수한 사례입니다.",
   content: `서울 강남구 현장에서 바닥 마감재 일부가 젖고, 바닥 아래쪽으로 물기가 반복되는 상황을 확인했습니다.
