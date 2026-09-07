@@ -30,6 +30,10 @@ export const PILOT_REGIONS = SEOUL_REGIONS.filter((region) => pilotById.has(regi
 export const DOBONG = SEOUL_REGIONS.find((region) => region.id === "1132000000")!;
 export const PILOT_DONGS = PILOT_REGIONS.filter((region) => region.level === "dong");
 
+export function isPilotRegion(id: string) {
+  return pilotById.has(id);
+}
+
 export function regionById(id: string) {
   return SEOUL_REGIONS.find((region) => region.id === id);
 }

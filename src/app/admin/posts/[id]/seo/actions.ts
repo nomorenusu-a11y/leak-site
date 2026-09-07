@@ -2,7 +2,7 @@
 import { z } from "zod";
 import { assertAdmin } from "@/lib/auth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { regionAncestors, regionById } from "@/lib/regions";
+import { defaultRegionContent, regionAncestors, regionById } from "@/lib/regions";
 import { validTermIds } from "@/lib/seo/taxonomy";
 import { revalidateRegionTree } from "@/lib/revalidation";
 import { revalidatePath } from "next/cache";
@@ -38,7 +38,13 @@ export async function savePostSeo(
     };
   }
   if (region) {
-    const regionIds = regionAncestors(region).map((ancestor) => ancestor.id);
+    const ancestorContent = regionAncestors(region).map((ancestor) => defaultRegionContent(ancestor.id));
+    const regionIds = ancestorContent.map((content) => content.region_id);
+    const { error: createPageError } = await db.from("region_pages").upsert(
+      ancestorContent.map((content) => ({ ...content, indexable: false })),
+      { onConflict: "region_id", ignoreDuplicates: true },
+    );
+    if (createPageError) console.warn("[post-seo:region-pages]", createPageError.code);
     const { error: indexError } = await db
       .from("region_pages")
       .update({ indexable: true, updated_at: new Date().toISOString() })
