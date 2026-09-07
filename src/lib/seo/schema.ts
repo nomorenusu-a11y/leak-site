@@ -1,4 +1,5 @@
 import { siteConfig } from "@/lib/env";
+import { getContactInfo } from "@/lib/contact";
 import { ALL_CITY_CODES, CITY_REGION_TAGS } from "@/lib/city";
 import type { Post } from "@/types/database";
 
@@ -14,6 +15,7 @@ export function localBusinessJsonLd() {
     "@type": "Place",
     name: CITY_REGION_TAGS[code],
   }));
+  const { phone } = getContactInfo();
 
   return {
     "@context": "https://schema.org",
@@ -22,7 +24,7 @@ export function localBusinessJsonLd() {
     name: siteConfig.name,
     url: siteConfig.url,
     image: `${siteConfig.url}/og.png`,
-    telephone: siteConfig.phone ? `+82-${siteConfig.phone.slice(1)}` : undefined,
+    telephone: phone?.tel,
     priceRange: "₩₩",
     // 사람이 읽기 쉬운 표현 (Schema.org 권장 형식 둘 다 지원)
     openingHours: ["Mo-Su 00:00-23:59"],
