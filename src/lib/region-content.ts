@@ -2,7 +2,7 @@ import { cache } from "react";
 import { z } from "zod";
 import { createSupabaseAnonClient } from "@/lib/supabase/anon";
 import { publicEnv } from "@/lib/env";
-import { defaultRegionContent, regionAncestors } from "@/lib/regions";
+import { defaultRegionContent, isPilotRegion, regionAncestors } from "@/lib/regions";
 import type { Region } from "@/types/seo";
 
 const contentSchema = z.object({
@@ -28,8 +28,9 @@ export const getRegionContent = cache(async (id: string) => {
     if (error.code === "PGRST205" || error.code === "42P01") return defaultRegionContent(id);
     throw new Error(`Region content unavailable: ${error.code}`);
   }
-  // An absent/RLS-hidden row is NOT replaced by public fallback copy (unpublish safe).
-  if (!data) return null;
+  // Pilot rows retain explicit publish control. New legal-dong pages use reviewed shared fallback
+  // until a verified case creates a region_pages record for that location.
+  if (!data) return isPilotRegion(id) ? null : defaultRegionContent(id);
   const content = contentSchema.parse(data);
   return content.published ? content : null;
 });

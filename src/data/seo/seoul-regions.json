@@ -1,0 +1,4439 @@
+[
+  {
+    "id": "1100000000",
+    "parent_id": null,
+    "level": "city",
+    "slug": "seoul",
+    "name": "서울",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "jongno-gu",
+    "name": "종로구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111010100",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "cheongun-dong",
+    "name": "청운동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111010200",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "singyo-dong",
+    "name": "신교동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111010300",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "gungjeong-dong",
+    "name": "궁정동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111010400",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "hyoja-dong",
+    "name": "효자동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111010500",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "changseong-dong",
+    "name": "창성동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111010600",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "tongui-dong",
+    "name": "통의동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111010700",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "jeokseon-dong",
+    "name": "적선동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111010800",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "tongin-dong",
+    "name": "통인동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111010900",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "nusang-dong",
+    "name": "누상동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111011000",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "nuha-dong",
+    "name": "누하동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111011100",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "ogin-dong",
+    "name": "옥인동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111011200",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "chebu-dong",
+    "name": "체부동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111011300",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "pirun-dong",
+    "name": "필운동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111011400",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "naeja-dong",
+    "name": "내자동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111011500",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "sajik-dong",
+    "name": "사직동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111011600",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "doryeom-dong",
+    "name": "도렴동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111011700",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "dangju-dong",
+    "name": "당주동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111011800",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "naesu-dong",
+    "name": "내수동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111011900",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "sejong-dong",
+    "name": "세종로",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111012000",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "sinmullo1-dong",
+    "name": "신문로1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111012100",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "sinmullo2-dong",
+    "name": "신문로2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111012200",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "cheongjin-dong",
+    "name": "청진동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111012300",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "seorin-dong",
+    "name": "서린동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111012400",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "susong-dong",
+    "name": "수송동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111012500",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "junghak-dong",
+    "name": "중학동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111012600",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "jongro1-dong",
+    "name": "종로1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111012700",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "gongpyeong-dong",
+    "name": "공평동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111012800",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "gwanhun-dong",
+    "name": "관훈동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111012900",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "gyeonji-dong",
+    "name": "견지동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111013000",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "waryong-dong",
+    "name": "와룡동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111013100",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "gwonnong-dong",
+    "name": "권농동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111013200",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "unni-dong",
+    "name": "운니동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111013300",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "ikseon-dong",
+    "name": "익선동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111013400",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "gyeongun-dong",
+    "name": "경운동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111013500",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "gwancheol-dong",
+    "name": "관철동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111013600",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "insa-dong",
+    "name": "인사동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111013700",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "nagwon-dong",
+    "name": "낙원동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111013800",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "jongro2-dong",
+    "name": "종로2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111013900",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "palpan-dong",
+    "name": "팔판동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111014000",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "samcheong-dong",
+    "name": "삼청동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111014100",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "anguk-dong",
+    "name": "안국동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111014200",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "sogyeok-dong",
+    "name": "소격동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111014300",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "hwa-dong",
+    "name": "화동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111014400",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "sagan-dong",
+    "name": "사간동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111014500",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "songhyeon-dong",
+    "name": "송현동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111014600",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "gahoe-dong",
+    "name": "가회동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111014700",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "jae-dong",
+    "name": "재동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111014800",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "gye-dong",
+    "name": "계동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111014900",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "wonseo-dong",
+    "name": "원서동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111015000",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "hunjeong-dong",
+    "name": "훈정동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111015100",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "myo-dong",
+    "name": "묘동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111015200",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "bongik-dong",
+    "name": "봉익동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111015300",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "donui-dong",
+    "name": "돈의동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111015400",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "jangsa-dong",
+    "name": "장사동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111015500",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "gwansu-dong",
+    "name": "관수동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111015600",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "jongro3-dong",
+    "name": "종로3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111015700",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "inui-dong",
+    "name": "인의동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111015800",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "yeji-dong",
+    "name": "예지동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111015900",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "wonnam-dong",
+    "name": "원남동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111016000",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "yeonji-dong",
+    "name": "연지동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111016100",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "jongro4-dong",
+    "name": "종로4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111016200",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "hyoje-dong",
+    "name": "효제동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111016300",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "jongro5-dong",
+    "name": "종로5가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111016400",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "jongro6-dong",
+    "name": "종로6가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111016500",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "ihwa-dong",
+    "name": "이화동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111016600",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "yeongeon-dong",
+    "name": "연건동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111016700",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "chungsin-dong",
+    "name": "충신동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111016800",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "dongsung-dong",
+    "name": "동숭동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111016900",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "hyehwa-dong",
+    "name": "혜화동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111017000",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "myeongryun1-dong",
+    "name": "명륜1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111017100",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "myeongryun2-dong",
+    "name": "명륜2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111017200",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "myeongryun4-dong",
+    "name": "명륜4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111017300",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "myeongryun3-dong",
+    "name": "명륜3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111017400",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "changsin-dong",
+    "name": "창신동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111017500",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "sungin-dong",
+    "name": "숭인동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111017600",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "gyonam-dong",
+    "name": "교남동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111017700",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "pyeong-dong",
+    "name": "평동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111017800",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "songwol-dong",
+    "name": "송월동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111017900",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "hongpa-dong",
+    "name": "홍파동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111018000",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "gyobuk-dong",
+    "name": "교북동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111018100",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "haengchon-dong",
+    "name": "행촌동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111018200",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "gugi-dong",
+    "name": "구기동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111018300",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "pyeongchang-dong",
+    "name": "평창동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111018400",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "buam-dong",
+    "name": "부암동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111018500",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "hongji-dong",
+    "name": "홍지동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111018600",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "sinyeong-dong",
+    "name": "신영동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1111018700",
+    "parent_id": "1111000000",
+    "level": "dong",
+    "slug": "muak-dong",
+    "name": "무악동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "jung-gu",
+    "name": "중구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114010100",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "mugyo-dong",
+    "name": "무교동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114010200",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "da-dong",
+    "name": "다동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114010300",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "taepyeongro1-dong",
+    "name": "태평로1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114010400",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "euljiro1-dong",
+    "name": "을지로1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114010500",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "euljiro2-dong",
+    "name": "을지로2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114010600",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "namdaemullo1-dong",
+    "name": "남대문로1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114010700",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "samgak-dong",
+    "name": "삼각동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114010800",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "suha-dong",
+    "name": "수하동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114010900",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "janggyo-dong",
+    "name": "장교동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114011000",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "supyo-dong",
+    "name": "수표동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114011100",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "sogong-dong",
+    "name": "소공동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114011200",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "namchang-dong",
+    "name": "남창동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114011300",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "bukchang-dong",
+    "name": "북창동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114011400",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "taepyeongro2-dong",
+    "name": "태평로2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114011500",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "namdaemullo2-dong",
+    "name": "남대문로2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114011600",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "namdaemullo3-dong",
+    "name": "남대문로3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114011700",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "namdaemullo4-dong",
+    "name": "남대문로4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114011800",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "namdaemullo5-dong",
+    "name": "남대문로5가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114011900",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "bongraedong1-dong",
+    "name": "봉래동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114012000",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "bongraedong2-dong",
+    "name": "봉래동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114012100",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "hoehyeondong1-dong",
+    "name": "회현동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114012200",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "hoehyeondong2-dong",
+    "name": "회현동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114012300",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "hoehyeondong3-dong",
+    "name": "회현동3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114012400",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "chungmuro1-dong",
+    "name": "충무로1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114012500",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "chungmuro2-dong",
+    "name": "충무로2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114012600",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "myeongdong1-dong",
+    "name": "명동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114012700",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "myeongdong2-dong",
+    "name": "명동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114012800",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "namsandong1-dong",
+    "name": "남산동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114012900",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "namsandong2-dong",
+    "name": "남산동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114013000",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "namsandong3-dong",
+    "name": "남산동3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114013100",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "jeodong1-dong",
+    "name": "저동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114013200",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "chungmuro4-dong",
+    "name": "충무로4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114013300",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "chungmuro5-dong",
+    "name": "충무로5가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114013400",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "inhyeondong2-dong",
+    "name": "인현동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114013500",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "yegwan-dong",
+    "name": "예관동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114013600",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "mukjeong-dong",
+    "name": "묵정동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114013700",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "pildong1-dong",
+    "name": "필동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114013800",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "pildong2-dong",
+    "name": "필동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114013900",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "pildong3-dong",
+    "name": "필동3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114014000",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "namhak-dong",
+    "name": "남학동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114014100",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "juja-dong",
+    "name": "주자동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114014200",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "yejang-dong",
+    "name": "예장동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114014300",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "jangchungdong1-dong",
+    "name": "장충동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114014400",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "jangchungdong2-dong",
+    "name": "장충동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114014500",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "gwanghuidong1-dong",
+    "name": "광희동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114014600",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "gwanghuidong2-dong",
+    "name": "광희동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114014700",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "ssangrim-dong",
+    "name": "쌍림동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114014800",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "euljiro6-dong",
+    "name": "을지로6가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114014900",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "euljiro7-dong",
+    "name": "을지로7가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114015000",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "euljiro4-dong",
+    "name": "을지로4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114015100",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "euljiro5-dong",
+    "name": "을지로5가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114015200",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "jugyo-dong",
+    "name": "주교동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114015300",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "bangsan-dong",
+    "name": "방산동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114015400",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "ojang-dong",
+    "name": "오장동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114015500",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "euljiro3-dong",
+    "name": "을지로3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114015600",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "ipjeong-dong",
+    "name": "입정동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114015700",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "sallim-dong",
+    "name": "산림동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114015800",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "chungmuro3-dong",
+    "name": "충무로3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114015900",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "cho-dong",
+    "name": "초동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114016000",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "inhyeondong1-dong",
+    "name": "인현동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114016100",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "jeodong2-dong",
+    "name": "저동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114016200",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "sindang-dong",
+    "name": "신당동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114016300",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "heungin-dong",
+    "name": "흥인동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114016400",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "muhak-dong",
+    "name": "무학동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114016500",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "hwanghak-dong",
+    "name": "황학동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114016600",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "seosomun-dong",
+    "name": "서소문동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114016700",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "jeong-dong",
+    "name": "정동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114016800",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "sunhwa-dong",
+    "name": "순화동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114016900",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "uijuro1-dong",
+    "name": "의주로1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114017000",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "chungjeongro1-dong",
+    "name": "충정로1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114017100",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "jungrim-dong",
+    "name": "중림동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114017200",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "uijuro2-dong",
+    "name": "의주로2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114017300",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "mallidong1-dong",
+    "name": "만리동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1114017400",
+    "parent_id": "1114000000",
+    "level": "dong",
+    "slug": "mallidong2-dong",
+    "name": "만리동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "yongsan-gu",
+    "name": "용산구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117010100",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "huam-dong",
+    "name": "후암동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117010200",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "yongsandong2-dong",
+    "name": "용산동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117010300",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "yongsandong4-dong",
+    "name": "용산동4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117010400",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "garwol-dong",
+    "name": "갈월동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117010500",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "namyeong-dong",
+    "name": "남영동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117010600",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "yongsandong1-dong",
+    "name": "용산동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117010700",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "dongja-dong",
+    "name": "동자동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117010800",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "seogye-dong",
+    "name": "서계동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117010900",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "cheongpadong1-dong",
+    "name": "청파동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117011000",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "cheongpadong2-dong",
+    "name": "청파동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117011100",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "cheongpadong3-dong",
+    "name": "청파동3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117011200",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "wonhyoro1-dong",
+    "name": "원효로1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117011300",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "wonhyoro2-dong",
+    "name": "원효로2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117011400",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "sinchang-dong",
+    "name": "신창동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117011500",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "sancheon-dong",
+    "name": "산천동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117011600",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "cheongam-dong",
+    "name": "청암동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117011700",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "wonhyoro3-dong",
+    "name": "원효로3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117011800",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "wonhyoro4-dong",
+    "name": "원효로4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117011900",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "hyochang-dong",
+    "name": "효창동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117012000",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "dowon-dong",
+    "name": "도원동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117012100",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "yongmun-dong",
+    "name": "용문동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117012200",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "munbae-dong",
+    "name": "문배동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117012300",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "singye-dong",
+    "name": "신계동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117012400",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "hangangro1-dong",
+    "name": "한강로1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117012500",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "hangangro2-dong",
+    "name": "한강로2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117012600",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "yongsandong3-dong",
+    "name": "용산동3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117012700",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "yongsandong5-dong",
+    "name": "용산동5가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117012800",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "hangangro3-dong",
+    "name": "한강로3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117012900",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "ichon-dong",
+    "name": "이촌동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117013000",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "itaewon-dong",
+    "name": "이태원동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117013100",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "hannam-dong",
+    "name": "한남동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117013200",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "dongbinggo-dong",
+    "name": "동빙고동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117013300",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "seobinggo-dong",
+    "name": "서빙고동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117013400",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "juseong-dong",
+    "name": "주성동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117013500",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "yongsandong6-dong",
+    "name": "용산동6가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1117013600",
+    "parent_id": "1117000000",
+    "level": "dong",
+    "slug": "bogwang-dong",
+    "name": "보광동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "seongdong-gu",
+    "name": "성동구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120010100",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "sangwangsimni-dong",
+    "name": "상왕십리동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120010200",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "hawangsimni-dong",
+    "name": "하왕십리동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120010300",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "hongik-dong",
+    "name": "홍익동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120010400",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "doseon-dong",
+    "name": "도선동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120010500",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "majang-dong",
+    "name": "마장동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120010600",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "sageun-dong",
+    "name": "사근동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120010700",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "haengdang-dong",
+    "name": "행당동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120010800",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "eungbong-dong",
+    "name": "응봉동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120010900",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "geumhodong1-dong",
+    "name": "금호동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120011000",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "geumhodong2-dong",
+    "name": "금호동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120011100",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "geumhodong3-dong",
+    "name": "금호동3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120011200",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "geumhodong4-dong",
+    "name": "금호동4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120011300",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "oksu-dong",
+    "name": "옥수동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120011400",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "seongsudong1-dong",
+    "name": "성수동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120011500",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "seongsudong2-dong",
+    "name": "성수동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120011800",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "songjeong-dong",
+    "name": "송정동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1120012200",
+    "parent_id": "1120000000",
+    "level": "dong",
+    "slug": "yongdap-dong",
+    "name": "용답동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1121500000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "gwangjin-gu",
+    "name": "광진구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1121510100",
+    "parent_id": "1121500000",
+    "level": "dong",
+    "slug": "junggok-dong",
+    "name": "중곡동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1121510200",
+    "parent_id": "1121500000",
+    "level": "dong",
+    "slug": "neung-dong",
+    "name": "능동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1121510300",
+    "parent_id": "1121500000",
+    "level": "dong",
+    "slug": "guui-dong",
+    "name": "구의동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1121510400",
+    "parent_id": "1121500000",
+    "level": "dong",
+    "slug": "gwangjang-dong",
+    "name": "광장동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1121510500",
+    "parent_id": "1121500000",
+    "level": "dong",
+    "slug": "jayang-dong",
+    "name": "자양동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1121510700",
+    "parent_id": "1121500000",
+    "level": "dong",
+    "slug": "hwayang-dong",
+    "name": "화양동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1121510900",
+    "parent_id": "1121500000",
+    "level": "dong",
+    "slug": "gunja-dong",
+    "name": "군자동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1123000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "dongdaemun-gu",
+    "name": "동대문구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1123010100",
+    "parent_id": "1123000000",
+    "level": "dong",
+    "slug": "sinseol-dong",
+    "name": "신설동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1123010200",
+    "parent_id": "1123000000",
+    "level": "dong",
+    "slug": "yongdu-dong",
+    "name": "용두동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1123010300",
+    "parent_id": "1123000000",
+    "level": "dong",
+    "slug": "jegi-dong",
+    "name": "제기동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1123010400",
+    "parent_id": "1123000000",
+    "level": "dong",
+    "slug": "jeonnong-dong",
+    "name": "전농동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1123010500",
+    "parent_id": "1123000000",
+    "level": "dong",
+    "slug": "dapsimni-dong",
+    "name": "답십리동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1123010600",
+    "parent_id": "1123000000",
+    "level": "dong",
+    "slug": "jangan-dong",
+    "name": "장안동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1123010700",
+    "parent_id": "1123000000",
+    "level": "dong",
+    "slug": "cheongryangri-dong",
+    "name": "청량리동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1123010800",
+    "parent_id": "1123000000",
+    "level": "dong",
+    "slug": "hoegi-dong",
+    "name": "회기동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1123010900",
+    "parent_id": "1123000000",
+    "level": "dong",
+    "slug": "hwigyeong-dong",
+    "name": "휘경동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1123011000",
+    "parent_id": "1123000000",
+    "level": "dong",
+    "slug": "imun-dong",
+    "name": "이문동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1126000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "jungrang-gu",
+    "name": "중랑구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1126010100",
+    "parent_id": "1126000000",
+    "level": "dong",
+    "slug": "myeonmok-dong",
+    "name": "면목동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1126010200",
+    "parent_id": "1126000000",
+    "level": "dong",
+    "slug": "sangbong-dong",
+    "name": "상봉동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1126010300",
+    "parent_id": "1126000000",
+    "level": "dong",
+    "slug": "junghwa-dong",
+    "name": "중화동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1126010400",
+    "parent_id": "1126000000",
+    "level": "dong",
+    "slug": "muk-dong",
+    "name": "묵동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1126010500",
+    "parent_id": "1126000000",
+    "level": "dong",
+    "slug": "mangu-dong",
+    "name": "망우동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1126010600",
+    "parent_id": "1126000000",
+    "level": "dong",
+    "slug": "sinnae-dong",
+    "name": "신내동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "seongbuk-gu",
+    "name": "성북구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129010100",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "seongbuk-dong",
+    "name": "성북동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129010200",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "seongbukdong1-dong",
+    "name": "성북동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129010300",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "donam-dong",
+    "name": "돈암동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129010400",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "dongsomundong1-dong",
+    "name": "동소문동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129010500",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "dongsomundong2-dong",
+    "name": "동소문동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129010600",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "dongsomundong3-dong",
+    "name": "동소문동3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129010700",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "dongsomundong4-dong",
+    "name": "동소문동4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129010800",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "dongsomundong5-dong",
+    "name": "동소문동5가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129010900",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "dongsomundong6-dong",
+    "name": "동소문동6가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129011000",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "dongsomundong7-dong",
+    "name": "동소문동7가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129011100",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "samseondong1-dong",
+    "name": "삼선동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129011200",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "samseondong2-dong",
+    "name": "삼선동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129011300",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "samseondong3-dong",
+    "name": "삼선동3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129011400",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "samseondong4-dong",
+    "name": "삼선동4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129011500",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "samseondong5-dong",
+    "name": "삼선동5가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129011600",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "dongseondong1-dong",
+    "name": "동선동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129011700",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "dongseondong2-dong",
+    "name": "동선동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129011800",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "dongseondong3-dong",
+    "name": "동선동3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129011900",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "dongseondong4-dong",
+    "name": "동선동4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129012000",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "dongseondong5-dong",
+    "name": "동선동5가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129012100",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "anamdong1-dong",
+    "name": "안암동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129012200",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "anamdong2-dong",
+    "name": "안암동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129012300",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "anamdong3-dong",
+    "name": "안암동3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129012400",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "anamdong4-dong",
+    "name": "안암동4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129012500",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "anamdong5-dong",
+    "name": "안암동5가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129012600",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "bomundong4-dong",
+    "name": "보문동4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129012700",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "bomundong5-dong",
+    "name": "보문동5가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129012800",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "bomundong6-dong",
+    "name": "보문동6가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129012900",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "bomundong7-dong",
+    "name": "보문동7가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129013000",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "bomundong1-dong",
+    "name": "보문동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129013100",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "bomundong2-dong",
+    "name": "보문동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129013200",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "bomundong3-dong",
+    "name": "보문동3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129013300",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "jeongreung-dong",
+    "name": "정릉동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129013400",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "gireum-dong",
+    "name": "길음동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129013500",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "jongam-dong",
+    "name": "종암동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129013600",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "hawolgok-dong",
+    "name": "하월곡동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129013700",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "sangwolgok-dong",
+    "name": "상월곡동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129013800",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "jangwi-dong",
+    "name": "장위동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1129013900",
+    "parent_id": "1129000000",
+    "level": "dong",
+    "slug": "seokgwan-dong",
+    "name": "석관동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1130500000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "gangbuk-gu",
+    "name": "강북구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1130510100",
+    "parent_id": "1130500000",
+    "level": "dong",
+    "slug": "mia-dong",
+    "name": "미아동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1130510200",
+    "parent_id": "1130500000",
+    "level": "dong",
+    "slug": "beon-dong",
+    "name": "번동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1130510300",
+    "parent_id": "1130500000",
+    "level": "dong",
+    "slug": "suyu-dong",
+    "name": "수유동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1130510400",
+    "parent_id": "1130500000",
+    "level": "dong",
+    "slug": "ui-dong",
+    "name": "우이동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1132000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "dobong-gu",
+    "name": "도봉구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1132010500",
+    "parent_id": "1132000000",
+    "level": "dong",
+    "slug": "ssangmun-dong",
+    "name": "쌍문동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1132010600",
+    "parent_id": "1132000000",
+    "level": "dong",
+    "slug": "banghak-dong",
+    "name": "방학동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1132010700",
+    "parent_id": "1132000000",
+    "level": "dong",
+    "slug": "chang-dong",
+    "name": "창동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1132010800",
+    "parent_id": "1132000000",
+    "level": "dong",
+    "slug": "dobong-dong",
+    "name": "도봉동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1135000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "nowon-gu",
+    "name": "노원구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1135010200",
+    "parent_id": "1135000000",
+    "level": "dong",
+    "slug": "wolgye-dong",
+    "name": "월계동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1135010300",
+    "parent_id": "1135000000",
+    "level": "dong",
+    "slug": "gongreung-dong",
+    "name": "공릉동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1135010400",
+    "parent_id": "1135000000",
+    "level": "dong",
+    "slug": "hagye-dong",
+    "name": "하계동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1135010500",
+    "parent_id": "1135000000",
+    "level": "dong",
+    "slug": "sanggye-dong",
+    "name": "상계동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1135010600",
+    "parent_id": "1135000000",
+    "level": "dong",
+    "slug": "junggye-dong",
+    "name": "중계동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1138000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "eunpyeong-gu",
+    "name": "은평구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1138010100",
+    "parent_id": "1138000000",
+    "level": "dong",
+    "slug": "susaek-dong",
+    "name": "수색동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1138010200",
+    "parent_id": "1138000000",
+    "level": "dong",
+    "slug": "nokbeon-dong",
+    "name": "녹번동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1138010300",
+    "parent_id": "1138000000",
+    "level": "dong",
+    "slug": "bulgwang-dong",
+    "name": "불광동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1138010400",
+    "parent_id": "1138000000",
+    "level": "dong",
+    "slug": "galhyeon-dong",
+    "name": "갈현동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1138010500",
+    "parent_id": "1138000000",
+    "level": "dong",
+    "slug": "gusan-dong",
+    "name": "구산동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1138010600",
+    "parent_id": "1138000000",
+    "level": "dong",
+    "slug": "daejo-dong",
+    "name": "대조동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1138010700",
+    "parent_id": "1138000000",
+    "level": "dong",
+    "slug": "eungam-dong",
+    "name": "응암동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1138010800",
+    "parent_id": "1138000000",
+    "level": "dong",
+    "slug": "yeokchon-dong",
+    "name": "역촌동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1138010900",
+    "parent_id": "1138000000",
+    "level": "dong",
+    "slug": "sinsa-dong",
+    "name": "신사동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1138011000",
+    "parent_id": "1138000000",
+    "level": "dong",
+    "slug": "jeungsan-dong",
+    "name": "증산동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1138011400",
+    "parent_id": "1138000000",
+    "level": "dong",
+    "slug": "jingwan-dong",
+    "name": "진관동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "seodaemun-gu",
+    "name": "서대문구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141010100",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "chungjeongro2-dong",
+    "name": "충정로2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141010200",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "chungjeongro3-dong",
+    "name": "충정로3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141010300",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "hap-dong",
+    "name": "합동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141010400",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "migeun-dong",
+    "name": "미근동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141010500",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "naengcheon-dong",
+    "name": "냉천동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141010600",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "cheonyeon-dong",
+    "name": "천연동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141010700",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "okcheon-dong",
+    "name": "옥천동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141010800",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "yeongcheon-dong",
+    "name": "영천동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141010900",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "hyeonjeo-dong",
+    "name": "현저동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141011000",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "bugahyeon-dong",
+    "name": "북아현동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141011100",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "hongje-dong",
+    "name": "홍제동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141011200",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "daehyeon-dong",
+    "name": "대현동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141011300",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "daesin-dong",
+    "name": "대신동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141011400",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "sinchon-dong",
+    "name": "신촌동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141011500",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "bongwon-dong",
+    "name": "봉원동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141011600",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "changcheon-dong",
+    "name": "창천동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141011700",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "yeonhui-dong",
+    "name": "연희동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141011800",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "hongeun-dong",
+    "name": "홍은동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141011900",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "bukgajwa-dong",
+    "name": "북가좌동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1141012000",
+    "parent_id": "1141000000",
+    "level": "dong",
+    "slug": "namgajwa-dong",
+    "name": "남가좌동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "mapo-gu",
+    "name": "마포구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144010100",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "ahyeon-dong",
+    "name": "아현동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144010200",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "gongdeok-dong",
+    "name": "공덕동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144010300",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "singongdeok-dong",
+    "name": "신공덕동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144010400",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "dohwa-dong",
+    "name": "도화동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144010500",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "yonggang-dong",
+    "name": "용강동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144010600",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "tojeong-dong",
+    "name": "토정동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144010700",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "mapo-dong",
+    "name": "마포동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144010800",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "daeheung-dong",
+    "name": "대흥동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144010900",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "yeomri-dong",
+    "name": "염리동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144011000",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "nogosan-dong",
+    "name": "노고산동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144011100",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "sinsu-dong",
+    "name": "신수동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144011200",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "hyeonseok-dong",
+    "name": "현석동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144011300",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "gusu-dong",
+    "name": "구수동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144011400",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "changjeon-dong",
+    "name": "창전동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144011500",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "sangsu-dong",
+    "name": "상수동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144011600",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "hajung-dong",
+    "name": "하중동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144011700",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "sinjeong-dong",
+    "name": "신정동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144011800",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "dangin-dong",
+    "name": "당인동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144012000",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "seogyo-dong",
+    "name": "서교동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144012100",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "donggyo-dong",
+    "name": "동교동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144012200",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "hapjeong-dong",
+    "name": "합정동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144012300",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "mangwon-dong",
+    "name": "망원동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144012400",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "yeonnam-dong",
+    "name": "연남동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144012500",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "seongsan-dong",
+    "name": "성산동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144012600",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "jung-dong",
+    "name": "중동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1144012700",
+    "parent_id": "1144000000",
+    "level": "dong",
+    "slug": "sangam-dong",
+    "name": "상암동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1147000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "yangcheon-gu",
+    "name": "양천구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1147010100",
+    "parent_id": "1147000000",
+    "level": "dong",
+    "slug": "sinjeong-dong",
+    "name": "신정동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1147010200",
+    "parent_id": "1147000000",
+    "level": "dong",
+    "slug": "mok-dong",
+    "name": "목동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1147010300",
+    "parent_id": "1147000000",
+    "level": "dong",
+    "slug": "sinwol-dong",
+    "name": "신월동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1150000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "gangseo-gu",
+    "name": "강서구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1150010100",
+    "parent_id": "1150000000",
+    "level": "dong",
+    "slug": "yeomchang-dong",
+    "name": "염창동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1150010200",
+    "parent_id": "1150000000",
+    "level": "dong",
+    "slug": "deungchon-dong",
+    "name": "등촌동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1150010300",
+    "parent_id": "1150000000",
+    "level": "dong",
+    "slug": "hwagok-dong",
+    "name": "화곡동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1150010400",
+    "parent_id": "1150000000",
+    "level": "dong",
+    "slug": "gayang-dong",
+    "name": "가양동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1150010500",
+    "parent_id": "1150000000",
+    "level": "dong",
+    "slug": "magok-dong",
+    "name": "마곡동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1150010600",
+    "parent_id": "1150000000",
+    "level": "dong",
+    "slug": "naebalsan-dong",
+    "name": "내발산동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1150010700",
+    "parent_id": "1150000000",
+    "level": "dong",
+    "slug": "oebalsan-dong",
+    "name": "외발산동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1150010800",
+    "parent_id": "1150000000",
+    "level": "dong",
+    "slug": "gonghang-dong",
+    "name": "공항동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1150010900",
+    "parent_id": "1150000000",
+    "level": "dong",
+    "slug": "banghwa-dong",
+    "name": "방화동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1150011000",
+    "parent_id": "1150000000",
+    "level": "dong",
+    "slug": "gaehwa-dong",
+    "name": "개화동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1150011100",
+    "parent_id": "1150000000",
+    "level": "dong",
+    "slug": "gwahae-dong",
+    "name": "과해동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1150011200",
+    "parent_id": "1150000000",
+    "level": "dong",
+    "slug": "ogok-dong",
+    "name": "오곡동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1150011300",
+    "parent_id": "1150000000",
+    "level": "dong",
+    "slug": "osoe-dong",
+    "name": "오쇠동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1153000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "guro-gu",
+    "name": "구로구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1153010100",
+    "parent_id": "1153000000",
+    "level": "dong",
+    "slug": "sindorim-dong",
+    "name": "신도림동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1153010200",
+    "parent_id": "1153000000",
+    "level": "dong",
+    "slug": "guro-dong",
+    "name": "구로동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1153010300",
+    "parent_id": "1153000000",
+    "level": "dong",
+    "slug": "garibong-dong",
+    "name": "가리봉동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1153010600",
+    "parent_id": "1153000000",
+    "level": "dong",
+    "slug": "gocheok-dong",
+    "name": "고척동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1153010700",
+    "parent_id": "1153000000",
+    "level": "dong",
+    "slug": "gaebong-dong",
+    "name": "개봉동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1153010800",
+    "parent_id": "1153000000",
+    "level": "dong",
+    "slug": "oryu-dong",
+    "name": "오류동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1153010900",
+    "parent_id": "1153000000",
+    "level": "dong",
+    "slug": "gung-dong",
+    "name": "궁동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1153011000",
+    "parent_id": "1153000000",
+    "level": "dong",
+    "slug": "onsu-dong",
+    "name": "온수동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1153011100",
+    "parent_id": "1153000000",
+    "level": "dong",
+    "slug": "cheonwang-dong",
+    "name": "천왕동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1153011200",
+    "parent_id": "1153000000",
+    "level": "dong",
+    "slug": "hang-dong",
+    "name": "항동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1154500000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "geumcheon-gu",
+    "name": "금천구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1154510100",
+    "parent_id": "1154500000",
+    "level": "dong",
+    "slug": "gasan-dong",
+    "name": "가산동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1154510200",
+    "parent_id": "1154500000",
+    "level": "dong",
+    "slug": "doksan-dong",
+    "name": "독산동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1154510300",
+    "parent_id": "1154500000",
+    "level": "dong",
+    "slug": "siheung-dong",
+    "name": "시흥동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "yeongdeungpo-gu",
+    "name": "영등포구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156010100",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yeongdeungpo-dong",
+    "name": "영등포동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156010200",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yeongdeungpodong1-dong",
+    "name": "영등포동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156010300",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yeongdeungpodong2-dong",
+    "name": "영등포동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156010400",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yeongdeungpodong3-dong",
+    "name": "영등포동3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156010500",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yeongdeungpodong4-dong",
+    "name": "영등포동4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156010600",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yeongdeungpodong5-dong",
+    "name": "영등포동5가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156010700",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yeongdeungpodong6-dong",
+    "name": "영등포동6가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156010800",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yeongdeungpodong7-dong",
+    "name": "영등포동7가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156010900",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yeongdeungpodong8-dong",
+    "name": "영등포동8가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156011000",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yeouido-dong",
+    "name": "여의도동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156011100",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "dangsandong1-dong",
+    "name": "당산동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156011200",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "dangsandong2-dong",
+    "name": "당산동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156011300",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "dangsandong3-dong",
+    "name": "당산동3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156011400",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "dangsandong4-dong",
+    "name": "당산동4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156011500",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "dangsandong5-dong",
+    "name": "당산동5가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156011600",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "dangsandong6-dong",
+    "name": "당산동6가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156011700",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "dangsan-dong",
+    "name": "당산동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156011800",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "dorim-dong",
+    "name": "도림동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156011900",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "mullaedong1-dong",
+    "name": "문래동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156012000",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "mullaedong2-dong",
+    "name": "문래동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156012100",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "mullaedong3-dong",
+    "name": "문래동3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156012200",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "mullaedong4-dong",
+    "name": "문래동4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156012300",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "mullaedong5-dong",
+    "name": "문래동5가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156012400",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "mullaedong6-dong",
+    "name": "문래동6가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156012500",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yangpyeongdong1-dong",
+    "name": "양평동1가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156012600",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yangpyeongdong2-dong",
+    "name": "양평동2가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156012700",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yangpyeongdong3-dong",
+    "name": "양평동3가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156012800",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yangpyeongdong4-dong",
+    "name": "양평동4가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156012900",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yangpyeongdong5-dong",
+    "name": "양평동5가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156013000",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yangpyeongdong6-dong",
+    "name": "양평동6가",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156013100",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yanghwa-dong",
+    "name": "양화동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156013200",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "singil-dong",
+    "name": "신길동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156013300",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "daerim-dong",
+    "name": "대림동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1156013400",
+    "parent_id": "1156000000",
+    "level": "dong",
+    "slug": "yangpyeong-dong",
+    "name": "양평동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1159000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "dongjak-gu",
+    "name": "동작구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1159010100",
+    "parent_id": "1159000000",
+    "level": "dong",
+    "slug": "noryangjin-dong",
+    "name": "노량진동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1159010200",
+    "parent_id": "1159000000",
+    "level": "dong",
+    "slug": "sangdo-dong",
+    "name": "상도동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1159010300",
+    "parent_id": "1159000000",
+    "level": "dong",
+    "slug": "sangdo1-dong",
+    "name": "상도1동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1159010400",
+    "parent_id": "1159000000",
+    "level": "dong",
+    "slug": "bon-dong",
+    "name": "본동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1159010500",
+    "parent_id": "1159000000",
+    "level": "dong",
+    "slug": "heukseok-dong",
+    "name": "흑석동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1159010600",
+    "parent_id": "1159000000",
+    "level": "dong",
+    "slug": "dongjak-dong",
+    "name": "동작동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1159010700",
+    "parent_id": "1159000000",
+    "level": "dong",
+    "slug": "sadang-dong",
+    "name": "사당동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1159010800",
+    "parent_id": "1159000000",
+    "level": "dong",
+    "slug": "daebang-dong",
+    "name": "대방동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1159010900",
+    "parent_id": "1159000000",
+    "level": "dong",
+    "slug": "sindaebang-dong",
+    "name": "신대방동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1162000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "gwanak-gu",
+    "name": "관악구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1162010100",
+    "parent_id": "1162000000",
+    "level": "dong",
+    "slug": "bongcheon-dong",
+    "name": "봉천동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1162010200",
+    "parent_id": "1162000000",
+    "level": "dong",
+    "slug": "sillim-dong",
+    "name": "신림동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1162010300",
+    "parent_id": "1162000000",
+    "level": "dong",
+    "slug": "namhyeon-dong",
+    "name": "남현동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1165000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "seocho-gu",
+    "name": "서초구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1165010100",
+    "parent_id": "1165000000",
+    "level": "dong",
+    "slug": "bangbae-dong",
+    "name": "방배동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1165010200",
+    "parent_id": "1165000000",
+    "level": "dong",
+    "slug": "yangjae-dong",
+    "name": "양재동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1165010300",
+    "parent_id": "1165000000",
+    "level": "dong",
+    "slug": "umyeon-dong",
+    "name": "우면동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1165010400",
+    "parent_id": "1165000000",
+    "level": "dong",
+    "slug": "wonji-dong",
+    "name": "원지동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1165010600",
+    "parent_id": "1165000000",
+    "level": "dong",
+    "slug": "jamwon-dong",
+    "name": "잠원동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1165010700",
+    "parent_id": "1165000000",
+    "level": "dong",
+    "slug": "banpo-dong",
+    "name": "반포동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1165010800",
+    "parent_id": "1165000000",
+    "level": "dong",
+    "slug": "seocho-dong",
+    "name": "서초동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1165010900",
+    "parent_id": "1165000000",
+    "level": "dong",
+    "slug": "naegok-dong",
+    "name": "내곡동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1165011000",
+    "parent_id": "1165000000",
+    "level": "dong",
+    "slug": "yeomgok-dong",
+    "name": "염곡동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1165011100",
+    "parent_id": "1165000000",
+    "level": "dong",
+    "slug": "sinwon-dong",
+    "name": "신원동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1168000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "gangnam-gu",
+    "name": "강남구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1168010100",
+    "parent_id": "1168000000",
+    "level": "dong",
+    "slug": "yeoksam-dong",
+    "name": "역삼동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1168010300",
+    "parent_id": "1168000000",
+    "level": "dong",
+    "slug": "gaepo-dong",
+    "name": "개포동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1168010400",
+    "parent_id": "1168000000",
+    "level": "dong",
+    "slug": "cheongdam-dong",
+    "name": "청담동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1168010500",
+    "parent_id": "1168000000",
+    "level": "dong",
+    "slug": "samseong-dong",
+    "name": "삼성동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1168010600",
+    "parent_id": "1168000000",
+    "level": "dong",
+    "slug": "daechi-dong",
+    "name": "대치동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1168010700",
+    "parent_id": "1168000000",
+    "level": "dong",
+    "slug": "sinsa-dong",
+    "name": "신사동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1168010800",
+    "parent_id": "1168000000",
+    "level": "dong",
+    "slug": "nonhyeon-dong",
+    "name": "논현동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1168011000",
+    "parent_id": "1168000000",
+    "level": "dong",
+    "slug": "apgujeong-dong",
+    "name": "압구정동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1168011100",
+    "parent_id": "1168000000",
+    "level": "dong",
+    "slug": "segok-dong",
+    "name": "세곡동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1168011200",
+    "parent_id": "1168000000",
+    "level": "dong",
+    "slug": "jagok-dong",
+    "name": "자곡동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1168011300",
+    "parent_id": "1168000000",
+    "level": "dong",
+    "slug": "yulhyeon-dong",
+    "name": "율현동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1168011400",
+    "parent_id": "1168000000",
+    "level": "dong",
+    "slug": "irwon-dong",
+    "name": "일원동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1168011500",
+    "parent_id": "1168000000",
+    "level": "dong",
+    "slug": "suseo-dong",
+    "name": "수서동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1168011800",
+    "parent_id": "1168000000",
+    "level": "dong",
+    "slug": "dogok-dong",
+    "name": "도곡동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1171000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "songpa-gu",
+    "name": "송파구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1171010100",
+    "parent_id": "1171000000",
+    "level": "dong",
+    "slug": "jamsil-dong",
+    "name": "잠실동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1171010200",
+    "parent_id": "1171000000",
+    "level": "dong",
+    "slug": "sincheon-dong",
+    "name": "신천동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1171010300",
+    "parent_id": "1171000000",
+    "level": "dong",
+    "slug": "pungnap-dong",
+    "name": "풍납동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1171010400",
+    "parent_id": "1171000000",
+    "level": "dong",
+    "slug": "songpa-dong",
+    "name": "송파동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1171010500",
+    "parent_id": "1171000000",
+    "level": "dong",
+    "slug": "seokchon-dong",
+    "name": "석촌동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1171010600",
+    "parent_id": "1171000000",
+    "level": "dong",
+    "slug": "samjeon-dong",
+    "name": "삼전동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1171010700",
+    "parent_id": "1171000000",
+    "level": "dong",
+    "slug": "garak-dong",
+    "name": "가락동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1171010800",
+    "parent_id": "1171000000",
+    "level": "dong",
+    "slug": "munjeong-dong",
+    "name": "문정동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1171010900",
+    "parent_id": "1171000000",
+    "level": "dong",
+    "slug": "jangji-dong",
+    "name": "장지동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1171011100",
+    "parent_id": "1171000000",
+    "level": "dong",
+    "slug": "bangi-dong",
+    "name": "방이동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1171011200",
+    "parent_id": "1171000000",
+    "level": "dong",
+    "slug": "ogeum-dong",
+    "name": "오금동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1171011300",
+    "parent_id": "1171000000",
+    "level": "dong",
+    "slug": "geoyeo-dong",
+    "name": "거여동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1171011400",
+    "parent_id": "1171000000",
+    "level": "dong",
+    "slug": "macheon-dong",
+    "name": "마천동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1174000000",
+    "parent_id": "1100000000",
+    "level": "district",
+    "slug": "gangdong-gu",
+    "name": "강동구",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1174010100",
+    "parent_id": "1174000000",
+    "level": "dong",
+    "slug": "myeongil-dong",
+    "name": "명일동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1174010200",
+    "parent_id": "1174000000",
+    "level": "dong",
+    "slug": "godeok-dong",
+    "name": "고덕동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1174010300",
+    "parent_id": "1174000000",
+    "level": "dong",
+    "slug": "sangil-dong",
+    "name": "상일동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1174010500",
+    "parent_id": "1174000000",
+    "level": "dong",
+    "slug": "gil-dong",
+    "name": "길동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1174010600",
+    "parent_id": "1174000000",
+    "level": "dong",
+    "slug": "dunchon-dong",
+    "name": "둔촌동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1174010700",
+    "parent_id": "1174000000",
+    "level": "dong",
+    "slug": "amsa-dong",
+    "name": "암사동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1174010800",
+    "parent_id": "1174000000",
+    "level": "dong",
+    "slug": "seongnae-dong",
+    "name": "성내동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1174010900",
+    "parent_id": "1174000000",
+    "level": "dong",
+    "slug": "cheonho-dong",
+    "name": "천호동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  },
+  {
+    "id": "1174011000",
+    "parent_id": "1174000000",
+    "level": "dong",
+    "slug": "gangil-dong",
+    "name": "강일동",
+    "source_url": "https://www.code.go.kr/stdcode/regCodeL.do",
+    "source_checked_on": "2026-09-07"
+  }
+]

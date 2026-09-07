@@ -1,7 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
 import { savePostSeo } from "@/app/admin/posts/[id]/seo/actions";
-import { PILOT_REGIONS } from "@/lib/regions";
+import { regionById, SEOUL_DONGS, SEOUL_DISTRICTS } from "@/lib/regions";
 import { AXIS_LABELS, SEO_TERMS } from "@/lib/seo/taxonomy";
 import type { TermAxis } from "@/types/seo";
 export function PostSeoForm({
@@ -15,6 +15,18 @@ export function PostSeoForm({
 }) {
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
+  const initialRegion = regionById(regionId);
+  const [selectedRegionId, setSelectedRegionId] = useState(regionId);
+  const [regionQuery, setRegionQuery] = useState(
+    initialRegion
+      ? `${initialRegion.level === "dong" ? `${regionById(initialRegion.parent_id ?? "")?.name} ` : ""}${initialRegion.name}`
+      : "",
+  );
+  const regionOptions = [...SEOUL_DISTRICTS, ...SEOUL_DONGS].filter((region) => {
+    const parent = region.level === "dong" ? regionById(region.parent_id ?? "") : undefined;
+    const label = `${parent?.name ?? ""} ${region.name}`;
+    return !regionQuery || label.includes(regionQuery.trim());
+  });
   function save(form: FormData) {
     setMessage("");
     startTransition(async () => {
@@ -41,19 +53,44 @@ export function PostSeoForm({
         <label htmlFor="case-region" className="mb-2 block font-bold">
           실제 시공 지역
         </label>
-        <select
+        <input type="hidden" name="region" value={selectedRegionId} />
+        <input
           id="case-region"
-          name="region"
-          defaultValue={regionId}
+          type="search"
+          value={regionQuery}
+          onChange={(event) => {
+            setRegionQuery(event.target.value);
+            setSelectedRegionId("");
+          }}
+          placeholder="예: 강남구 역삼동 또는 도봉구"
           className="min-h-12 w-full rounded-lg border border-slate-300 bg-white p-3"
-        >
-          <option value="">확인되지 않음 / 지역 연결 해제</option>
-          {PILOT_REGIONS.filter((r) => r.level !== "city").map((r) => (
-            <option key={r.id} value={r.id}>
-              {r.level === "dong" ? `도봉구 ${r.name}` : "도봉구 (법정동 미확인)"}
-            </option>
-          ))}
-        </select>
+        />
+        <div className="mt-2 max-h-64 overflow-y-auto rounded-lg border border-slate-200 bg-white">
+          {!regionQuery && (
+            <p className="p-3 text-sm text-slate-600">구 또는 법정동을 입력해 실제 작업 위치를 찾으세요.</p>
+          )}
+          {regionQuery && regionOptions.slice(0, 30).map((region) => {
+            const parent = region.level === "dong" ? regionById(region.parent_id ?? "") : undefined;
+            const label = region.level === "dong" ? `${parent?.name} ${region.name}` : `${region.name} (법정동 미확인)`;
+            return (
+              <button
+                key={region.id}
+                type="button"
+                onClick={() => {
+                  setSelectedRegionId(region.id);
+                  setRegionQuery(label);
+                }}
+                className={`block min-h-11 w-full px-3 py-2 text-left text-sm hover:bg-slate-50 ${selectedRegionId === region.id ? "bg-brand-50 font-bold text-brand-800" : ""}`}
+              >
+                {label}
+              </button>
+            );
+          })}
+          {regionQuery && regionOptions.length === 0 && <p className="p-3 text-sm text-slate-600">일치하는 서울 구·법정동이 없습니다.</p>}
+        </div>
+        <p className="mt-2 text-sm text-slate-600">
+          {selectedRegionId ? "선택한 실제 지역이 사례와 해당 구·서울 페이지에 자동 연결됩니다." : "선택하지 않으면 기존 지역 연결이 해제됩니다."}
+        </p>
       </div>
       {(Object.entries(AXIS_LABELS) as [TermAxis, string][]).map(([axis, label]) => (
         <fieldset key={axis} className="rounded-xl border border-slate-200 p-4">

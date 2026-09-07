@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
-import { PILOT_REGIONS, regionPath } from "./regions";
-export function revalidatePilot() {
-  for (const region of PILOT_REGIONS) revalidatePath(regionPath(region));
+import { regionAncestors, regionPath } from "./regions";
+import type { Region } from "@/types/seo";
+export function revalidateRegionTree(region: Region) {
+  for (const ancestor of regionAncestors(region)) revalidatePath(regionPath(ancestor));
   revalidatePath("/sitemap.xml");
 }

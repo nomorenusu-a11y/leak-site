@@ -2,9 +2,9 @@
 import { z } from "zod";
 import { assertAdmin } from "@/lib/auth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { regionById } from "@/lib/regions";
+import { defaultRegionContent, regionAncestors, regionById } from "@/lib/regions";
 import { validTermIds } from "@/lib/seo/taxonomy";
-import { revalidatePilot } from "@/lib/revalidation";
+import { revalidateRegionTree } from "@/lib/revalidation";
 import { revalidatePath } from "next/cache";
 export async function savePostSeo(
   postId: string,
@@ -23,7 +23,7 @@ export async function savePostSeo(
   }
   const region = regionId ? regionById(regionId) : null;
   if (regionId && (!region || region.level === "city"))
-    return { ok: false, error: "도봉구 또는 파일럿 법정동을 선택해 주세요." };
+    return { ok: false, error: "서울의 실제 구 또는 법정동을 선택해 주세요." };
   const db = createSupabaseAdminClient();
   const { error } = await db.rpc("set_post_seo", {
     p_post_id: postId,
@@ -37,7 +37,21 @@ export async function savePostSeo(
       error: "분류를 저장하지 못했습니다. SEO migration 적용 여부와 연결 상태를 확인해 주세요.",
     };
   }
-  revalidatePilot();
+  if (region) {
+    const ancestorContent = regionAncestors(region).map((ancestor) => defaultRegionContent(ancestor.id));
+    const regionIds = ancestorContent.map((content) => content.region_id);
+    const { error: createPageError } = await db.from("region_pages").upsert(
+      ancestorContent.map((content) => ({ ...content, indexable: false })),
+      { onConflict: "region_id", ignoreDuplicates: true },
+    );
+    if (createPageError) console.warn("[post-seo:region-pages]", createPageError.code);
+    const { error: indexError } = await db
+      .from("region_pages")
+      .update({ indexable: true, updated_at: new Date().toISOString() })
+      .in("region_id", regionIds);
+    if (indexError) console.warn("[post-seo:indexable]", indexError.code);
+    revalidateRegionTree(region);
+  }
   revalidatePath("/posts/[slug]", "page");
   revalidatePath(`/admin/posts/${postId}/seo`);
   revalidatePath("/admin/posts");
