@@ -19,6 +19,11 @@ export default function RootLayout({
   return (
     <html lang="ko" className="h-full antialiased">
       <head>
+        {/* 네이버 서치어드바이저 소유확인 — 공개용 메타태그 */}
+        <meta
+          name="naver-site-verification"
+          content="ed2d198862385a03e604e5b15c6e8ca628946bdd"
+        />
         {/* Pretendard Variable — subset CSS auto-loads woff2 with optimal font-display */}
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="" />
         <link
