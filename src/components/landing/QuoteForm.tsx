@@ -99,6 +99,8 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
     try {
       const v = sessionStorage.getItem("quote.phone.prefill");
       if (v) {
+        // SSR에서 읽을 수 없는 일회성 sessionStorage 값을 마운트 후 동기화.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setPhoneValue(formatPhone(v));
         sessionStorage.removeItem("quote.phone.prefill");
       }

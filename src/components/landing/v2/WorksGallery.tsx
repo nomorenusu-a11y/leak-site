@@ -1,3 +1,4 @@
+import { categoryValues } from "@/lib/post-categories";
 import { Container } from "@/components/ui/Container";
 import { createSupabaseAnonClient } from "@/lib/supabase/anon";
 import { Reveal } from "@/components/ui/Reveal";
@@ -39,7 +40,7 @@ export async function WorksGallery() {
       .from("posts")
       .select("id, title, slug")
       .eq("published", true)
-      .eq("category", code);
+      .in("category", categoryValues(code));
     if (!postRows?.length) continue;
     const ids = postRows.map((p) => p.id);
     const { data: imgs } = await supabase
@@ -75,7 +76,7 @@ export async function WorksGallery() {
     <section className="bg-white py-8 md:py-12">
       <Container>
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-bold tracking-wide text-brand-600">WORKS</p>
+          <p className="text-brand-600 text-sm font-bold tracking-wide">WORKS</p>
           <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
             작업사례
           </h2>

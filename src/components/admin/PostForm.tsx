@@ -5,15 +5,11 @@ import { useState, useTransition } from "react";
 import { createPost, updatePost } from "@/app/admin/posts/actions";
 import type { PostFormFieldErrors } from "@/app/admin/posts/types";
 import { MarkdownEditor } from "./MarkdownEditor";
-import {
-  CoverImageUploader,
-  PostImagesUploader,
-  type AdminPostImage,
-} from "./ImageUploader";
+import { CoverImageUploader, PostImagesUploader, type AdminPostImage } from "./ImageUploader";
 import { RegionTagSelector } from "./RegionTagSelector";
 import type { Post } from "@/types/database";
 
-const CATEGORIES = ["누수 탐지", "누수 시공", "방수", "배관", "기타"] as const;
+import { POST_CATEGORIES } from "@/lib/post-categories";
 
 function defaultSlug(title: string): string {
   // 영문/숫자만 추출 → 못 만들면 timestamp fallback
@@ -65,10 +61,7 @@ export function PostForm({ mode, post, images = [] }: Props) {
       published: formData.get("published") === "on",
     };
     startTransition(async () => {
-      const r =
-        mode === "create"
-          ? await createPost(data)
-          : await updatePost(post!.id, data);
+      const r = mode === "create" ? await createPost(data) : await updatePost(post!.id, data);
       if (!r.ok) {
         setError(r.error);
         if (r.fieldErrors) setFieldErrors(r.fieldErrors);
@@ -128,9 +121,12 @@ export function PostForm({ mode, post, images = [] }: Props) {
             className={inputClass(!!fieldErrors.category)}
           >
             <option value="">선택 안 함</option>
-            {CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
+            {post?.category && !POST_CATEGORIES.some((c) => c.value === post.category) && (
+              <option value={post.category}>{post.category} (기존 값 유지)</option>
+            )}
+            {POST_CATEGORIES.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
               </option>
             ))}
           </select>
@@ -169,9 +165,7 @@ export function PostForm({ mode, post, images = [] }: Props) {
 
       <MarkdownEditor value={content} onChange={setContent} error={fieldErrors.content} />
 
-      {mode === "edit" && post && (
-        <PostImagesUploader postId={post.id} initial={images} />
-      )}
+      {mode === "edit" && post && <PostImagesUploader postId={post.id} initial={images} />}
 
       <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:items-center sm:justify-end">
         <button
@@ -184,7 +178,7 @@ export function PostForm({ mode, post, images = [] }: Props) {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:bg-slate-400"
+          className="bg-brand-600 hover:bg-brand-700 rounded-lg px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors disabled:cursor-not-allowed disabled:bg-slate-400"
         >
           {pending ? "저장 중..." : mode === "create" ? "글 생성" : "변경사항 저장"}
         </button>

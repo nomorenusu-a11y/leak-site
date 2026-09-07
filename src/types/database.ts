@@ -1,3 +1,4 @@
+import type { Region, RegionPageContent, PostLocation, SeoTerm, PostTerm } from "./seo";
 /**
  * DB 테이블 타입 정의 (수기). 마이그레이션과 1:1로 동기화 유지.
  * 향후 Supabase CLI `gen types`로 자동 생성 전환 가능.
@@ -107,6 +108,11 @@ export type PostImage = {
   post_id: string;
   url: string;
   alt_text: string | null;
+  caption: string | null;
+  work_stage: string | null;
+  image_variant: "original" | "annotated";
+  original_image_id: string | null;
+  overlay_text: string | null;
   sort_order: number;
   created_at: string;
 };
@@ -115,6 +121,11 @@ export type PostImageInsert = {
   post_id: string;
   url: string;
   alt_text?: string | null;
+  caption?: string | null;
+  work_stage?: string | null;
+  image_variant?: "original" | "annotated";
+  original_image_id?: string | null;
+  overlay_text?: string | null;
   sort_order?: number;
 };
 
@@ -231,9 +242,16 @@ export type DemoRequestData = {
 // Database 제네릭 — supabase-js / @supabase/ssr 클라이언트에 주입
 // ============================================================
 
+type SeoTable<T> = { Row: T; Insert: T; Update: Partial<T>; Relationships: [] };
+
 export type Database = {
   public: {
     Tables: {
+      regions: SeoTable<Region>;
+      region_pages: SeoTable<RegionPageContent>;
+      post_locations: SeoTable<PostLocation>;
+      seo_terms: SeoTable<SeoTerm>;
+      post_terms: SeoTable<PostTerm>;
       leak_requests: {
         Row: LeakRequest;
         Insert: LeakRequestInsert;
@@ -267,7 +285,13 @@ export type Database = {
         Relationships: [];
       };
     };
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Views: { leak_request_board: { Row: LeakRequestBoardItem; Relationships: [] } };
+    Functions: {
+      set_post_seo: {
+        Args: { p_post_id: string; p_region_id: string | null; p_term_ids: string[] };
+        Returns: undefined;
+      };
+      get_region_posts: { Args: { p_region_id: string }; Returns: Post[] };
+    };
   };
 };

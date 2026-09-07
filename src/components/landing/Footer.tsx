@@ -22,10 +22,8 @@ export function Footer() {
   const bizSegments: string[] = [];
   if (BUSINESS.legalName) bizSegments.push(BUSINESS.legalName);
   if (BUSINESS.ownerName) bizSegments.push(`대표자: ${BUSINESS.ownerName}`);
-  if (BUSINESS.contact.phone)
-    bizSegments.push(`전화: ${BUSINESS.contact.phone.display}`);
-  if (BUSINESS.businessRegNo)
-    bizSegments.push(`사업자정보: ${BUSINESS.businessRegNo}`);
+  if (BUSINESS.contact.phone) bizSegments.push(`전화: ${BUSINESS.contact.phone.display}`);
+  if (BUSINESS.businessRegNo) bizSegments.push(`사업자정보: ${BUSINESS.businessRegNo}`);
   if (BUSINESS.email) bizSegments.push(`이메일: ${BUSINESS.email}`);
 
   const menu = [
@@ -49,10 +47,7 @@ export function Footer() {
           className="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm text-slate-200 sm:gap-x-6"
         >
           {menu.map((m, i) => (
-            <span
-              key={m.href}
-              className="inline-flex items-center gap-x-3 sm:gap-x-6"
-            >
+            <span key={m.href} className="inline-flex items-center gap-x-3 sm:gap-x-6">
               <Link href={m.href} className="font-semibold hover:text-white">
                 {m.label}
               </Link>
@@ -67,21 +62,23 @@ export function Footer() {
 
         {/* 서비스 지역 배지 — 신뢰감 표시 (지자체 로고는 저작권상 미사용, 자체 배지로 대체) */}
         <div className="mt-10 flex flex-col items-center gap-3">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+          <p className="text-[11px] font-bold tracking-wider text-slate-500 uppercase">
             Service Area
           </p>
           <ul className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
             {REGIONS.map((r) => (
               <li
                 key={r}
-                className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-4 py-1.5 text-xs font-bold text-slate-200 ring-1 ring-inset ring-white/10 sm:text-sm"
+                className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-4 py-1.5 text-xs font-bold text-slate-200 ring-1 ring-white/10 ring-inset sm:text-sm"
               >
-                <MapPin
-                  aria-hidden
-                  className="size-3.5 text-highlight-400"
-                  strokeWidth={2.5}
-                />
-                {r}
+                <MapPin aria-hidden className="text-highlight-400 size-3.5" strokeWidth={2.5} />
+                {r === "서울특별시" ? (
+                  <Link href="/seoul" className="hover:underline">
+                    {r}
+                  </Link>
+                ) : (
+                  r
+                )}
               </li>
             ))}
           </ul>

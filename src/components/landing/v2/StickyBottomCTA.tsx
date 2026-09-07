@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { Phone, Sparkles } from "@/components/icons";
 import { getContactInfo } from "@/lib/contact";
-import { BUSINESS } from "@/lib/business";
 import { EVENTS, trackEvent } from "@/lib/analytics";
 
 const PHONE_PREFILL_KEY = "quote.phone.prefill";

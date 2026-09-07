@@ -1,0 +1,188 @@
+[
+  {
+    "id": "building_type:apartment",
+    "axis": "building_type",
+    "slug": "apartment",
+    "label": "아파트"
+  },
+  {
+    "id": "building_type:multi-family",
+    "axis": "building_type",
+    "slug": "multi-family",
+    "label": "연립·다세대"
+  },
+  {
+    "id": "building_type:detached-house",
+    "axis": "building_type",
+    "slug": "detached-house",
+    "label": "단독주택"
+  },
+  {
+    "id": "building_type:officetel",
+    "axis": "building_type",
+    "slug": "officetel",
+    "label": "오피스텔"
+  },
+  {
+    "id": "building_type:commercial",
+    "axis": "building_type",
+    "slug": "commercial",
+    "label": "상가·업무시설"
+  },
+  {
+    "id": "leak_type:water-supply-pipe",
+    "axis": "leak_type",
+    "slug": "water-supply-pipe",
+    "label": "수도배관 누수"
+  },
+  {
+    "id": "leak_type:hot-water-pipe",
+    "axis": "leak_type",
+    "slug": "hot-water-pipe",
+    "label": "온수배관 누수"
+  },
+  {
+    "id": "leak_type:heating-pipe",
+    "axis": "leak_type",
+    "slug": "heating-pipe",
+    "label": "난방배관 누수"
+  },
+  {
+    "id": "leak_type:boiler",
+    "axis": "leak_type",
+    "slug": "boiler",
+    "label": "보일러 누수"
+  },
+  {
+    "id": "leak_type:concealed-pipe",
+    "axis": "leak_type",
+    "slug": "concealed-pipe",
+    "label": "매립배관 누수"
+  },
+  {
+    "id": "leak_type:bathroom",
+    "axis": "leak_type",
+    "slug": "bathroom",
+    "label": "화장실/욕실 누수"
+  },
+  {
+    "id": "leak_type:kitchen",
+    "axis": "leak_type",
+    "slug": "kitchen",
+    "label": "싱크대/주방 누수"
+  },
+  {
+    "id": "leak_type:ceiling",
+    "axis": "leak_type",
+    "slug": "ceiling",
+    "label": "천장 누수"
+  },
+  {
+    "id": "leak_type:balcony",
+    "axis": "leak_type",
+    "slug": "balcony",
+    "label": "베란다 누수"
+  },
+  {
+    "id": "leak_type:exterior-rain",
+    "axis": "leak_type",
+    "slug": "exterior-rain",
+    "label": "외벽/빗물 누수"
+  },
+  {
+    "id": "symptom:meter-running",
+    "axis": "symptom",
+    "slug": "meter-running",
+    "label": "계량기가 계속 돌아감"
+  },
+  {
+    "id": "symptom:water-bill-rise",
+    "axis": "symptom",
+    "slug": "water-bill-rise",
+    "label": "수도요금 급증"
+  },
+  {
+    "id": "symptom:ceiling-stain",
+    "axis": "symptom",
+    "slug": "ceiling-stain",
+    "label": "천장 물자국"
+  },
+  {
+    "id": "symptom:wet-wallpaper",
+    "axis": "symptom",
+    "slug": "wet-wallpaper",
+    "label": "벽지 젖음"
+  },
+  {
+    "id": "symptom:damp-floor",
+    "axis": "symptom",
+    "slug": "damp-floor",
+    "label": "바닥 습기"
+  },
+  {
+    "id": "symptom:boiler-pressure-drop",
+    "axis": "symptom",
+    "slug": "boiler-pressure-drop",
+    "label": "보일러 압력 저하"
+  },
+  {
+    "id": "symptom:downstairs-leak",
+    "axis": "symptom",
+    "slug": "downstairs-leak",
+    "label": "아랫집 누수"
+  },
+  {
+    "id": "symptom:mold-moisture",
+    "axis": "symptom",
+    "slug": "mold-moisture",
+    "label": "곰팡이/습기"
+  },
+  {
+    "id": "detection_method:air-pressure-test",
+    "axis": "detection_method",
+    "slug": "air-pressure-test",
+    "label": "공압검사"
+  },
+  {
+    "id": "detection_method:tracer-gas",
+    "axis": "detection_method",
+    "slug": "tracer-gas",
+    "label": "가스탐지"
+  },
+  {
+    "id": "detection_method:acoustic",
+    "axis": "detection_method",
+    "slug": "acoustic",
+    "label": "청음탐지"
+  },
+  {
+    "id": "detection_method:thermal-imaging",
+    "axis": "detection_method",
+    "slug": "thermal-imaging",
+    "label": "열화상"
+  },
+  {
+    "id": "work_type:pipe-repair",
+    "axis": "work_type",
+    "slug": "pipe-repair",
+    "label": "배관 보수"
+  },
+  {
+    "id": "work_type:partial-excavation",
+    "axis": "work_type",
+    "slug": "partial-excavation",
+    "label": "부분 굴착"
+  },
+  {
+    "id": "work_type:pipe-replacement",
+    "axis": "work_type",
+    "slug": "pipe-replacement",
+    "label": "배관 교체"
+  },
+  {
+    "id": "work_type:restoration",
+    "axis": "work_type",
+    "slug": "restoration",
+    "label": "복구"
+  }
+]

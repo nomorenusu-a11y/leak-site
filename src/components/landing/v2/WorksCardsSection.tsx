@@ -1,3 +1,4 @@
+import { categoryLabel } from "@/lib/post-categories";
 import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/ui/Container";
@@ -9,23 +10,6 @@ import { ChevronRight } from "@/components/icons";
 import type { Post } from "@/types/database";
 
 const PLACEHOLDER = "/placeholder-post.svg";
-
-function categoryLabel(cat: string | null): string {
-  switch (cat) {
-    case "leak":
-      return "누수";
-    case "toilet":
-      return "변기";
-    case "sink":
-      return "싱크대";
-    case "heating":
-      return "난방";
-    case "frozen":
-      return "동파";
-    default:
-      return "기타";
-  }
-}
 
 function regionPrefix(post: Post): string {
   // region_tags 첫 항목을 prefix로 — 없으면 빈 문자열
@@ -60,13 +44,10 @@ export async function WorksCardsSection() {
   if (posts.length === 0) return null;
 
   return (
-    <section
-      id="works-cards"
-      className="scroll-mt-20 bg-slate-50 py-8 md:py-12"
-    >
+    <section id="works-cards" className="scroll-mt-20 bg-slate-50 py-8 md:py-12">
       <Container>
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-bold tracking-wide text-brand-600">WORKS</p>
+          <p className="text-brand-600 text-sm font-bold tracking-wide">WORKS</p>
           <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
             최근 작업사례 후기
           </h2>
@@ -75,10 +56,7 @@ export async function WorksCardsSection() {
           </p>
         </Reveal>
 
-        <RevealGroup
-          stagger={0.08}
-          className="mt-6 grid gap-4 sm:grid-cols-2"
-        >
+        <RevealGroup stagger={0.08} className="mt-6 grid gap-4 sm:grid-cols-2">
           {posts.map((p) => {
             const cover = p.cover_image_url ?? PLACEHOLDER;
             const isPlaceholder = !p.cover_image_url;
@@ -103,31 +81,24 @@ export async function WorksCardsSection() {
                   {/* 우측 텍스트 */}
                   <div className="flex min-w-0 flex-1 flex-col gap-1.5 p-4 sm:p-5">
                     <div className="flex flex-wrap items-center gap-1.5">
-                      <span className="inline-flex items-center gap-1 rounded-md bg-brand-50 px-2 py-0.5 text-[11px] font-extrabold text-brand-700">
+                      <span className="bg-brand-50 text-brand-700 inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-extrabold">
                         ▶ 작업사례
                       </span>
                       <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-600">
                         {categoryLabel(p.category)}
                       </span>
                     </div>
-                    <h3 className="line-clamp-2 text-sm font-extrabold text-slate-900 group-hover:text-brand-700 sm:text-base">
-                      <span className="text-brand-700">[{siteConfig.name}]</span>{" "}
-                      {title}
+                    <h3 className="group-hover:text-brand-700 line-clamp-2 text-sm font-extrabold text-slate-900 sm:text-base">
+                      <span className="text-brand-700">[{siteConfig.name}]</span> {title}
                     </h3>
                     {p.excerpt && (
-                      <p className="line-clamp-2 text-xs text-slate-600 sm:text-sm">
-                        {p.excerpt}
-                      </p>
+                      <p className="line-clamp-2 text-xs text-slate-600 sm:text-sm">{p.excerpt}</p>
                     )}
                     <div className="mt-auto flex items-center justify-between gap-2 pt-1 text-xs text-slate-500">
                       <span>{formatDateYMD(p.published_at)}</span>
-                      <span className="inline-flex items-center gap-0.5 font-bold text-brand-700">
+                      <span className="text-brand-700 inline-flex items-center gap-0.5 font-bold">
                         자세히 보기
-                        <ChevronRight
-                          aria-hidden
-                          className="size-3.5"
-                          strokeWidth={2.5}
-                        />
+                        <ChevronRight aria-hidden className="size-3.5" strokeWidth={2.5} />
                       </span>
                     </div>
                   </div>
@@ -140,7 +111,7 @@ export async function WorksCardsSection() {
         <div className="mt-10 flex justify-center">
           <Link
             href="/posts"
-            className="inline-flex items-center gap-2 rounded-full border-2 border-brand-600 bg-white px-6 py-3 text-sm font-extrabold text-brand-700 transition-colors hover:bg-brand-600 hover:text-white sm:text-base"
+            className="border-brand-600 text-brand-700 hover:bg-brand-600 inline-flex items-center gap-2 rounded-full border-2 bg-white px-6 py-3 text-sm font-extrabold transition-colors hover:text-white sm:text-base"
           >
             더보기
             <ChevronRight aria-hidden className="size-4" strokeWidth={2.5} />

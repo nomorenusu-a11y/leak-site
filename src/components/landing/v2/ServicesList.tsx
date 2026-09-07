@@ -1,14 +1,8 @@
+import { categoryValues } from "@/lib/post-categories";
 import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/ui/Container";
-import {
-  Droplets,
-  Bath,
-  Wrench,
-  Thermometer,
-  Snowflake,
-  ArrowRight,
-} from "@/components/icons";
+import { Droplets, Bath, Wrench, Thermometer, Snowflake, ArrowRight } from "@/components/icons";
 import { siteConfig } from "@/lib/env";
 import { createSupabaseAnonClient } from "@/lib/supabase/anon";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
@@ -17,8 +11,15 @@ import type { ServiceData } from "@/types/database";
 
 type Cat = "leak" | "toilet" | "sink" | "heating" | "frozen";
 
-const ICON_MAP: Record<string, React.ComponentType<{ className?: string; strokeWidth?: number; "aria-hidden"?: boolean }>> = {
-  Droplets, Bath, Wrench, Thermometer, Snowflake,
+const ICON_MAP: Record<
+  string,
+  React.ComponentType<{ className?: string; strokeWidth?: number; "aria-hidden"?: boolean }>
+> = {
+  Droplets,
+  Bath,
+  Wrench,
+  Thermometer,
+  Snowflake,
 };
 
 const ALL_CATS: Cat[] = ["leak", "toilet", "sink", "heating", "frozen"];
@@ -31,7 +32,7 @@ async function loadCovers() {
       .from("posts")
       .select("cover_image_url")
       .eq("published", true)
-      .eq("category", c)
+      .in("category", categoryValues(c))
       .not("cover_image_url", "is", null)
       .order("published_at", { ascending: false })
       .limit(1)
@@ -41,13 +42,7 @@ async function loadCovers() {
   return covers;
 }
 
-function Card({
-  s,
-  cover,
-}: {
-  s: ServiceData;
-  cover?: string;
-}) {
+function Card({ s, cover }: { s: ServiceData; cover?: string }) {
   const href = s.cat ? `/posts?cat=${s.cat}` : (s.href ?? "/posts");
   const imgSrc = cover ?? s.image;
   const Icon = ICON_MAP[s.icon] ?? Wrench;
@@ -63,11 +58,11 @@ function Card({
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full items-center justify-center bg-gradient-to-br from-brand-50 to-brand-100">
-            <Icon aria-hidden className="size-16 text-brand-400" strokeWidth={1.5} />
+          <div className="from-brand-50 to-brand-100 flex h-full items-center justify-center bg-gradient-to-br">
+            <Icon aria-hidden className="text-brand-400 size-16" strokeWidth={1.5} />
           </div>
         )}
-        <div className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 text-xs font-extrabold text-brand-700 shadow-sm">
+        <div className="text-brand-700 absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 text-xs font-extrabold shadow-sm">
           <Icon aria-hidden className="size-3.5" strokeWidth={2.25} />
           {s.ko}
         </div>
@@ -77,7 +72,7 @@ function Card({
         <p className="mt-1.5 text-sm text-slate-600">{s.desc}</p>
         <Link
           href={href}
-          className="mt-3 inline-flex items-center gap-1 text-sm font-bold text-brand-700 hover:underline"
+          className="text-brand-700 mt-3 inline-flex items-center gap-1 text-sm font-bold hover:underline"
         >
           자세히 보기
           <ArrowRight aria-hidden className="size-4" strokeWidth={2.25} />
@@ -103,9 +98,7 @@ export async function ServicesList() {
     <section id="services" className="scroll-mt-20 py-8 md:py-12">
       <Container>
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-bold tracking-wide text-brand-600">
-            SERVICES
-          </p>
+          <p className="text-brand-600 text-sm font-bold tracking-wide">SERVICES</p>
           <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
             {siteConfig.name}의 서비스 목록
           </h2>
@@ -117,7 +110,7 @@ export async function ServicesList() {
         <div className="mt-12">
           <Reveal variant="up" className="mb-5 flex items-end justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-brand-500">Group 1</p>
+              <p className="text-brand-500 text-xs font-bold tracking-wider uppercase">Group 1</p>
               <h3 className="mt-0.5 text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
                 누수 관련 서비스
               </h3>
@@ -136,11 +129,13 @@ export async function ServicesList() {
         <div className="mt-9">
           <Reveal variant="up" className="mb-5 flex items-end justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-brand-500">Group 2</p>
+              <p className="text-brand-500 text-xs font-bold tracking-wider uppercase">Group 2</p>
               <h3 className="mt-0.5 text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
                 배관·고압세척 서비스
               </h3>
-              <p className="mt-1 text-sm text-slate-600">하수구·배관·배수구 막힘 및 기타 고압세척 현장 해결</p>
+              <p className="mt-1 text-sm text-slate-600">
+                하수구·배관·배수구 막힘 및 기타 고압세척 현장 해결
+              </p>
             </div>
           </Reveal>
           <RevealGroup stagger={0.08} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

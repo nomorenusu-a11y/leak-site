@@ -237,3 +237,13 @@ supabase/
 ## 클라이언트 운영 매뉴얼
 
 비전문가용 사용 안내는 별도 파일에 있습니다: [`docs/CLIENT_MANUAL.md`](./docs/CLIENT_MANUAL.md)
+
+## 도봉구 SEO 파일럿
+
+서울 허브와 도봉구·4개 법정동만 구현한 SEO 확장이다. 기존 `/posts` URL은 유지한다.
+
+- [데이터 모델·운영 적용 순서·개인정보 전환 계획](docs/seo/ROLLOUT.md)
+- [로컬 검증 결과와 운영 적용 전 확인사항](docs/seo/VERIFICATION.md)
+- `npm test`: 운영 연결 없이 지역·분류·PostgreSQL RLS 테스트
+
+운영 DB 적용/배포와 서울 전체 확대는 자동 수행하지 않는다.

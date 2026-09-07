@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { RelativeTime } from "@/components/ui/RelativeTime";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
-import type { LeakRequestBoardItem, RequestStatus } from "@/types/database";
+import type { LeakRequestBoardItem } from "@/types/database";
 
 const MAX_ITEMS = 10;
 
@@ -14,79 +14,42 @@ type Props = {
 
 type ItemWithFlag = LeakRequestBoardItem & { _justAdded?: boolean };
 
-type LeakRequestRow = {
-  id: string;
-  masked_name: string;
-  region: string | null;
-  status: RequestStatus;
-  created_at: string;
-  updated_at: string;
-  visible_on_board: boolean | null;
-};
-
-function toBoardItem(row: LeakRequestRow): LeakRequestBoardItem {
-  return {
-    id: row.id,
-    masked_name: row.masked_name,
-    region: row.region,
-    status: row.status,
-    created_at: row.created_at,
-    updated_at: row.updated_at,
-  };
-}
-
 export function LiveBoardClient({ initial }: Props) {
   const [items, setItems] = useState<ItemWithFlag[]>(initial);
 
   useEffect(() => {
-    let supabase;
+    let supabase: ReturnType<typeof createSupabaseBrowserClient>;
     try {
       supabase = createSupabaseBrowserClient();
     } catch {
       // 키가 설정 안 됐을 때는 조용히 종료 (초기 SSR 데이터만 노출).
       return;
     }
-    const channel = supabase
-      .channel("public:leak_requests:board")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "leak_requests" },
-        (payload) => {
-          const row = payload.new as LeakRequestRow;
-          if (row.visible_on_board === false) return;
-          const newItem: ItemWithFlag = { ...toBoardItem(row), _justAdded: true };
-          setItems((prev) => [newItem, ...prev.filter((p) => p.id !== row.id)].slice(0, MAX_ITEMS));
-          // 1.2초 후 플래그 해제 (애니메이션 1회용)
-          setTimeout(() => {
-            setItems((prev) =>
-              prev.map((p) => (p.id === row.id ? { ...p, _justAdded: false } : p)),
-            );
-          }, 1200);
-        },
-      )
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "leak_requests" },
-        (payload) => {
-          const row = payload.new as LeakRequestRow;
-          setItems((prev) => {
-            if (row.visible_on_board === false) {
-              return prev.filter((p) => p.id !== row.id);
-            }
-            const idx = prev.findIndex((p) => p.id === row.id);
-            if (idx === -1) {
-              return [toBoardItem(row), ...prev].slice(0, MAX_ITEMS);
-            }
-            const next = [...prev];
-            next[idx] = { ...toBoardItem(row), _justAdded: false };
-            return next;
-          });
-        },
-      )
-      .subscribe();
-
+    // Public view cannot emit postgres_changes. Poll only its safe projection.
+    // No subscription to the underlying customer table remains.
+    let cancelled = false;
+    let busy = false;
+    async function refresh() {
+      if (busy) return;
+      busy = true;
+      try {
+        const { data, error } = await supabase
+          .from("leak_request_board")
+          .select("id, masked_name, region, status, created_at, updated_at")
+          .order("created_at", { ascending: false })
+          .limit(MAX_ITEMS);
+        if (!cancelled && !error && data) setItems(data);
+      } finally {
+        busy = false;
+      }
+    }
+    void refresh();
+    const timer = setInterval(() => {
+      void refresh();
+    }, 15000);
     return () => {
-      supabase.removeChannel(channel);
+      cancelled = true;
+      clearInterval(timer);
     };
   }, []);
 
