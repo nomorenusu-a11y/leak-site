@@ -14,6 +14,12 @@ const ALLOWED_MIME = ["image/jpeg", "image/png", "image/webp"] as const;
 const MAX_BYTES = 5 * 1024 * 1024; // 5MB
 
 const idSchema = z.string().uuid();
+const imageMetadataSchema = z.object({
+  alt_text: z.string().trim().max(180).transform((value) => value || null),
+  caption: z.string().trim().max(240).transform((value) => value || null),
+  work_stage: z.string().trim().max(80).transform((value) => value || null),
+  overlay_text: z.string().trim().max(80).transform((value) => value || null),
+});
 const slugSchema = z
   .string()
   .min(3)
@@ -229,7 +235,19 @@ export async function uploadPostImage(
   postId: string,
   formData: FormData,
 ): Promise<
-  | { ok: true; image: { id: string; url: string; sort_order: number } }
+  | {
+      ok: true;
+      image: {
+        id: string;
+        url: string;
+        sort_order: number;
+        alt_text: string | null;
+        caption: string | null;
+        work_stage: string | null;
+        image_variant: "original" | "annotated";
+        overlay_text: string | null;
+      };
+    }
   | { ok: false; error: string }
 > {
   await assertAdmin();
@@ -263,7 +281,7 @@ export async function uploadPostImage(
   const { data: created, error: insErr } = await supabase
     .from("post_images")
     .insert({ post_id: postId, url: pub.publicUrl, sort_order: nextOrder })
-    .select("id, url, sort_order")
+    .select("id, url, sort_order, alt_text, caption, work_stage, image_variant, overlay_text")
     .single();
   if (insErr || !created) {
     // 업로드 성공했는데 DB 실패 → 파일 정리
@@ -292,6 +310,32 @@ export async function deletePostImage(
   if (path) await supabase.storage.from("post-images").remove([path]);
   const { error: delErr } = await supabase.from("post_images").delete().eq("id", imageId);
   if (delErr) return { ok: false, error: "DB 삭제 실패" };
+  revalidatePosts();
+  return { ok: true };
+}
+
+/**
+ * 사진 자체는 바꾸지 않고 설명 메타데이터만 저장한다.
+ * 원본 사진의 alt/caption과 강조 derivative의 overlay_text를 분리해 관리한다.
+ */
+export async function updatePostImageMetadata(
+  imageId: string,
+  input: z.input<typeof imageMetadataSchema>,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  await assertAdmin();
+  if (!idSchema.safeParse(imageId).success) return { ok: false, error: "잘못된 이미지 ID" };
+  const parsed = imageMetadataSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "이미지 설명은 정해진 글자 수 안에서 입력해 주세요." };
+
+  const supabase = createSupabaseAdminClient();
+  const { error } = await supabase
+    .from("post_images")
+    .update(parsed.data)
+    .eq("id", imageId);
+  if (error) {
+    console.error("[admin/posts] image metadata:", error);
+    return { ok: false, error: "이미지 설명 저장 실패" };
+  }
   revalidatePosts();
   return { ok: true };
 }

@@ -15,7 +15,7 @@ export default async function AdminPostEditPage({ params }: { params: Promise<{ 
     supabase.from("posts").select("*").eq("id", id).maybeSingle(),
     supabase
       .from("post_images")
-      .select("id, url, sort_order")
+      .select("id, url, sort_order, alt_text, caption, work_stage, image_variant, overlay_text")
       .eq("post_id", id)
       .order("sort_order", { ascending: true }),
   ]);
