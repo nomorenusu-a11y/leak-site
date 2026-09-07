@@ -65,11 +65,18 @@ export function normalizeKakao(raw: string | null | undefined): KakaoInfo | null
 }
 
 /**
+ * 사이트 대표 연락처.
+ * 현재 운영 대표번호는 010-5700-4026으로 고정한다.
+ * Vercel의 기존 NEXT_PUBLIC_PHONE 값이 남아 있어도 사이트의 전화 CTA는 이 번호를 사용한다.
+ */
+const PRIMARY_PHONE = "01057004026";
+
+/**
  * 환경변수 → 정규화된 연락처 묶음.
  * 신/구 KAKAO 변수명 모두 fallback (`NEXT_PUBLIC_KAKAO_CHANNEL_URL` 우선, 옛 `NEXT_PUBLIC_KAKAO_CHANNEL`도 인식).
  */
 export function getContactInfo(): ContactInfo {
-  const phoneRaw = process.env.NEXT_PUBLIC_PHONE;
+  const phoneRaw = PRIMARY_PHONE;
   const kakaoRaw =
     process.env.NEXT_PUBLIC_KAKAO_CHANNEL_URL ?? process.env.NEXT_PUBLIC_KAKAO_CHANNEL;
   return {
