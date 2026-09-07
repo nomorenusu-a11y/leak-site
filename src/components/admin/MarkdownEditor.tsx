@@ -57,6 +57,9 @@ export function MarkdownEditor({
           </button>
         </div>
       </div>
+      <p className="mb-2 text-xs leading-5 text-slate-500">
+        사진 카드의 <strong>본문에 삽입</strong>을 누르면 본문 끝에 사진 마커가 추가됩니다. 필요한 문단 아래로 옮기면 글 → 사진 → 설명 순서로 노출됩니다.
+      </p>
       {/* desktop: split */}
       <div className="hidden md:grid md:grid-cols-2 md:gap-3">
         {editor}

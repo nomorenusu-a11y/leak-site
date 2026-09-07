@@ -13,6 +13,11 @@ export function PostBody({ content }: { content: string }) {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[[rehypeSanitize, SANITIZE_SCHEMA]]}
+        components={{
+          // 페이지 헤더가 유일한 H1이다. 관리자가 Markdown 본문에 `#`을
+          // 사용해도 문서 구조가 깨지지 않도록 본문에서는 H2로 렌더링한다.
+          h1: ({ children }) => <h2>{children}</h2>,
+        }}
       >
         {content}
       </ReactMarkdown>

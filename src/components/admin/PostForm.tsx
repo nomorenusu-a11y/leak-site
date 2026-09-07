@@ -165,7 +165,15 @@ export function PostForm({ mode, post, images = [] }: Props) {
 
       <MarkdownEditor value={content} onChange={setContent} error={fieldErrors.content} />
 
-      {mode === "edit" && post && <PostImagesUploader postId={post.id} initial={images} />}
+      {mode === "edit" && post && (
+        <PostImagesUploader
+          postId={post.id}
+          initial={images}
+          onInsertMarker={(marker) =>
+            setContent((current) => `${current.trimEnd()}\n\n${marker}\n`)
+          }
+        />
+      )}
 
       <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:items-center sm:justify-end">
         <button

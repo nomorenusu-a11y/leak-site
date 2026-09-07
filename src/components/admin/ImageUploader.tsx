@@ -95,9 +95,11 @@ export type AdminPostImage = {
 export function PostImagesUploader({
   postId,
   initial,
+  onInsertMarker,
 }: {
   postId: string;
   initial: AdminPostImage[];
+  onInsertMarker?: (marker: string) => void;
 }) {
   const [images, setImages] = useState<AdminPostImage[]>(initial);
   const [error, setError] = useState<string | null>(null);
@@ -199,6 +201,16 @@ export function PostImagesUploader({
                     </label>
                   </div>
                   <div className="flex flex-wrap gap-2">
+                    {onInsertMarker && (
+                      <button
+                        type="button"
+                        onClick={() => onInsertMarker(`[[post-image:${img.id}]]`)}
+                        disabled={pending}
+                        className="rounded-md border border-brand-200 bg-white px-3 py-2 text-xs font-bold text-brand-700 disabled:opacity-50"
+                      >
+                        본문에 삽입
+                      </button>
+                    )}
                     <button type="submit" disabled={pending} className="rounded-md bg-brand-600 px-3 py-2 text-xs font-bold text-white disabled:opacity-50">
                       설명 저장
                     </button>
