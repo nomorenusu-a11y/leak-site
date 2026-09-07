@@ -9,10 +9,15 @@ import { SANITIZE_SCHEMA } from "@/lib/markdown";
  */
 export function PostBody({ content }: { content: string }) {
   return (
-    <div className="prose prose-slate max-w-none prose-headings:font-extrabold prose-headings:text-slate-900 prose-a:text-brand-700 prose-strong:text-slate-900 prose-img:rounded-xl">
+    <div className="prose prose-slate max-w-none prose-p:text-[15px] prose-p:leading-7 prose-headings:font-extrabold prose-headings:text-slate-900 prose-h2:mt-10 prose-h2:text-2xl prose-h3:mt-7 prose-a:text-brand-700 prose-strong:text-slate-900 prose-img:rounded-xl sm:prose-p:text-base sm:prose-p:leading-8">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[[rehypeSanitize, SANITIZE_SCHEMA]]}
+        components={{
+          // 페이지 헤더가 유일한 H1이다. 관리자가 Markdown 본문에 `#`을
+          // 사용해도 문서 구조가 깨지지 않도록 본문에서는 H2로 렌더링한다.
+          h1: ({ children }) => <h2>{children}</h2>,
+        }}
       >
         {content}
       </ReactMarkdown>

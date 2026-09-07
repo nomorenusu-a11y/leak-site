@@ -8,7 +8,7 @@ import type { Post } from "@/types/database";
  *
  * - 24시간 상담 + 출동 → openingHours가 "Mo-Su 00:00-23:59"
  * - areaServed: city.ts의 모든 한글 지역명 (서울 25구 + 분당)
- * - aggregateRating: 운영 초기 placeholder (5.0 / 0 review) — 데이터 쌓이면 동적 전환
+ * - 검증된 평점 데이터가 없으므로 aggregateRating은 출력하지 않는다.
  */
 export function localBusinessJsonLd() {
   const placesServed = ALL_CITY_CODES.map((code) => ({
@@ -23,7 +23,7 @@ export function localBusinessJsonLd() {
     "@id": `${siteConfig.url}/#business`,
     name: siteConfig.name,
     url: siteConfig.url,
-    image: `${siteConfig.url}/og.png`,
+    image: `${siteConfig.url}/og-image.png`,
     telephone: phone?.tel,
     priceRange: "₩₩",
     // 사람이 읽기 쉬운 표현 (Schema.org 권장 형식 둘 다 지원)
@@ -31,15 +31,7 @@ export function localBusinessJsonLd() {
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
-        dayOfWeek: [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          "Sunday",
-        ],
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
         opens: "00:00",
         closes: "23:59",
       },
@@ -49,13 +41,6 @@ export function localBusinessJsonLd() {
       "@type": "PostalAddress",
       addressCountry: "KR",
       addressRegion: "서울특별시",
-    },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "5.0",
-      reviewCount: "0",
-      bestRating: "5",
-      worstRating: "1",
     },
     // 정규화된 카카오 URL만 (잘못된 형식이면 빈 배열)
     sameAs: ((): string[] => {
@@ -76,17 +61,14 @@ export function localBusinessJsonLd() {
  * Schema.org Article JSON-LD — 게시글 상세 페이지용.
  * contentLocation: post.region_tags 첫 번째 값을 Place로 표현.
  */
-export function articleJsonLd(post: Post) {
+export function articleJsonLd(post: Post, verifiedLocation?: string) {
   const url = `${siteConfig.url}/posts/${post.slug}`;
   const businessRef = { "@type": "Organization", name: siteConfig.name } as const;
   // broken placeholder URL 방어 — 외부 placehold.co는 OG·schema에서 제외
-  const isValidCover =
-    post.cover_image_url &&
-    !/placehold\.co/i.test(post.cover_image_url);
+  const isValidCover = post.cover_image_url && !/placehold\.co/i.test(post.cover_image_url);
   const image = isValidCover ? [post.cover_image_url as string] : undefined;
-  const place = post.region_tags[0]
-    ? { "@type": "Place", name: post.region_tags[0] }
-    : undefined;
+  const placeName = verifiedLocation ?? post.region_tags[0];
+  const place = placeName ? { "@type": "Place", name: placeName } : undefined;
   return {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -97,7 +79,10 @@ export function articleJsonLd(post: Post) {
     datePublished: post.published_at,
     dateModified: post.updated_at,
     author: businessRef,
-    publisher: { ...businessRef, logo: { "@type": "ImageObject", url: `${siteConfig.url}/og.png` } },
+    publisher: {
+      ...businessRef,
+      logo: { "@type": "ImageObject", url: `${siteConfig.url}/og-image.png` },
+    },
     contentLocation: place,
   };
 }
@@ -105,11 +90,7 @@ export function articleJsonLd(post: Post) {
 /**
  * Schema.org CollectionPage JSON-LD — 지역별 글 목록.
  */
-export function regionCollectionJsonLd(args: {
-  regionTag: string;
-  slug: string;
-  posts: Post[];
-}) {
+export function regionCollectionJsonLd(args: { regionTag: string; slug: string; posts: Post[] }) {
   const url = `${siteConfig.url}/posts/region/${args.slug}`;
   return {
     "@context": "https://schema.org",

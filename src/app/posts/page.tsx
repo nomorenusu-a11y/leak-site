@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+import { parseListSearch, listPath, type ListSearch } from "@/lib/post-list-search";
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { Header } from "@/components/landing/Header";
@@ -8,12 +10,12 @@ import { getPublishedPosts, POSTS_PER_PAGE } from "@/lib/posts";
 import { siteConfig } from "@/lib/env";
 
 /**
- * 시공 사례 목록 (첫 페이지). searchParams를 받지 않아 SSG + ISR로 동작.
- * 글이 perPage(=12) 이상 쌓이면 path segment 페이지네이션으로 전환.
+ * 기존 URL에서 검색 파라미터를 읽어 페이지네이션과 분류를 처리한다.
+ * searchParams 사용으로 요청 시 렌더링한다.
  */
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   title: "시공 사례",
   description: `${siteConfig.name}의 누수 탐지·시공 사례 모음. 지역별로 진행 사례를 확인하세요.`,
   alternates: { canonical: "/posts" },
@@ -25,8 +27,24 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function PostsIndexPage() {
-  const { posts, totalPages } = await getPublishedPosts({ page: 1, perPage: POSTS_PER_PAGE });
+type Props = { searchParams: Promise<ListSearch> };
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const filters = parseListSearch(await searchParams);
+  if (!filters) notFound();
+  const canonical = listPath("/posts", filters.page, filters.category);
+  return {
+    ...baseMetadata,
+    title: filters.page > 1 ? `시공 사례 · ${filters.page}페이지` : "시공 사례",
+    alternates: { canonical },
+    openGraph: { ...baseMetadata.openGraph, url: canonical },
+    robots: { index: !filters.category, follow: true },
+  };
+}
+export default async function PostsIndexPage({ searchParams }: Props) {
+  const filters = parseListSearch(await searchParams);
+  if (!filters) notFound();
+  const { posts, totalPages } = await getPublishedPosts({ ...filters, perPage: POSTS_PER_PAGE });
+  if (filters.page > totalPages) notFound();
 
   return (
     <>
@@ -48,9 +66,9 @@ export default async function PostsIndexPage() {
         <Container className="py-10">
           <PostList
             posts={posts}
-            page={1}
+            page={filters.page}
             totalPages={totalPages}
-            basePath="/posts"
+            basePath={listPath("/posts", 1, filters.category)}
           />
         </Container>
       </main>

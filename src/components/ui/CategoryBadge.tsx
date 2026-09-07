@@ -1,3 +1,4 @@
+import { POST_CATEGORIES, categoryLabel } from "@/lib/post-categories";
 /**
  * 카테고리 배지 — LiveBoard와 시공 사례 PostCard에서 공통으로 사용.
  *
@@ -38,7 +39,10 @@ export function CategoryBadge({
   fallbackEtc?: boolean;
 }) {
   if (!category && !fallbackEtc) return null;
-  const s = isKnown(category) ? POST_CATEGORY_STYLE[category] : ETC_STYLE;
+  const normalized = POST_CATEGORIES.find((c) => c.aliases.includes(category ?? ""))?.value;
+  const s = isKnown(normalized)
+    ? POST_CATEGORY_STYLE[normalized]
+    : { ...ETC_STYLE, ko: categoryLabel(category ?? null) };
   const pad = size === "xs" ? "px-1.5 py-0" : "px-2 py-0.5";
   return (
     <span

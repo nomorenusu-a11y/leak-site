@@ -5,18 +5,15 @@
  * 빌드 시점·SSG·ISR 어디서나 호출 가능 (쿠키 불필요).
  */
 
+import { categoryValues } from "./post-categories";
+import { collectPages } from "./collect-pages";
 import { createSupabaseAnonClient } from "@/lib/supabase/anon";
-import type {
-  LeakRequestBoardItem,
-  Post,
-  PostImage,
-  RequestStatus,
-} from "@/types/database";
+import type { LeakRequestBoardItem, Post, PostImage, RequestStatus } from "@/types/database";
 
 export const POSTS_PER_PAGE = 12;
 export const BOARD_LIMIT = 10;
 
-export type GetPostsArgs = { page?: number; perPage?: number };
+export type GetPostsArgs = { page?: number; perPage?: number; category?: string };
 
 export type PostListResult = {
   posts: Post[];
@@ -33,15 +30,19 @@ function emptyList(page: number, perPage: number): PostListResult {
 export async function getPublishedPosts({
   page = 1,
   perPage = POSTS_PER_PAGE,
+  category,
 }: GetPostsArgs = {}): Promise<PostListResult> {
   const supabase = createSupabaseAnonClient();
   const offset = (page - 1) * perPage;
-  const { data, error, count } = await supabase
+  let query = supabase
     .from("posts")
     .select("*", { count: "exact" })
     .eq("published", true)
     .order("published_at", { ascending: false })
+    .order("id")
     .range(offset, offset + perPage - 1);
+  if (category) query = query.in("category", categoryValues(category));
+  const { data, error, count } = await query;
   if (error) {
     console.warn("[posts] getPublishedPosts:", error.message);
     return emptyList(page, perPage);
@@ -99,17 +100,20 @@ export async function getPostImages(postId: string): Promise<PostImage[]> {
 
 export async function getPostsByRegionTag(
   tag: string,
-  { page = 1, perPage = POSTS_PER_PAGE }: GetPostsArgs = {},
+  { page = 1, perPage = POSTS_PER_PAGE, category }: GetPostsArgs = {},
 ): Promise<PostListResult> {
   const supabase = createSupabaseAnonClient();
   const offset = (page - 1) * perPage;
-  const { data, error, count } = await supabase
+  let query = supabase
     .from("posts")
     .select("*", { count: "exact" })
     .eq("published", true)
     .contains("region_tags", [tag])
     .order("published_at", { ascending: false })
+    .order("id")
     .range(offset, offset + perPage - 1);
+  if (category) query = query.in("category", categoryValues(category));
+  const { data, error, count } = await query;
   if (error) {
     console.warn("[posts] getPostsByRegionTag:", error.message);
     return emptyList(page, perPage);
@@ -148,7 +152,10 @@ export async function getRelatedPosts(post: Post, limit = 3): Promise<Post[]> {
  */
 export async function getAdjacentPosts(
   currentSlug: string,
-): Promise<{ prev: Pick<Post, "slug" | "title"> | null; next: Pick<Post, "slug" | "title"> | null }> {
+): Promise<{
+  prev: Pick<Post, "slug" | "title"> | null;
+  next: Pick<Post, "slug" | "title"> | null;
+}> {
   const supabase = createSupabaseAnonClient();
   const { data, error } = await supabase
     .from("posts")
@@ -165,27 +172,25 @@ export async function getAdjacentPosts(
   };
 }
 
-export async function getAllPublishedSlugs(): Promise<
-  { slug: string; updated_at: string }[]
-> {
+export async function getAllPublishedSlugs(): Promise<{ slug: string; updated_at: string }[]> {
   const supabase = createSupabaseAnonClient();
-  const { data, error } = await supabase
-    .from("posts")
-    .select("slug, updated_at")
-    .eq("published", true);
-  if (error) {
-    console.warn("[posts] getAllPublishedSlugs:", error.message);
-    return [];
-  }
-  return data ?? [];
+  return collectPages(async (from, to) => {
+    const { data, error } = await supabase
+      .from("posts")
+      .select("slug, updated_at")
+      .eq("published", true)
+      .order("id")
+      .range(from, to);
+    // Never cache a successful-looking, partial sitemap on an API failure.
+    if (error) throw new Error(`Published slugs unavailable: ${error.code}`);
+    return data ?? [];
+  });
 }
 
-export async function getRecentBoardItems(
-  limit = BOARD_LIMIT,
-): Promise<LeakRequestBoardItem[]> {
+export async function getRecentBoardItems(limit = BOARD_LIMIT): Promise<LeakRequestBoardItem[]> {
   const supabase = createSupabaseAnonClient();
   const { data, error } = await supabase
-    .from("leak_requests")
+    .from("leak_request_board")
     .select("id, masked_name, region, status, created_at, updated_at")
     .order("created_at", { ascending: false })
     .limit(limit);
@@ -213,10 +218,10 @@ export async function getBoardStats(): Promise<BoardStats> {
   const monthStartISO = monthStart.toISOString();
 
   const [totalRes, doneRes] = await Promise.all([
-    supabase.from("leak_requests").select("*", { count: "exact", head: true }),
+    supabase.from("leak_request_board").select("id", { count: "exact", head: true }),
     supabase
-      .from("leak_requests")
-      .select("*", { count: "exact", head: true })
+      .from("leak_request_board")
+      .select("id", { count: "exact", head: true })
       .eq("status", "done")
       .gte("updated_at", monthStartISO),
   ]);
@@ -234,10 +239,7 @@ export async function getBoardStats(): Promise<BoardStats> {
  */
 export async function getActiveRegionTags(): Promise<string[]> {
   const supabase = createSupabaseAnonClient();
-  const { data, error } = await supabase
-    .from("posts")
-    .select("region_tags")
-    .eq("published", true);
+  const { data, error } = await supabase.from("posts").select("region_tags").eq("published", true);
   if (error || !data) return [];
   const set = new Set<string>();
   for (const row of data) {

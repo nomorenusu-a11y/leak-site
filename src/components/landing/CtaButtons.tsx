@@ -14,20 +14,27 @@ const BTN_BASE =
  * 전화 CTA. phone 정규화 실패면 렌더 안 함.
  * 디자인 정책: 전화는 '긴급 액션'이라 accent(오렌지) 유지 — 사이트 내 유일한 accent 사용처.
  */
-export function PhoneButton({ block = false }: { block?: boolean }) {
+export function PhoneButton({
+  block = false,
+  label,
+}: {
+  block?: boolean;
+  /** 지역 랜딩처럼 행동을 먼저 보여줘야 하는 화면용 문구 */
+  label?: string;
+}) {
   const { phone } = getContactInfo();
   if (!phone) return null;
   return (
     <a
       href={`tel:${phone.tel}`}
       onClick={() => trackEvent(EVENTS.CLICK_CALL, { cta_label: "phone" })}
-      className={`${BTN_BASE} bg-accent-500 text-white shadow-md shadow-accent-500/30 hover:bg-accent-600 focus-visible:ring-accent-400 ${
+      className={`${BTN_BASE} bg-accent-500 shadow-accent-500/30 hover:bg-accent-600 focus-visible:ring-accent-400 text-white shadow-md ${
         block ? "w-full" : ""
       }`}
       aria-label={`전화 ${phone.display}로 상담`}
     >
       <Phone aria-hidden className="size-5" strokeWidth={2.25} />
-      <span>{phone.display}</span>
+      <span>{label ?? phone.display}</span>
     </a>
   );
 }
@@ -70,7 +77,7 @@ export function QuoteFallbackButton({
     <Link
       href="#quote-form"
       onClick={() => trackEvent(EVENTS.CTA_CLICK, { cta_label: "quote_fallback" })}
-      className={`${BTN_BASE} bg-brand-600 text-white shadow-md shadow-brand-600/20 hover:bg-brand-700 focus-visible:ring-brand-400 ${
+      className={`${BTN_BASE} bg-brand-600 shadow-brand-600/20 hover:bg-brand-700 focus-visible:ring-brand-400 text-white shadow-md ${
         block ? "w-full" : ""
       }`}
     >
@@ -92,8 +99,7 @@ export function ContactCTA({
 }) {
   void _variant;
   const { phone, kakao } = getContactInfo();
-  const wrap =
-    layout === "row" ? "flex flex-col gap-3 sm:flex-row" : "flex flex-col gap-3";
+  const wrap = layout === "row" ? "flex flex-col gap-3 sm:flex-row" : "flex flex-col gap-3";
 
   if (!phone && !kakao) {
     return (

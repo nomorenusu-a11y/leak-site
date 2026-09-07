@@ -10,7 +10,8 @@ import { getHeroSlides, getHeroBanner } from "@/lib/site-content";
 
 const REAL_LIMIT = 40;
 
-export async function HeroV2(_props: { cityLabel?: string }) {
+export async function HeroV2({ cityLabel }: { cityLabel?: string }) {
+  void cityLabel;
   const [HERO_SLIDES, heroBanner] = await Promise.all([getHeroSlides(), getHeroBanner()]);
   const real = await getRecentBoardItems(REAL_LIMIT);
   const realItems: ScrollItem[] = real.map((r) => ({

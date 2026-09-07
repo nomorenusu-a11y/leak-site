@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePilot } from "@/lib/revalidation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { assertAdmin } from "@/lib/auth";
@@ -13,6 +14,12 @@ const ALLOWED_MIME = ["image/jpeg", "image/png", "image/webp"] as const;
 const MAX_BYTES = 5 * 1024 * 1024; // 5MB
 
 const idSchema = z.string().uuid();
+const imageMetadataSchema = z.object({
+  alt_text: z.string().trim().max(180).transform((value) => value || null),
+  caption: z.string().trim().max(240).transform((value) => value || null),
+  work_stage: z.string().trim().max(80).transform((value) => value || null),
+  overlay_text: z.string().trim().max(80).transform((value) => value || null),
+});
 const slugSchema = z
   .string()
   .min(3)
@@ -63,6 +70,9 @@ function sanitizeRegionTags(tags: string[]): string[] {
 }
 
 function revalidatePosts(slug?: string) {
+  revalidatePilot();
+  revalidatePath("/");
+  revalidatePath("/posts/[slug]", "page");
   revalidatePath("/admin/posts");
   revalidatePath("/posts");
   revalidatePath("/posts/region/[region]", "page");
@@ -74,9 +84,7 @@ function revalidatePosts(slug?: string) {
 // CRUD
 // ============================================================
 
-export async function createPost(
-  input: z.input<typeof postSchema>,
-): Promise<PostActionResult> {
+export async function createPost(input: z.input<typeof postSchema>): Promise<PostActionResult> {
   await assertAdmin();
   const parsed = postSchema.safeParse(input);
   if (!parsed.success) {
@@ -226,7 +234,22 @@ export async function uploadCoverImage(
 export async function uploadPostImage(
   postId: string,
   formData: FormData,
-): Promise<{ ok: true; image: { id: string; url: string; sort_order: number } } | { ok: false; error: string }> {
+): Promise<
+  | {
+      ok: true;
+      image: {
+        id: string;
+        url: string;
+        sort_order: number;
+        alt_text: string | null;
+        caption: string | null;
+        work_stage: string | null;
+        image_variant: "original" | "annotated";
+        overlay_text: string | null;
+      };
+    }
+  | { ok: false; error: string }
+> {
   await assertAdmin();
   if (!idSchema.safeParse(postId).success) return { ok: false, error: "잘못된 글 ID" };
   const file = formData.get("file");
@@ -258,7 +281,7 @@ export async function uploadPostImage(
   const { data: created, error: insErr } = await supabase
     .from("post_images")
     .insert({ post_id: postId, url: pub.publicUrl, sort_order: nextOrder })
-    .select("id, url, sort_order")
+    .select("id, url, sort_order, alt_text, caption, work_stage, image_variant, overlay_text")
     .single();
   if (insErr || !created) {
     // 업로드 성공했는데 DB 실패 → 파일 정리
@@ -291,9 +314,33 @@ export async function deletePostImage(
   return { ok: true };
 }
 
-export async function deletePost(
-  id: string,
+/**
+ * 사진 자체는 바꾸지 않고 설명 메타데이터만 저장한다.
+ * 원본 사진의 alt/caption과 강조 derivative의 overlay_text를 분리해 관리한다.
+ */
+export async function updatePostImageMetadata(
+  imageId: string,
+  input: z.input<typeof imageMetadataSchema>,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  await assertAdmin();
+  if (!idSchema.safeParse(imageId).success) return { ok: false, error: "잘못된 이미지 ID" };
+  const parsed = imageMetadataSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "이미지 설명은 정해진 글자 수 안에서 입력해 주세요." };
+
+  const supabase = createSupabaseAdminClient();
+  const { error } = await supabase
+    .from("post_images")
+    .update(parsed.data)
+    .eq("id", imageId);
+  if (error) {
+    console.error("[admin/posts] image metadata:", error);
+    return { ok: false, error: "이미지 설명 저장 실패" };
+  }
+  revalidatePosts();
+  return { ok: true };
+}
+
+export async function deletePost(id: string): Promise<{ ok: true } | { ok: false; error: string }> {
   await assertAdmin();
   if (!idSchema.safeParse(id).success) return { ok: false, error: "잘못된 ID" };
 
@@ -304,16 +351,12 @@ export async function deletePost(
     .select("slug, cover_image_url")
     .eq("id", id)
     .maybeSingle();
-  const { data: images } = await supabase
-    .from("post_images")
-    .select("url")
-    .eq("post_id", id);
+  const { data: images } = await supabase.from("post_images").select("url").eq("post_id", id);
 
   // 2) Storage 파일 일괄 삭제 (cover + post_images)
-  const allUrls = [
-    post?.cover_image_url,
-    ...(images?.map((i) => i.url) ?? []),
-  ].filter((u): u is string => typeof u === "string" && u.length > 0);
+  const allUrls = [post?.cover_image_url, ...(images?.map((i) => i.url) ?? [])].filter(
+    (u): u is string => typeof u === "string" && u.length > 0,
+  );
   const paths = allUrls
     .map(storagePathFromPublicUrl)
     .filter((p): p is string => typeof p === "string");
@@ -333,4 +376,3 @@ export async function deletePost(
   revalidatePosts(post?.slug);
   return { ok: true };
 }
-
