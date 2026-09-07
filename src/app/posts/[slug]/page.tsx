@@ -84,6 +84,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
   const candidate = location ? regionById(location.region_id) : undefined;
   const region = candidate && (await getPublicRegionContent(candidate)) ? candidate : undefined;
   const shareUrl = `${siteConfig.url}/posts/${post.slug}`;
+  const hasInlineImages = hasInlinePostImages(post.content, images);
 
   return (
     <>
@@ -144,9 +145,13 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
             </Container>
           </header>
           <Container className="max-w-3xl py-10">
-            <PostContent content={post.content} images={images} />
-            {!hasInlinePostImages(post.content, images) && <PostGallery images={images} />}
-            <PostCTABlock slug={post.slug} />
+            <PostContent
+              content={post.content}
+              images={images}
+              inlineCta={hasInlineImages ? <PostCTABlock slug={post.slug} /> : undefined}
+            />
+            {!hasInlineImages && <PostGallery images={images} />}
+            {!hasInlineImages && <PostCTABlock slug={post.slug} />}
             <PostNav prev={adjacent.prev} next={adjacent.next} />
           </Container>
         </article>
