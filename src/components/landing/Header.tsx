@@ -2,8 +2,7 @@ import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { Logo } from "@/components/ui/Logo";
 import { Phone, ArrowLeft } from "@/components/icons";
-import { normalizePhone } from "@/lib/contact";
-import { siteConfig } from "@/lib/env";
+import { getContactInfo } from "@/lib/contact";
 import { MobileMenu } from "./MobileMenu";
 
 const NAV: { href: string; label: string }[] = [
@@ -26,7 +25,7 @@ type Props = {
  * 메인: [로고+슬로건] [메뉴 6개]   [전화 yellow CTA]
  */
 export function Header({ showBack = false }: Props) {
-  const phone = normalizePhone(siteConfig.phone);
+  const { phone } = getContactInfo();
 
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white">
