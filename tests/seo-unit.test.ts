@@ -1,6 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { PILOT_REGIONS, resolvePilotRegion, regionPath, regionAncestors } from "../src/lib/regions";
+import {
+  PILOT_REGIONS,
+  resolveRegion,
+  regionPath,
+  regionAncestors,
+  SEOUL_DONGS,
+  SEOUL_DISTRICTS,
+} from "../src/lib/regions";
 import { validTermIds, SEO_TERMS } from "../src/lib/seo/taxonomy";
 import { collectPages } from "../src/lib/collect-pages";
 import { parseListSearch, listPath } from "../src/lib/post-list-search";
@@ -15,22 +22,26 @@ import {
 } from "../src/lib/seo/regions";
 import { defaultRegionContent } from "../src/lib/regions";
 
-test("only the six approved URLs; rejects administrative dongs and combination routes", () => {
-  assert.deepEqual(PILOT_REGIONS.map(regionPath), [
+test("official Seoul hierarchy supports 25 districts and 467 legal dongs while rejecting invalid routes", () => {
+  assert.equal(SEOUL_DISTRICTS.length, 25);
+  assert.equal(SEOUL_DONGS.length, 467);
+  assert.deepEqual(PILOT_REGIONS.map(regionPath).sort(), [
     "/seoul",
     "/seoul/dobong-gu",
-    "/seoul/dobong-gu/chang-dong",
-    "/seoul/dobong-gu/ssangmun-dong",
     "/seoul/dobong-gu/banghak-dong",
+    "/seoul/dobong-gu/chang-dong",
     "/seoul/dobong-gu/dobong-dong",
+    "/seoul/dobong-gu/ssangmun-dong",
   ]);
   for (const [district, dong] of [
-    ["gangnam-gu", undefined],
+    ["gangnam-gu", "chang-dong"],
     ["dobong-gu", "chang-1-dong"],
     ["dobong-gu", "ssangmun-dong-boiler"],
-    ["gangnam-gu", "chang-dong"],
+    ["dobong-gu", "ssangmun-dong/boiler"],
   ])
-    assert.equal(resolvePilotRegion(district, dong), undefined);
+    assert.equal(resolveRegion(district, dong), undefined);
+  assert.equal(resolveRegion("gangnam-gu")?.name, "강남구");
+  assert.equal(resolveRegion("dobong-gu", "ssangmun-dong")?.name, "쌍문동");
   assert.equal(regionAncestors(PILOT_REGIONS[2]).length, 3);
 });
 test("symptom is not a leak cause or detection method", () => {
@@ -59,7 +70,7 @@ test("a legal-dong page covers related leak intents without creating combination
       faq.question.includes("수도배관·온수배관·난방배관"),
     ),
   );
-  assert.equal(resolvePilotRegion("dobong-gu", "ssangmun-dong-boiler"), undefined);
+  assert.equal(resolveRegion("dobong-gu", "ssangmun-dong-boiler"), undefined);
 });
 test("all slugs collected beyond 1000 and server-side caps; failure is not a partial success", async () => {
   const source = Array.from({ length: 1203 }, (_, i) => i);

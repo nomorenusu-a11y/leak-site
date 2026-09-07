@@ -1,4 +1,4 @@
-import { PILOT_REGIONS, regionPath } from "@/lib/regions";
+import { regionPath, SEOUL_REGIONS } from "@/lib/regions";
 import { getPublicRegionContent } from "@/lib/region-content";
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/env";
@@ -26,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ];
 
-  for (const region of PILOT_REGIONS) {
+  for (const region of SEOUL_REGIONS) {
     const content = await getPublicRegionContent(region);
     if (content?.indexable)
       entries.push({

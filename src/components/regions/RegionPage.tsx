@@ -7,7 +7,8 @@ import { PostCard } from "@/components/posts/PostCard";
 import { PhoneButton, KakaoButton } from "@/components/landing/CtaButtons";
 import { MobileBottomBar } from "@/components/landing/v2/MobileBottomBar";
 import { RegionBreadcrumbs } from "./RegionBreadcrumbs";
-import { DOBONG, PILOT_REGIONS, regionPath } from "@/lib/regions";
+import { regionById, regionChildren, regionPath } from "@/lib/regions";
+import { CITY_REGION_TAGS, type CityCode } from "@/lib/city";
 import { getPublicRegionContent } from "@/lib/region-content";
 import { getRegionPosts } from "@/lib/region-posts";
 import {
@@ -50,11 +51,16 @@ const CHECK_STEPS = [
 export async function RegionPage({ region }: { region: Region }) {
   const content = await getPublicRegionContent(region);
   if (!content) notFound();
+  const district = region.level === "dong" ? regionById(region.parent_id ?? "") : region;
+  const districtName = district?.name ?? "서울";
+  const districtPostSlug = (Object.entries(CITY_REGION_TAGS) as [CityCode, string][]).find(
+    ([, name]) => name === districtName,
+  )?.[0].toLowerCase();
   const [{ posts, unavailable }, nearbyResult, children] = await Promise.all([
     getRegionPosts(region),
-    region.level === "dong" ? getRegionPosts(DOBONG) : Promise.resolve(null),
+    region.level === "dong" && district ? getRegionPosts(district) : Promise.resolve(null),
     Promise.all(
-      PILOT_REGIONS.filter((r) => r.parent_id === region.id).map(async (r) => ({
+      regionChildren(region).map(async (r) => ({
         region: r,
         content: await getPublicRegionContent(r),
       })),
@@ -129,22 +135,22 @@ export async function RegionPage({ region }: { region: Region }) {
                 <p className="text-brand-700 text-sm font-bold">작업 근거</p>
                 <h2 id="regional-cases" className="mt-2 text-2xl font-extrabold">
                   {isNearbyEvidence
-                    ? "도봉구 인근 실제 사례"
+                    ? `${districtName} 인근 실제 사례`
                     : region.level === "city"
-                      ? "도봉구 실제 시공사례"
+                      ? "서울 실제 시공사례"
                       : `${region.name} 실제 시공사례`}
                 </h2>
               </div>
               <Link
-                href="/posts/region/dobong"
+                href={districtPostSlug ? `/posts/region/${districtPostSlug}` : "/posts"}
                 className="text-brand-700 min-h-12 py-2 font-semibold underline underline-offset-4"
               >
-                도봉구 사례 게시판
+                {districtName} 사례 게시판
               </Link>
             </div>
             {isNearbyEvidence ? (
               <p className="mt-3 leading-7 text-slate-600">
-                현재 {region.name}으로 확인된 공개 사례는 아직 없습니다. 아래는 도봉구에서 확인된
+                현재 {region.name}으로 확인된 공개 사례는 아직 없습니다. 아래는 {districtName}에서 확인된
                 실제 사례이며, {region.name} 사례라고 표시하지 않습니다.
               </p>
             ) : (
@@ -163,7 +169,7 @@ export async function RegionPage({ region }: { region: Region }) {
               <div className="mt-6 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 leading-7 text-slate-600">
                 {caseUnavailable
                   ? "현재 시공사례 목록을 불러올 수 없습니다. 기존 사례 게시판을 확인하거나 전화로 문의해 주세요."
-                  : `${isNearbyEvidence ? "도봉구 인근 실제 사례도" : `${region.name}으로 확인된 공개 시공사례가`} 아직 공개되어 있지 않습니다. 존재하지 않는 사례를 만들지 않고, 등록된 실제 사례만 이곳에 표시합니다.`}
+                : `${isNearbyEvidence ? `${districtName} 인근 실제 사례도` : `${region.name}으로 확인된 공개 시공사례가`} 아직 공개되어 있지 않습니다. 존재하지 않는 사례를 만들지 않고, 등록된 실제 사례만 이곳에 표시합니다.`}
               </div>
             )}
             <Link
@@ -237,7 +243,7 @@ export async function RegionPage({ region }: { region: Region }) {
           {visibleChildren.length > 0 && (
             <section aria-labelledby="region-directory">
               <h2 id="region-directory" className="text-2xl font-extrabold">
-                {region.level === "city" ? "지역 안내 찾아보기" : "도봉구 법정동별 안내"}
+                {region.level === "city" ? "서울 지역 안내 찾아보기" : `${region.name} 법정동별 안내`}
               </h2>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {visibleChildren.map(({ region: r }) => (
@@ -284,7 +290,7 @@ export async function RegionPage({ region }: { region: Region }) {
               <PhoneButton label="전화 상담 · 010-5700-4026" />
               <KakaoButton />
               <Link
-                href="/?city=Dobong#quote-form"
+                href={districtPostSlug ? `/?city=${districtPostSlug[0].toUpperCase()}${districtPostSlug.slice(1)}#quote-form` : "/#quote-form"}
                 className="bg-brand-600 hover:bg-brand-700 inline-flex min-h-12 items-center justify-center rounded-lg px-5 font-bold text-white"
               >
                 견적 신청서 작성

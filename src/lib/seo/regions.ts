@@ -10,7 +10,9 @@ export function regionPageTitle(region: Region, content: RegionPageContent) {
 
 export function regionPageDescription(region: Region, content: RegionPageContent) {
   if (region.level !== "dong") return content.description;
-  return `${region.name} 누수탐지 상담. ${region.name} 아파트 누수, 화장실·욕실 누수, 천장 누수, 수도·온수·난방배관 및 보일러 누수의 증상을 확인하고 실제 사례와 상담 안내를 보세요.`;
+  const district = regionAncestors(region).find((ancestor) => ancestor.level === "district");
+  const location = district ? `서울 ${district.name} ${region.name}` : region.name;
+  return `${location} 누수탐지 상담. ${region.name} 아파트 누수, 화장실·욕실 누수, 천장 누수, 수도·온수·난방배관 및 보일러 누수의 증상을 확인하고 실제 사례와 상담 안내를 보세요.`;
 }
 
 export function regionMetadataTitle(region: Region, content: RegionPageContent) {

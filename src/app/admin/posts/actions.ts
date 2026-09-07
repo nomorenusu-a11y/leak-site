@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePilot } from "@/lib/revalidation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { assertAdmin } from "@/lib/auth";
@@ -70,7 +69,6 @@ function sanitizeRegionTags(tags: string[]): string[] {
 }
 
 function revalidatePosts(slug?: string) {
-  revalidatePilot();
   revalidatePath("/");
   revalidatePath("/posts/[slug]", "page");
   revalidatePath("/admin/posts");
