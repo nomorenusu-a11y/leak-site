@@ -9,7 +9,9 @@ export default async function AutoPostPage() {
   const db = createSupabaseAdminClient();
   const { data: assets } = await db
     .from("media_assets")
-    .select("id, url, file_name, mime_type, active, created_at")
+    .select(
+      "id, url, file_name, mime_type, source_sha256, source_relative_path, active, created_at",
+    )
     .eq("active", true)
     .limit(2000);
   return (

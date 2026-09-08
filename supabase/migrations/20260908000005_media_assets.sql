@@ -6,9 +6,21 @@ create table if not exists public.media_assets (
   url text not null,
   file_name text not null,
   mime_type text not null check (mime_type in ('image/jpeg', 'image/png', 'image/webp')),
+  source_sha256 text unique,
+  source_relative_path text,
   active boolean not null default true,
   created_at timestamptz not null default now()
 );
+
+-- Supports environments where the table was created before the sync metadata
+-- fields were added to this migration.
+alter table public.media_assets
+  add column if not exists source_sha256 text,
+  add column if not exists source_relative_path text;
+
+create unique index if not exists media_assets_source_sha256_key
+  on public.media_assets (source_sha256)
+  where source_sha256 is not null;
 
 create index if not exists media_assets_active_created_at_idx
   on public.media_assets (active, created_at desc);

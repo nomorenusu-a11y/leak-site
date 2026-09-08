@@ -138,11 +138,15 @@ export type MediaAsset = {
   url: string;
   file_name: string;
   mime_type: "image/jpeg" | "image/png" | "image/webp";
+  source_sha256: string | null;
+  source_relative_path: string | null;
   active: boolean;
   created_at: string;
 };
 
-export type MediaAssetInsert = Omit<MediaAsset, "id" | "active" | "created_at"> & {
+export type MediaAssetInsert = Pick<MediaAsset, "url" | "file_name" | "mime_type"> & {
+  source_sha256?: string | null;
+  source_relative_path?: string | null;
   active?: boolean;
 };
 
