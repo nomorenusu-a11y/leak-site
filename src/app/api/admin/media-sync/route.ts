@@ -17,6 +17,26 @@ function isAuthorized(request: Request) {
 export async function GET(request: Request) {
   if (!isAuthorized(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const db = createSupabaseAdminClient();
+  const url = new URL(request.url);
+  if (url.searchParams.get("action") === "analysis-pending") {
+    const requested = Number.parseInt(url.searchParams.get("limit") ?? "10", 10);
+    const limit = Number.isFinite(requested) ? Math.max(1, Math.min(requested, 20)) : 10;
+    const { data: pending, error: pendingError } = await db
+      .from("media_asset_analysis")
+      .select("asset_id")
+      .eq("analysis_status", "pending")
+      .limit(limit);
+    if (pendingError) return NextResponse.json({ error: "Analysis queue lookup failed" }, { status: 502 });
+    const ids = (pending ?? []).map((row) => row.asset_id);
+    if (!ids.length) return NextResponse.json({ assets: [] });
+    const { data: assets, error: assetError } = await db
+      .from("media_assets")
+      .select("id, source_relative_path, file_name")
+      .in("id", ids)
+      .eq("active", true);
+    if (assetError) return NextResponse.json({ error: "Asset lookup failed" }, { status: 502 });
+    return NextResponse.json({ assets: assets ?? [] });
+  }
   const { data, error } = await db
     .from("media_assets")
     .select("source_sha256")
@@ -32,6 +52,38 @@ export async function GET(request: Request) {
  */
 export async function POST(request: Request) {
   if (!isAuthorized(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  if (request.headers.get("content-type")?.includes("application/json")) {
+    const input = (await request.json().catch(() => null)) as Record<string, unknown> | null;
+    if (input?.action !== "analysis-result" || typeof input.assetId !== "string") {
+      return NextResponse.json({ error: "Invalid analysis payload" }, { status: 400 });
+    }
+    const status = input.status;
+    const workStage = input.workStage;
+    const confidence = input.confidence;
+    const validStatus = ["tagged", "needs_review", "failed"].includes(String(status));
+    const validStage = ["damage", "inspection", "detection", "repair", "completion", "unknown"].includes(String(workStage));
+    const validTags = (value: unknown) => Array.isArray(value) && value.every((tag) => typeof tag === "string" && tag.length <= 80) && value.length <= 20;
+    if (!validStatus || !validStage || typeof confidence !== "number" || confidence < 0 || confidence > 100 || !validTags(input.visibleSubjectTags) || !validTags(input.leakTypeTags) || !validTags(input.symptomTags)) {
+      return NextResponse.json({ error: "Invalid analysis result" }, { status: 400 });
+    }
+    const db = createSupabaseAdminClient();
+    const { error } = await db.from("media_asset_analysis").update({
+      analysis_status: status as "tagged" | "needs_review" | "failed",
+      analysis_version: typeof input.model === "string" ? input.model.slice(0, 80) : "local-vision",
+      scene_summary: typeof input.sceneSummary === "string" ? input.sceneSummary.slice(0, 240) : "",
+      work_stage: workStage as "damage" | "inspection" | "detection" | "repair" | "completion" | "unknown",
+      visible_subject_tags: input.visibleSubjectTags as string[],
+      leak_type_tags: input.leakTypeTags as string[],
+      symptom_tags: input.symptomTags as string[],
+      confidence: Math.round(confidence),
+      ai_result: typeof input.aiResult === "object" && input.aiResult ? input.aiResult as Record<string, unknown> : {},
+      analyzed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }).eq("asset_id", input.assetId);
+    if (error) return NextResponse.json({ error: "Analysis result save failed" }, { status: 502 });
+    return NextResponse.json({ ok: true });
+  }
 
   const form = await request.formData();
   const file = form.get("file");
