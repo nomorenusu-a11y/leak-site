@@ -9,6 +9,7 @@ const NAV: NavItem[] = [
   { href: "/admin", label: "대시보드" },
   { href: "/admin/requests", label: "견적 신청" },
   { href: "/admin/posts", label: "시공 사례" },
+  { href: "/admin/auto-post", label: "자동 글쓰기" },
   { href: "/admin/hero", label: "히어로", group: "사이트 관리" },
   { href: "/admin/reviews", label: "후기 관리", group: "사이트 관리" },
   { href: "/admin/faq", label: "FAQ 관리", group: "사이트 관리" },
@@ -64,11 +65,15 @@ export function AdminShell({ children }: { children: ReactNode }) {
               return (
                 <li key={it.href}>
                   {showGroup && (
-                    <div className="mt-3 mb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                    <div className="mt-3 mb-1 px-3 text-[10px] font-bold tracking-widest text-slate-500 uppercase">
                       {it.group}
                     </div>
                   )}
-                  <a href={it.href} className={linkClass(it.href)} onClick={() => setMobileOpen(false)}>
+                  <a
+                    href={it.href}
+                    className={linkClass(it.href)}
+                    onClick={() => setMobileOpen(false)}
+                  >
                     {it.label}
                   </a>
                 </li>
@@ -97,7 +102,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
               return (
                 <li key={it.href}>
                   {showGroup && (
-                    <div className="mt-5 mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                    <div className="mt-5 mb-2 px-3 text-[10px] font-bold tracking-widest text-slate-500 uppercase">
                       {it.group}
                     </div>
                   )}
