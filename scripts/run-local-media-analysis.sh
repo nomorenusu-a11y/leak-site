@@ -4,6 +4,7 @@
 # and records tags through the protected site endpoint.
 
 set -u
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 LOG_FILE="$PROJECT_DIR/.local-media-analysis.log"
