@@ -11,7 +11,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "node --import tsx --test tests/*.test.ts tests/*.test.mjs",
-    "sync:media": "tsx scripts/sync-photo-library.ts"
+    "sync:media": "node --env-file=.env.local --import tsx scripts/sync-photo-library.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",

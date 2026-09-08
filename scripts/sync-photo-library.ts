@@ -14,6 +14,8 @@ import sharp from "sharp";
 
 const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp"]);
 const MAX_CONCURRENT_UPLOADS = 2;
+const DRY_RUN = process.env.MEDIA_SYNC_DRY_RUN === "1";
+const BATCH_SIZE = Number.parseInt(process.env.MEDIA_SYNC_BATCH_SIZE ?? "0", 10) || 0;
 
 const sourceDir = process.env.MEDIA_SOURCE_DIR;
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -63,54 +65,95 @@ async function runPool<T>(items: T[], task: (item: T) => Promise<void>) {
 async function main() {
   const root = path.resolve(sourceDir!);
   const files = await listImages(root);
-  const { data: existing, error: existingError } = await supabase
-    .from("media_assets")
-    .select("source_sha256")
-    .not("source_sha256", "is", null);
-  if (existingError) throw new Error(`라이브러리 조회 실패: ${existingError.message}`);
-  const known = new Set((existing ?? []).map((asset) => asset.source_sha256).filter(Boolean));
+  let known = new Set<string>();
+  if (!DRY_RUN) {
+    const { data: existing, error: existingError } = await supabase
+      .from("media_assets")
+      .select("source_sha256")
+      .not("source_sha256", "is", null);
+    if (existingError) throw new Error(`라이브러리 조회 실패: ${existingError.message}`);
+    known = new Set(
+      (existing ?? [])
+        .map((asset) => asset.source_sha256)
+        .filter((value): value is string => Boolean(value)),
+    );
+  }
   let processed = 0;
   let skipped = 0;
+  let scheduled = 0;
+  let optimizedBytes = 0;
+  const failures: string[] = [];
 
-  console.log(`사진 ${files.length}장을 확인합니다. 영상 파일은 자동으로 제외됩니다.`);
+  console.log(
+    `${DRY_RUN ? "사전 검사" : "동기화"}: 사진 ${files.length}장. 영상 파일은 자동으로 제외됩니다.`,
+  );
   await runPool(files, async (filePath) => {
-    const hash = await sha256(filePath);
-    if (known.has(hash)) {
-      skipped += 1;
-      return;
-    }
+    // A dry-run batch deliberately stops before hashing the rest of the archive.
+    // This keeps capacity checks bounded on very large desktop folders.
+    if (DRY_RUN && BATCH_SIZE > 0 && scheduled >= BATCH_SIZE) return;
     const relativePath = path.relative(root, filePath);
-    const webp = await sharp(filePath)
-      .rotate()
-      .resize({ width: 1600, height: 1600, fit: "inside", withoutEnlargement: true })
-      .webp({ quality: 80 })
-      .toBuffer();
-    const storagePath = `assets/${hash}.webp`;
-    const { error: uploadError } = await supabase.storage
-      .from("post-images")
-      .upload(storagePath, webp, { contentType: "image/webp", upsert: false });
-    if (uploadError && !/already exists/i.test(uploadError.message)) {
-      throw new Error(`${relativePath} 업로드 실패: ${uploadError.message}`);
+    try {
+      const hash = await sha256(filePath);
+      if (known.has(hash)) {
+        skipped += 1;
+        return;
+      }
+      if (BATCH_SIZE > 0 && scheduled >= BATCH_SIZE) return;
+      scheduled += 1;
+      let webp = await sharp(filePath)
+        .rotate()
+        .resize({ width: 1600, height: 1600, fit: "inside", withoutEnlargement: true })
+        .webp({ quality: 80 })
+        .toBuffer();
+      // Keep every derivative comfortably below the direct-upload request limit.
+      if (webp.byteLength > 4 * 1024 * 1024) {
+        webp = await sharp(filePath)
+          .rotate()
+          .resize({ width: 1600, height: 1600, fit: "inside", withoutEnlargement: true })
+          .webp({ quality: 65 })
+          .toBuffer();
+      }
+      optimizedBytes += webp.byteLength;
+      if (!DRY_RUN) {
+        const storagePath = `assets/${hash}.webp`;
+        const { error: uploadError } = await supabase.storage
+          .from("post-images")
+          .upload(storagePath, webp, { contentType: "image/webp", upsert: false });
+        if (uploadError && !/already exists/i.test(uploadError.message)) {
+          throw new Error(`업로드 실패: ${uploadError.message}`);
+        }
+        const { data: publicUrl } = supabase.storage.from("post-images").getPublicUrl(storagePath);
+        const { error: insertError } = await supabase.from("media_assets").upsert(
+          {
+            url: publicUrl.publicUrl,
+            file_name: path.basename(filePath),
+            mime_type: "image/webp",
+            source_sha256: hash,
+            source_relative_path: relativePath,
+          },
+          { onConflict: "source_sha256", ignoreDuplicates: true },
+        );
+        if (insertError) throw new Error(`등록 실패: ${insertError.message}`);
+        known.add(hash);
+      }
+      processed += 1;
+      if (processed % 10 === 0 || processed === files.length - skipped) {
+        console.log(
+          `${DRY_RUN ? "검사" : "등록"} ${processed}장 · 건너뜀 ${skipped}장 · 오류 ${failures.length}장`,
+        );
+      }
+    } catch (error) {
+      failures.push(`${relativePath}: ${error instanceof Error ? error.message : String(error)}`);
+      console.error(`건너뜀(오류) · ${relativePath}`);
     }
-    const { data: publicUrl } = supabase.storage.from("post-images").getPublicUrl(storagePath);
-    const { error: insertError } = await supabase.from("media_assets").upsert(
-      {
-        url: publicUrl.publicUrl,
-        file_name: path.basename(filePath),
-        mime_type: "image/webp",
-        source_sha256: hash,
-        source_relative_path: relativePath,
-      },
-      { onConflict: "source_sha256", ignoreDuplicates: true },
-    );
-    if (insertError) throw new Error(`${relativePath} 등록 실패: ${insertError.message}`);
-    known.add(hash);
-    processed += 1;
-    console.log(`등록 ${processed}장 · 건너뜀 ${skipped}장 · ${relativePath}`);
   });
   console.log(
-    `완료: 새 사진 ${processed}장, 기존 사진 ${skipped}장. 원본 파일은 변경하지 않았습니다.`,
+    `${DRY_RUN ? "사전 검사 완료" : "동기화 완료"}: 이번 실행 사진 ${processed}장, 기존 사진 ${skipped}장, 오류 ${failures.length}장, 최적화 용량 ${(optimizedBytes / 1024 ** 3).toFixed(2)}GB. 원본 파일은 변경하지 않았습니다.`,
   );
+  if (failures.length) {
+    console.error(`처리하지 못한 파일 ${failures.length}장:\n${failures.join("\n")}`);
+    process.exitCode = 1;
+  }
 }
 
 main().catch((error: unknown) => {
