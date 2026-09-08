@@ -20,14 +20,17 @@ const BATCH_SIZE = Number.parseInt(process.env.MEDIA_SYNC_BATCH_SIZE ?? "0", 10)
 const sourceDir = process.env.MEDIA_SOURCE_DIR;
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceRole = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const syncEndpoint = process.env.MEDIA_SYNC_ENDPOINT;
+const syncToken = process.env.MEDIA_SYNC_TOKEN;
+const useDirectSupabase = Boolean(serviceRole && !serviceRole.includes("SENSITIVE"));
 
-if (!sourceDir || !supabaseUrl || !serviceRole) {
+if (!sourceDir || !supabaseUrl || (!useDirectSupabase && (!syncEndpoint || !syncToken))) {
   throw new Error(
-    "MEDIA_SOURCE_DIR, NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY가 필요합니다.",
+    "MEDIA_SOURCE_DIR와 Supabase 서비스 키 또는 MEDIA_SYNC_ENDPOINT/MEDIA_SYNC_TOKEN이 필요합니다.",
   );
 }
 
-const supabase = createClient(supabaseUrl, serviceRole, {
+const supabase = createClient(supabaseUrl!, serviceRole ?? "unused-direct-key", {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
@@ -67,16 +70,18 @@ async function main() {
   const files = await listImages(root);
   let known = new Set<string>();
   if (!DRY_RUN) {
-    const { data: existing, error: existingError } = await supabase
-      .from("media_assets")
-      .select("source_sha256")
-      .not("source_sha256", "is", null);
-    if (existingError) throw new Error(`라이브러리 조회 실패: ${existingError.message}`);
-    known = new Set(
-      (existing ?? [])
-        .map((asset) => asset.source_sha256)
-        .filter((value): value is string => Boolean(value)),
-    );
+    if (useDirectSupabase) {
+      const { data: existing, error: existingError } = await supabase
+        .from("media_assets")
+        .select("source_sha256")
+        .not("source_sha256", "is", null);
+      if (existingError) throw new Error(`라이브러리 조회 실패: ${existingError.message}`);
+      known = new Set(
+        (existing ?? [])
+          .map((asset) => asset.source_sha256)
+          .filter((value): value is string => Boolean(value)),
+      );
+    }
   }
   let processed = 0;
   let skipped = 0;
@@ -114,7 +119,7 @@ async function main() {
           .toBuffer();
       }
       optimizedBytes += webp.byteLength;
-      if (!DRY_RUN) {
+      if (!DRY_RUN && useDirectSupabase) {
         const storagePath = `assets/${hash}.webp`;
         const { error: uploadError } = await supabase.storage
           .from("post-images")
@@ -135,6 +140,22 @@ async function main() {
         );
         if (insertError) throw new Error(`등록 실패: ${insertError.message}`);
         known.add(hash);
+      }
+      if (!DRY_RUN && !useDirectSupabase) {
+        const form = new FormData();
+        form.append(
+          "file",
+          new Blob([new Uint8Array(webp)], { type: "image/webp" }),
+          `${hash}.webp`,
+        );
+        form.append("sourceHash", hash);
+        form.append("relativePath", relativePath);
+        const response = await fetch(syncEndpoint!, {
+          method: "POST",
+          headers: { authorization: `Bearer ${syncToken}` },
+          body: form,
+        });
+        if (!response.ok) throw new Error(`전송 실패: ${response.status}`);
       }
       processed += 1;
       if (processed % 10 === 0 || processed === files.length - skipped) {
