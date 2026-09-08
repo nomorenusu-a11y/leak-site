@@ -56,16 +56,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Storage upload failed" }, { status: 502 });
   }
   const { data: publicUrl } = db.storage.from("post-images").getPublicUrl(storagePath);
-  const { error: insertError } = await db.from("media_assets").upsert(
-    {
-      url: publicUrl.publicUrl,
-      file_name: `${createHash("sha256").update(buffer).digest("hex").slice(0, 12)}.webp`,
-      mime_type: "image/webp",
-      source_sha256: sourceHash,
-      source_relative_path: relativePath,
-    },
-    { onConflict: "source_sha256", ignoreDuplicates: true },
-  );
+  // A partial index may exist on older installations, which PostgREST cannot
+  // use as an `onConflict` target. Check first so both old and new schemas work.
+  const { data: existing, error: lookupError } = await db
+    .from("media_assets")
+    .select("id")
+    .eq("source_sha256", sourceHash)
+    .maybeSingle();
+  if (lookupError) return NextResponse.json({ error: "Asset lookup failed" }, { status: 502 });
+  const { error: insertError } = existing
+    ? { error: null }
+    : await db.from("media_assets").insert({
+        url: publicUrl.publicUrl,
+        file_name: `${createHash("sha256").update(buffer).digest("hex").slice(0, 12)}.webp`,
+        mime_type: "image/webp",
+        source_sha256: sourceHash,
+        source_relative_path: relativePath,
+      });
   if (insertError) return NextResponse.json({ error: "Asset record failed" }, { status: 502 });
   return NextResponse.json({ ok: true });
 }
