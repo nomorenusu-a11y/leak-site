@@ -7,6 +7,7 @@ set -u
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 LOG_FILE="$PROJECT_DIR/.local-media-analysis.log"
+PAUSE_FILE="$PROJECT_DIR/.local-media-analysis.paused"
 
 cd "$PROJECT_DIR" || exit 1
 set -a
@@ -14,6 +15,10 @@ source ./.env.local
 set +a
 
 while true; do
+  if [[ -f "$PAUSE_FILE" ]]; then
+    print -r -- "[$(date '+%Y-%m-%d %H:%M:%S')] 사용자가 분석을 일시정지함" >> "$LOG_FILE"
+    exit 0
+  fi
   timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
   output="$(nice -n 10 env MEDIA_ANALYSIS_MODEL=moondream MEDIA_ANALYSIS_BATCH_SIZE=10 npx tsx scripts/analyze-local-media.ts 2>&1)"
   exit_code=$?
