@@ -19,7 +19,7 @@ const serviceRole = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const syncEndpoint = process.env.MEDIA_SYNC_ENDPOINT;
 const syncToken = process.env.MEDIA_SYNC_TOKEN;
 const batchSize = Math.max(1, Number.parseInt(process.env.MEDIA_ANALYSIS_BATCH_SIZE ?? "10", 10) || 10);
-const model = process.env.MEDIA_ANALYSIS_MODEL ?? "qwen2.5vl:3b";
+const model = process.env.MEDIA_ANALYSIS_MODEL ?? "moondream";
 const ollamaUrl = process.env.OLLAMA_URL ?? "http://127.0.0.1:11434";
 
 const useDirectSupabase = Boolean(serviceRole && !serviceRole.includes("SENSITIVE"));
@@ -37,6 +37,86 @@ type Asset = { id: string; source_relative_path: string | null; file_name: strin
 type ModelResult = { scene_summary?: unknown; work_stage?: unknown; visible_subject_tags?: unknown; leak_type_tags?: unknown; symptom_tags?: unknown; confidence?: unknown };
 type AnalysisOutput = { scene_summary: string; work_stage: string; visible_subject_tags: string[]; leak_type_tags: string[]; symptom_tags: string[]; confidence: number; ai_result: Record<string, unknown> };
 
+function parseModelJson(content: string): ModelResult {
+  const trimmed = content.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
+  const start = trimmed.indexOf("{");
+  const end = trimmed.lastIndexOf("}");
+  if (start === -1 || end <= start) {
+    throw new Error(`모델 JSON 응답이 완전하지 않습니다: ${trimmed.slice(0, 160)}`);
+  }
+  try {
+    return JSON.parse(trimmed.slice(start, end + 1)) as ModelResult;
+  } catch {
+    throw new Error(`모델 JSON 응답을 읽을 수 없습니다: ${trimmed.slice(0, 160)}`);
+  }
+}
+
+function includesAny(value: string, terms: string[]) {
+  return terms.some((term) => value.includes(term));
+}
+
+function tagMoondreamDescription(description: string): AnalysisOutput {
+  const text = description.toLowerCase();
+  const visible: string[] = [];
+  const addVisible = (tag: string, terms: string[]) => { if (includesAny(text, terms)) visible.push(tag); };
+  addVisible("배관", ["pipe", "piping", "plumbing pipe"]);
+  addVisible("수도계량기", ["water meter", "meter"]);
+  addVisible("보일러", ["boiler", "furnace"]);
+  addVisible("분배기", ["manifold"]);
+  addVisible("변기", ["toilet", "commode"]);
+  addVisible("세면대", ["washbasin", "basin", "bathroom sink"]);
+  addVisible("샤워부스", ["shower", "shower stall"]);
+  addVisible("싱크대", ["kitchen sink", "sink"]);
+  addVisible("배수관", ["drain", "drainage"]);
+  addVisible("천장", ["ceiling"]);
+  addVisible("벽체", ["wall"]);
+  addVisible("바닥", ["floor", "tile floor"]);
+  addVisible("베란다", ["balcony", "veranda"]);
+  addVisible("창틀", ["window frame", "window sill"]);
+  addVisible("외벽", ["exterior wall", "outside wall"]);
+  addVisible("옥상", ["roof", "rooftop"]);
+  addVisible("탐지장비", ["thermal camera", "infrared", "detector", "inspection camera", "pressure gauge"]);
+  addVisible("보수공구", ["wrench", "tool", "drill", "repair tool", "technician"]);
+
+  const wet = includesAny(text, ["water", "wet", "moisture", "leak", "drip", "puddle", "stain", "damp"]);
+  const leak: string[] = [];
+  if (wet && visible.includes("배관")) leak.push("수도배관 누수");
+  if (wet && visible.includes("수도계량기")) leak.push("수도계량기 누수");
+  if (wet && visible.includes("보일러")) leak.push("보일러 누수");
+  if (wet && visible.includes("분배기")) leak.push("분배기 누수");
+  if (wet && visible.includes("변기")) leak.push("변기 누수");
+  if (wet && visible.includes("세면대")) leak.push("세면대 누수");
+  if (wet && visible.includes("샤워부스")) leak.push("샤워부스 누수");
+  if (wet && visible.includes("싱크대")) leak.push("싱크대 누수");
+  if (wet && visible.includes("천장")) leak.push("천장 누수");
+  if (wet && visible.includes("베란다")) leak.push("베란다 누수");
+  if (wet && visible.includes("창틀")) leak.push("창틀 누수");
+  if (wet && visible.includes("외벽")) leak.push("외벽 누수");
+  if (wet && visible.includes("옥상")) leak.push("옥상 누수");
+
+  const symptoms: string[] = [];
+  if (includesAny(text, ["ceiling stain", "water stain on the ceiling", "stained ceiling"])) symptoms.push("천장 물자국이 생김");
+  if (includesAny(text, ["dripping from the ceiling", "water falling from the ceiling"])) symptoms.push("천장에서 물이 떨어짐");
+  if (includesAny(text, ["wet wall", "damp wall", "wall stain"])) symptoms.push("벽지나 벽면이 젖음");
+  if (includesAny(text, ["wet floor", "damp floor", "puddle on the floor"])) symptoms.push("바닥 습기가 계속됨");
+  if (includesAny(text, ["wet around the toilet", "toilet base", "toilet floor"])) symptoms.push("변기 주변 바닥이 젖음");
+
+  const stage = includesAny(text, ["repairing", "repair", "fixing", "installing", "replacing"]) ? "repair"
+    : includesAny(text, ["thermal", "detector", "inspection camera", "pressure gauge", "testing"]) ? "detection"
+      : includesAny(text, ["inspecting", "examining", "checking", "looking at"]) ? "inspection"
+        : wet ? "damage" : "unknown";
+  const uniqueVisible = [...new Set(visible)];
+  return {
+    scene_summary: description.slice(0, 240),
+    work_stage: stage,
+    visible_subject_tags: uniqueVisible,
+    leak_type_tags: [...new Set(leak)],
+    symptom_tags: [...new Set(symptoms)],
+    confidence: uniqueVisible.length ? 70 : 35,
+    ai_result: { model_description: description },
+  };
+}
+
 function allowed(values: unknown, options: string[]) {
   if (!Array.isArray(values)) return [];
   return [...new Set(values.filter((value): value is string => typeof value === "string" && options.includes(value)))];
@@ -50,15 +130,20 @@ function safePath(root: string, relative: string) {
 
 async function analyzeImage(imagePath: string): Promise<AnalysisOutput> {
   const image = await sharp(imagePath).rotate().resize({ width: 1024, height: 1024, fit: "inside", withoutEnlargement: true }).jpeg({ quality: 82 }).toBuffer();
-  const prompt = `당신은 누수·설비 현장 사진을 분류하는 보조자입니다. 사진에 실제로 보이는 것만 한국어 JSON으로 답하세요. 지역, 고객, 누수 원인, 보수 완료 여부를 추측하지 마세요.\n\nwork_stage는 damage, inspection, detection, repair, completion, unknown 중 하나입니다.\nvisible_subject_tags는 다음 중 실제로 보이는 것만: ${subjectTags.join(", ")}\nleak_type_tags는 사진만으로 강하게 연결되는 경우에만: ${leakTags.join(", ")}\nsymptom_tags는 사진만으로 보이는 경우에만: ${symptomTags.join(", ")}\nconfidence는 0~100 정수입니다.\n형식: {"scene_summary":"80자 이내", "work_stage":"unknown", "visible_subject_tags":[], "leak_type_tags":[], "symptom_tags":[], "confidence":0}`;
+  const isMoondream = model.startsWith("moondream");
+  const prompt = isMoondream
+    ? "Describe only clearly visible objects, surfaces, water damage, and work activity in this plumbing photo in one concise English sentence. Do not guess location, customer, leak cause, or work result."
+    : `Analyze only what is visibly present in this plumbing/leak-work photo. Do not infer location, customer, leak cause, or repair result. Return ONE compact JSON object only, with no markdown and no text outside JSON. Use the exact Korean tag values supplied below.\n\nwork_stage: one of damage, inspection, detection, repair, completion, unknown.\nvisible_subject_tags: only visible items from [${subjectTags.join(", ")}].\nleak_type_tags: only if strongly visible from [${leakTags.join(", ")}].\nsymptom_tags: only if visibly evident from [${symptomTags.join(", ")}].\nscene_summary: Korean, maximum 40 characters. confidence: integer 0-100.\nReturn this exact shape: {"scene_summary":"", "work_stage":"unknown", "visible_subject_tags":[], "leak_type_tags":[], "symptom_tags":[], "confidence":0}`;
   const response = await fetch(`${ollamaUrl}/api/chat`, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ model, stream: false, format: "json", messages: [{ role: "user", content: prompt, images: [image.toString("base64")] }] }),
+    body: JSON.stringify({ model, stream: false, ...(isMoondream ? {} : { format: "json" }), messages: [{ role: "user", content: prompt, images: [image.toString("base64")] }] }),
   });
   if (!response.ok) throw new Error(`Ollama 분석 실패: ${response.status}`);
   const payload = (await response.json()) as { message?: { content?: string } };
-  const raw = JSON.parse(payload.message?.content ?? "{}") as ModelResult;
+  const content = payload.message?.content ?? "";
+  if (isMoondream) return tagMoondreamDescription(content);
+  const raw = parseModelJson(content);
   const confidence = typeof raw.confidence === "number" && Number.isFinite(raw.confidence) ? Math.max(0, Math.min(100, Math.round(raw.confidence))) : 0;
   const workStage = typeof raw.work_stage === "string" && stages.has(raw.work_stage) ? raw.work_stage : "unknown";
   return {
