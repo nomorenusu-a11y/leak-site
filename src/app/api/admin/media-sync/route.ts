@@ -14,6 +14,17 @@ function isAuthorized(request: Request) {
   return timingSafeEqual(Buffer.from(expected), Buffer.from(received));
 }
 
+export async function GET(request: Request) {
+  if (!isAuthorized(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const db = createSupabaseAdminClient();
+  const { data, error } = await db
+    .from("media_assets")
+    .select("source_sha256")
+    .not("source_sha256", "is", null);
+  if (error) return NextResponse.json({ error: "Asset lookup failed" }, { status: 502 });
+  return NextResponse.json({ hashes: data.map((asset) => asset.source_sha256).filter(Boolean) });
+}
+
 /**
  * Private bridge for the one-time desktop media sync.
  * The Supabase service key stays on Vercel; the desktop script has only a

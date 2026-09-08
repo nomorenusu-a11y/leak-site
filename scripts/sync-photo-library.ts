@@ -81,6 +81,17 @@ async function main() {
           .map((asset) => asset.source_sha256)
           .filter((value): value is string => Boolean(value)),
       );
+    } else {
+      const response = await fetch(syncEndpoint!, {
+        headers: { authorization: `Bearer ${syncToken}` },
+      });
+      if (!response.ok) throw new Error(`기존 라이브러리 조회 실패: ${response.status}`);
+      const payload = (await response.json()) as { hashes?: unknown };
+      known = new Set(
+        Array.isArray(payload.hashes)
+          ? payload.hashes.filter((value): value is string => typeof value === "string")
+          : [],
+      );
     }
   }
   let processed = 0;
@@ -93,9 +104,10 @@ async function main() {
     `${DRY_RUN ? "사전 검사" : "동기화"}: 사진 ${files.length}장. 영상 파일은 자동으로 제외됩니다.`,
   );
   await runPool(files, async (filePath) => {
-    // A dry-run batch deliberately stops before hashing the rest of the archive.
-    // This keeps capacity checks bounded on very large desktop folders.
-    if (DRY_RUN && BATCH_SIZE > 0 && scheduled >= BATCH_SIZE) return;
+    // A bounded batch stops before reading the rest of a large desktop archive.
+    // The next run hashes the saved assets first, skips them, and resumes at the
+    // next unprocessed file.
+    if (BATCH_SIZE > 0 && scheduled >= BATCH_SIZE) return;
     const relativePath = path.relative(root, filePath);
     try {
       const hash = await sha256(filePath);
