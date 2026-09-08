@@ -90,48 +90,55 @@ export function AutoPostComposer() {
     if (!draft || !district) return;
     setError(null);
     startTransition(async () => {
-      const slug = `auto-${district.slug}-${dong?.slug ?? "district"}-${leak.slug}-${Date.now().toString(36)}`;
-      const created = await createPost({
-        title: draft.title,
-        slug,
-        content: draft.content.replace(/\[\[AUTO_IMAGE_\d+\]\]/g, ""),
-        excerpt: draft.excerpt,
-        category: "leak",
-        region_tags: [district.name],
-        published: false,
-      });
-      if (!created.ok) return setError(created.error);
-
-      const imageIds: string[] = [];
-      for (let index = 0; index < picked.length; index += 1) {
-        const data = new FormData();
-        data.set("file", picked[index]);
-        const uploaded = await uploadPostImage(created.postId, data);
-        if (!uploaded.ok) return setError(`사진 ${index + 1} 업로드 실패: ${uploaded.error}`);
-        imageIds.push(uploaded.image.id);
-        await updatePostImageMetadata(uploaded.image.id, {
-          work_stage: draft.imageStages[index],
-          alt_text: `${place} ${leak.value} ${draft.imageStages[index]} 현장 사진`,
-          caption: `${leak.value} 점검 과정에서 ${draft.imageStages[index]}를 보여주는 현장 사진입니다.`,
-          overlay_text: "",
+      try {
+        const slug = `auto-${district.slug}-${dong?.slug ?? "district"}-${leak.slug}-${Date.now().toString(36)}`;
+        const created = await createPost({
+          title: draft.title,
+          slug,
+          content: draft.content.replace(/\[\[AUTO_IMAGE_\d+\]\]/g, ""),
+          excerpt: draft.excerpt,
+          category: "leak",
+          region_tags: [district.name],
+          published: false,
         });
+        if (!created.ok) return setError(created.error);
+
+        const imageIds: string[] = [];
+        for (let index = 0; index < picked.length; index += 1) {
+          const data = new FormData();
+          data.set("file", picked[index]);
+          const uploaded = await uploadPostImage(created.postId, data);
+          if (!uploaded.ok) return setError(`사진 ${index + 1} 업로드 실패: ${uploaded.error}`);
+          imageIds.push(uploaded.image.id);
+          const metadata = await updatePostImageMetadata(uploaded.image.id, {
+            work_stage: draft.imageStages[index],
+            alt_text: `${place} ${leak.value} ${draft.imageStages[index]} 현장 사진`,
+            caption: `${leak.value} 점검 과정에서 ${draft.imageStages[index]}를 보여주는 현장 사진입니다.`,
+            overlay_text: "",
+          });
+          if (!metadata.ok) return setError(`사진 ${index + 1} 설명 저장 실패: ${metadata.error}`);
+        }
+        const content = draft.content.replace(/\[\[AUTO_IMAGE_(\d+)\]\]/g, (_, raw) => {
+          const id = imageIds[Number(raw)];
+          return id ? `[[post-image:${id}]]` : "";
+        });
+        const updated = await updatePost(created.postId, {
+          title: draft.title,
+          slug,
+          content,
+          excerpt: draft.excerpt,
+          category: "leak",
+          region_tags: [district.name],
+          published: false,
+        });
+        if (!updated.ok) return setError(updated.error);
+        router.push(`/admin/posts/${created.postId}/edit`);
+        router.refresh();
+      } catch {
+        setError(
+          "임시저장 중 문제가 생겼습니다. 사진 파일 크기와 네트워크를 확인한 뒤 다시 시도해 주세요.",
+        );
       }
-      const content = draft.content.replace(/\[\[AUTO_IMAGE_(\d+)\]\]/g, (_, raw) => {
-        const id = imageIds[Number(raw)];
-        return id ? `[[post-image:${id}]]` : "";
-      });
-      const updated = await updatePost(created.postId, {
-        title: draft.title,
-        slug,
-        content,
-        excerpt: draft.excerpt,
-        category: "leak",
-        region_tags: [district.name],
-        published: false,
-      });
-      if (!updated.ok) return setError(updated.error);
-      router.push(`/admin/posts/${created.postId}/edit`);
-      router.refresh();
     });
   }
 
