@@ -1,10 +1,17 @@
 import { assertAdmin } from "@/lib/auth";
 import { AutoPostComposer } from "@/components/admin/AutoPostComposer";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
 
 export default async function AutoPostPage() {
   await assertAdmin();
+  const db = createSupabaseAdminClient();
+  const { data: assets } = await db
+    .from("media_assets")
+    .select("id, url, file_name, mime_type, active, created_at")
+    .eq("active", true)
+    .limit(2000);
   return (
     <>
       <header>
@@ -16,7 +23,7 @@ export default async function AutoPostPage() {
         </p>
       </header>
       <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-        <AutoPostComposer />
+        <AutoPostComposer assets={assets ?? []} />
       </div>
     </>
   );

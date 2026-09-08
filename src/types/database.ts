@@ -130,6 +130,23 @@ export type PostImageInsert = {
 };
 
 // ============================================================
+// media_assets — reusable administrator photo library
+// ============================================================
+
+export type MediaAsset = {
+  id: string;
+  url: string;
+  file_name: string;
+  mime_type: "image/jpeg" | "image/png" | "image/webp";
+  active: boolean;
+  created_at: string;
+};
+
+export type MediaAssetInsert = Omit<MediaAsset, "id" | "active" | "created_at"> & {
+  active?: boolean;
+};
+
+// ============================================================
 // site_content
 // ============================================================
 
@@ -277,6 +294,12 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      media_assets: {
+        Row: MediaAsset;
+        Insert: MediaAssetInsert;
+        Update: Partial<MediaAssetInsert> & Partial<Pick<MediaAsset, "active">>;
+        Relationships: [];
       };
       site_content: {
         Row: SiteContent;

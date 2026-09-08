@@ -10,6 +10,7 @@ const NAV: NavItem[] = [
   { href: "/admin/requests", label: "견적 신청" },
   { href: "/admin/posts", label: "시공 사례" },
   { href: "/admin/auto-post", label: "자동 글쓰기" },
+  { href: "/admin/media", label: "사진 라이브러리" },
   { href: "/admin/hero", label: "히어로", group: "사이트 관리" },
   { href: "/admin/reviews", label: "후기 관리", group: "사이트 관리" },
   { href: "/admin/faq", label: "FAQ 관리", group: "사이트 관리" },

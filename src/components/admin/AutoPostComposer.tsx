@@ -1,15 +1,12 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import {
-  createPost,
-  updatePost,
-  updatePostImageMetadata,
-  uploadPostImage,
-} from "@/app/admin/posts/actions";
+import { createPost, updatePost } from "@/app/admin/posts/actions";
+import { attachMediaAssetToPost } from "@/app/admin/media/actions";
 import allRegionData from "@/data/seo/seoul-regions.json";
 import type { Region } from "@/types/seo";
+import type { MediaAsset } from "@/types/database";
 
 const LEAK_TYPES = [
   { value: "수도배관 누수", slug: "water-pipe" },
@@ -32,6 +29,7 @@ const SYMPTOMS = [
 ];
 
 type Draft = { title: string; excerpt: string; content: string; imageStages: string[] };
+type Props = { assets: MediaAsset[] };
 
 const regions = allRegionData as Region[];
 const districts = regions.filter((item) => item.level === "district");
@@ -61,18 +59,16 @@ function buildDraft(place: string, leak: string, symptom: string, imageCount: nu
   };
 }
 
-export function AutoPostComposer() {
+export function AutoPostComposer({ assets }: Props) {
   const router = useRouter();
   const [districtId, setDistrictId] = useState(districts[0]?.id ?? "");
   const [dongId, setDongId] = useState("");
   const [leak, setLeak] = useState<(typeof LEAK_TYPES)[number]>(LEAK_TYPES[0]);
   const [symptom, setSymptom] = useState(SYMPTOMS[0]);
-  const [files, setFiles] = useState<File[]>([]);
-  const [picked, setPicked] = useState<File[]>([]);
+  const [picked, setPicked] = useState<MediaAsset[]>([]);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
-  const fileInput = useRef<HTMLInputElement>(null);
 
   const district = districts.find((item) => item.id === districtId);
   const availableDongs = dongs.filter((item) => item.parent_id === districtId);
@@ -81,7 +77,7 @@ export function AutoPostComposer() {
 
   function generate() {
     setError(null);
-    const nextPicked = randomPick(files, files.length ? 5 : 0);
+    const nextPicked = randomPick(assets, assets.length ? 5 : 0);
     setPicked(nextPicked);
     setDraft(buildDraft(place, leak.value, symptom, nextPicked.length));
   }
@@ -105,18 +101,15 @@ export function AutoPostComposer() {
 
         const imageIds: string[] = [];
         for (let index = 0; index < picked.length; index += 1) {
-          const data = new FormData();
-          data.set("file", picked[index]);
-          const uploaded = await uploadPostImage(created.postId, data);
-          if (!uploaded.ok) return setError(`사진 ${index + 1} 업로드 실패: ${uploaded.error}`);
-          imageIds.push(uploaded.image.id);
-          const metadata = await updatePostImageMetadata(uploaded.image.id, {
-            work_stage: draft.imageStages[index],
-            alt_text: `${place} ${leak.value} ${draft.imageStages[index]} 현장 사진`,
+          const attached = await attachMediaAssetToPost({
+            postId: created.postId,
+            assetId: picked[index].id,
+            workStage: draft.imageStages[index],
+            altText: `${place} ${leak.value} ${draft.imageStages[index]} 현장 사진`,
             caption: `${leak.value} 점검 과정에서 ${draft.imageStages[index]}를 보여주는 현장 사진입니다.`,
-            overlay_text: "",
           });
-          if (!metadata.ok) return setError(`사진 ${index + 1} 설명 저장 실패: ${metadata.error}`);
+          if (!attached.ok) return setError(`사진 ${index + 1} 연결 실패: ${attached.error}`);
+          imageIds.push(attached.imageId);
         }
         const content = draft.content.replace(/\[\[AUTO_IMAGE_(\d+)\]\]/g, (_, raw) => {
           const id = imageIds[Number(raw)];
@@ -203,28 +196,22 @@ export function AutoPostComposer() {
             ))}
           </select>
         </label>
-        <label className="grid gap-2 text-sm font-bold text-slate-800">
-          현장 사진 폴더
-          <input
-            ref={(node) => {
-              fileInput.current = node;
-              node?.setAttribute("webkitdirectory", "");
-            }}
-            type="file"
-            multiple
-            accept="image/jpeg,image/png,image/webp"
-            onChange={(event) => setFiles(Array.from(event.target.files ?? []))}
-            className="file:bg-brand-50 file:text-brand-700 block w-full text-sm font-normal file:mr-3 file:rounded-md file:border-0 file:px-3 file:py-2 file:font-bold"
-          />
-          <span className="text-xs leading-5 font-normal text-slate-500">
-            폴더를 선택하면 최대 5장을 무작위로 골라 글 사이에 배치합니다. 아직 사진을 고르지 않아도
-            글 초안은 만들 수 있습니다.
-          </span>
-        </label>
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm">
+          <p className="font-bold text-slate-800">자동 사진 선택</p>
+          <p className="mt-1 leading-6 text-slate-600">
+            등록된 사진 {assets.length}장 중 최대 5장을 자동으로 골라 글 사이에 넣습니다.
+          </p>
+          {assets.length === 0 && (
+            <a href="/admin/media" className="text-brand-700 mt-2 inline-block font-bold underline">
+              먼저 사진 라이브러리 등록하기
+            </a>
+          )}
+        </div>
         <button
           type="button"
           onClick={generate}
-          className="bg-brand-600 hover:bg-brand-700 w-full rounded-lg px-4 py-3 font-bold text-white"
+          disabled={assets.length === 0}
+          className="bg-brand-600 hover:bg-brand-700 w-full rounded-lg px-4 py-3 font-bold text-white disabled:cursor-not-allowed disabled:bg-slate-400"
         >
           자동 초안 만들기
         </button>
@@ -241,7 +228,8 @@ export function AutoPostComposer() {
             <h2 className="mt-2 text-xl font-extrabold text-slate-900">{draft.title}</h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">{draft.excerpt}</p>
             <p className="mt-5 rounded-lg bg-white p-3 text-sm font-semibold text-slate-700">
-              선택 사진: {picked.length}장 · 저장 시 글 속 사진 위치와 ALT·캡션이 자동 등록됩니다.
+              자동 선택 사진: {picked.length}장 · 저장 시 글 속 사진 위치와 ALT·캡션이 자동
+              등록됩니다.
             </p>
             <pre className="mt-4 max-h-80 overflow-auto rounded-lg bg-white p-4 text-sm leading-6 whitespace-pre-wrap text-slate-700">
               {draft.content.replace(/\[\[AUTO_IMAGE_\d+\]\]/g, "[사진]")}
@@ -257,8 +245,8 @@ export function AutoPostComposer() {
           </>
         ) : (
           <p className="text-sm leading-6 text-slate-500">
-            왼쪽에서 지역과 누수 유형을 선택한 뒤 자동 초안 만들기를 누르세요. 발행은 하지 않으며,
-            먼저 임시저장됩니다.
+            왼쪽에서 지역과 누수 유형을 선택한 뒤 자동 초안 만들기를 누르세요. 사진은 라이브러리에서
+            자동으로 골라 넣고, 발행은 하지 않으며 먼저 임시저장됩니다.
           </p>
         )}
       </div>
