@@ -1,5 +1,4 @@
 import { assertAdmin } from "@/lib/auth";
-import { SEOUL_DISTRICTS, SEOUL_DONGS } from "@/lib/regions";
 import { AutoPostComposer } from "@/components/admin/AutoPostComposer";
 
 export const dynamic = "force-dynamic";
@@ -17,7 +16,7 @@ export default async function AutoPostPage() {
         </p>
       </header>
       <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-        <AutoPostComposer districts={SEOUL_DISTRICTS} dongs={SEOUL_DONGS} />
+        <AutoPostComposer />
       </div>
     </>
   );

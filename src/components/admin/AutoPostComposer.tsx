@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   createPost,
@@ -8,6 +8,7 @@ import {
   updatePostImageMetadata,
   uploadPostImage,
 } from "@/app/admin/posts/actions";
+import allRegionData from "@/data/seo/seoul-regions.json";
 import type { Region } from "@/types/seo";
 
 const LEAK_TYPES = [
@@ -30,8 +31,11 @@ const SYMPTOMS = [
   "아랫집 누수",
 ];
 
-type Props = { districts: readonly Region[]; dongs: readonly Region[] };
 type Draft = { title: string; excerpt: string; content: string; imageStages: string[] };
+
+const regions = allRegionData as Region[];
+const districts = regions.filter((item) => item.level === "district");
+const dongs = regions.filter((item) => item.level === "dong");
 
 function randomPick<T>(items: T[], count: number) {
   return [...items].sort(() => Math.random() - 0.5).slice(0, Math.min(count, items.length));
@@ -57,7 +61,7 @@ function buildDraft(place: string, leak: string, symptom: string, imageCount: nu
   };
 }
 
-export function AutoPostComposer({ districts, dongs }: Props) {
+export function AutoPostComposer() {
   const router = useRouter();
   const [districtId, setDistrictId] = useState(districts[0]?.id ?? "");
   const [dongId, setDongId] = useState("");
@@ -71,10 +75,7 @@ export function AutoPostComposer({ districts, dongs }: Props) {
   const fileInput = useRef<HTMLInputElement>(null);
 
   const district = districts.find((item) => item.id === districtId);
-  const availableDongs = useMemo(
-    () => dongs.filter((item) => item.parent_id === districtId),
-    [dongs, districtId],
-  );
+  const availableDongs = dongs.filter((item) => item.parent_id === districtId);
   const dong = availableDongs.find((item) => item.id === dongId);
   const place = dong?.name ?? district?.name ?? "서울";
 
