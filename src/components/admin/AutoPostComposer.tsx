@@ -54,9 +54,32 @@ type Draft = { title: string; excerpt: string; content: string; imageStages: str
 type Props = { assets: MediaAsset[] };
 type DraftMode = "guide" | "case";
 type DraftInput = { place: string; building: string; buildingName: string; leak: LeakType; symptom: string; damageLocation: string; method: string; workDirection: string; mode: DraftMode; caseMemo: string; imageCount: number };
+type TopicRecommendation = {
+  building: string;
+  damageLocation: string;
+  leakSlug: string;
+  symptom: string;
+  method: string;
+  workDirection: string;
+};
 const regions = allRegionData as Region[];
 const districts = regions.filter((item) => item.level === "district");
 const dongs = regions.filter((item) => item.level === "dong");
+
+const TOPIC_RECIPES: TopicRecommendation[] = [
+  { building: "아파트", damageLocation: "아랫집 천장", leakSlug: "hot-water-pipe", symptom: "보일러 압력이 계속 떨어짐", method: "계량기·압력 검사", workDirection: "배관 부분 굴착·보수 여부 안내" },
+  { building: "빌라", damageLocation: "욕실 바닥·벽체", leakSlug: "toilet-fixture", symptom: "변기 주변 바닥이 젖음", method: "배수·통수 검사", workDirection: "배수·방수 보수 여부 안내" },
+  { building: "오피스텔", damageLocation: "주방 싱크대 주변", leakSlug: "kitchen-sink", symptom: "벽지나 벽면이 젖음", method: "육안·수분 상태 점검", workDirection: "밸브·연결부 보수 여부 안내" },
+  { building: "다세대·다가구", damageLocation: "계량기함·공용부", leakSlug: "water-meter", symptom: "계량기가 계속 돌아감", method: "계량기·압력 검사", workDirection: "밸브·연결부 보수 여부 안내" },
+  { building: "아파트", damageLocation: "보일러실·다용도실", leakSlug: "manifold", symptom: "보일러 보충수가 자주 필요함", method: "계량기·압력 검사", workDirection: "밸브·연결부 보수 여부 안내" },
+  { building: "단독주택", damageLocation: "베란다·창틀 주변", leakSlug: "window-frame", symptom: "곰팡이와 습기가 심해짐", method: "육안·수분 상태 점검", workDirection: "배수·방수 보수 여부 안내" },
+  { building: "아파트", damageLocation: "거실·방 바닥", leakSlug: "heating-pipe", symptom: "장판이나 마루가 들뜸", method: "가스탐지", workDirection: "배관 부분 굴착·보수 여부 안내" },
+  { building: "상가·사무실", damageLocation: "천장", leakSlug: "ceiling", symptom: "천장에서 물이 떨어짐", method: "열화상 점검", workDirection: "원인 확인 후 부분 보수 여부 안내" },
+  { building: "빌라", damageLocation: "욕실 바닥·벽체", leakSlug: "bathroom", symptom: "욕실 바닥 물고임이 계속됨", method: "배수·통수 검사", workDirection: "배수·방수 보수 여부 안내" },
+  { building: "아파트", damageLocation: "아랫집 천장", leakSlug: "water-pipe", symptom: "수도요금이 갑자기 증가함", method: "청음탐지", workDirection: "배관 부분 굴착·보수 여부 안내" },
+  { building: "오피스텔", damageLocation: "보일러실·다용도실", leakSlug: "boiler", symptom: "보일러 압력이 계속 떨어짐", method: "계량기·압력 검사", workDirection: "원인 확인 후 부분 보수 여부 안내" },
+  { building: "다세대·다가구", damageLocation: "베란다·창틀 주변", leakSlug: "exterior-wall", symptom: "벽지나 벽면이 젖음", method: "육안·수분 상태 점검", workDirection: "배수·방수 보수 여부 안내" },
+];
 
 function groupedOptions(items: GroupedValue[]) {
   return [...new Set(items.map((item) => item.group))].map((group) => ({ group, items: items.filter((item) => item.group === group) }));
@@ -95,6 +118,7 @@ export function AutoPostComposer({ assets }: Props) {
   const [workDirection, setWorkDirection] = useState(WORK_DIRECTIONS[0]);
   const [mode, setMode] = useState<DraftMode>("guide");
   const [caseMemo, setCaseMemo] = useState("");
+  const [recommendations, setRecommendations] = useState<TopicRecommendation[]>(() => randomPick(TOPIC_RECIPES, 6));
   const [picked, setPicked] = useState<MediaAsset[]>([]);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -110,6 +134,20 @@ export function AutoPostComposer({ assets }: Props) {
     const nextPicked = randomPick(assets, assets.length ? 5 : 0);
     setPicked(nextPicked);
     setDraft(buildDraft({ place, building, buildingName, leak, symptom, damageLocation, method, workDirection, mode, caseMemo, imageCount: nextPicked.length }));
+  }
+  function applyRecommendation(topic: TopicRecommendation) {
+    const recommendedLeak = LEAK_TYPES.find((item) => item.slug === topic.leakSlug);
+    if (!recommendedLeak) return;
+    setBuilding(topic.building);
+    setDamageLocation(topic.damageLocation);
+    setLeak(recommendedLeak);
+    setSymptom(topic.symptom);
+    setMethod(topic.method);
+    setWorkDirection(topic.workDirection);
+    setMode("guide");
+    setCaseMemo("");
+    setDraft(null);
+    setError(null);
   }
   function saveDraft() {
     if (!draft || !district) return;
@@ -136,6 +174,7 @@ export function AutoPostComposer({ assets }: Props) {
   return <div className="grid gap-8 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]"><div className="space-y-5">
     <label className="grid gap-2 text-sm font-bold text-slate-800">구 선택<select value={districtId} onChange={(event) => { setDistrictId(event.target.value); setDongId(""); }} className={selectClass}>{districts.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
     <label className="grid gap-2 text-sm font-bold text-slate-800">법정동 선택 <span className="font-normal text-slate-500">(선택)</span><select value={dongId} onChange={(event) => setDongId(event.target.value)} className={selectClass}><option value="">구 전체</option>{availableDongs.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"><div className="flex items-center justify-between gap-3"><div><p className="text-sm font-extrabold text-slate-900">오늘의 글 주제 추천</p><p className="mt-1 text-xs leading-5 text-slate-500">서로 다른 건물·증상·누수 유형을 섞어 제안합니다.</p></div><button type="button" onClick={() => setRecommendations(randomPick(TOPIC_RECIPES, 6))} className="shrink-0 rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700">다른 6개</button></div><div className="mt-3 grid gap-2">{recommendations.map((topic, index) => { const topicLeak = LEAK_TYPES.find((item) => item.slug === topic.leakSlug); return <button key={`${topic.leakSlug}-${topic.symptom}-${index}`} type="button" onClick={() => applyRecommendation(topic)} className="rounded-lg border border-slate-200 p-3 text-left text-sm transition hover:border-brand-400 hover:bg-brand-50"><span className="font-bold text-slate-900">{place} {topic.building} {topicLeak?.value}</span><span className="mt-1 block text-xs text-slate-600">{topic.damageLocation} · {topic.symptom}</span></button>; })}</div><p className="mt-3 text-xs leading-5 text-slate-500">선택하면 아래 입력값이 자동으로 채워집니다. 실제 사례로 공개할 때는 현장 메모와 사진을 확인해 사례형으로 전환합니다.</p></div>
     <div className="rounded-xl border border-brand-100 bg-brand-50 p-4"><p className="text-sm font-extrabold text-slate-900">글 작성 기준</p><div className="mt-3 grid gap-2 text-sm text-slate-700"><label><input type="radio" checked={mode === "guide"} onChange={() => setMode("guide")} /> <span className="ml-2 font-bold">점검·상담 안내</span><span className="ml-1 text-slate-500">확인 전 정보 중심</span></label><label><input type="radio" checked={mode === "case"} onChange={() => setMode("case")} /> <span className="ml-2 font-bold">실제 시공사례</span><span className="ml-1 text-slate-500">확인 메모 필수</span></label></div>{mode === "case" && <textarea value={caseMemo} onChange={(event) => setCaseMemo(event.target.value)} placeholder="예: 아랫집 주방 천장 물자국 확인, 온수관 압력 저하 확인, 부분 굴착 후 배관 보수" className="mt-3 min-h-24 w-full rounded-lg border border-slate-300 p-3 text-sm font-normal" />}</div>
     <label className="grid gap-2 text-sm font-bold text-slate-800">건물 유형<select value={building} onChange={(event) => setBuilding(event.target.value)} className={selectClass}>{BUILDINGS.map((item) => <option key={item}>{item}</option>)}</select></label>
     <label className="grid gap-2 text-sm font-bold text-slate-800">건물명 <span className="font-normal text-slate-500">(선택)</span><input value={buildingName} maxLength={60} onChange={(event) => setBuildingName(event.target.value)} placeholder="예: 한신아파트" className={selectClass} /></label>
