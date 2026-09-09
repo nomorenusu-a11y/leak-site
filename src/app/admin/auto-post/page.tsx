@@ -1,19 +1,28 @@
 import { assertAdmin } from "@/lib/auth";
 import { AutoPostComposer } from "@/components/admin/AutoPostComposer";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import type { MediaAsset, MediaAssetAnalysis } from "@/types/database";
 
 export const dynamic = "force-dynamic";
 
 export default async function AutoPostPage() {
   await assertAdmin();
   const db = createSupabaseAdminClient();
-  const { data: assets } = await db
-    .from("media_assets")
-    .select(
-      "id, url, file_name, mime_type, source_sha256, source_relative_path, active, created_at",
-    )
-    .eq("active", true)
-    .limit(2000);
+  const [{ data: assets }, { data: analyses }] = await Promise.all([
+    db
+      .from("media_assets")
+      .select("id, url, file_name, mime_type, source_sha256, source_relative_path, active, created_at")
+      .eq("active", true)
+      .limit(2000),
+    db
+      .from("media_asset_analysis")
+      .select("asset_id, analysis_status, work_stage, visible_subject_tags, leak_type_tags, symptom_tags, confidence")
+      .in("analysis_status", ["tagged", "needs_review"])
+      .limit(2000),
+  ]);
+  type SelectionAnalysis = Pick<MediaAssetAnalysis, "analysis_status" | "work_stage" | "visible_subject_tags" | "leak_type_tags" | "symptom_tags" | "confidence">;
+  const analysisByAssetId = new Map((analyses ?? []).map((analysis) => [analysis.asset_id, analysis as SelectionAnalysis]));
+  const analyzedAssets = ((assets ?? []) as MediaAsset[]).map((asset) => ({ ...asset, analysis: analysisByAssetId.get(asset.id) ?? null }));
   return (
     <>
       <header>
@@ -25,7 +34,7 @@ export default async function AutoPostPage() {
         </p>
       </header>
       <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-        <AutoPostComposer assets={assets ?? []} />
+        <AutoPostComposer assets={analyzedAssets} />
       </div>
     </>
   );

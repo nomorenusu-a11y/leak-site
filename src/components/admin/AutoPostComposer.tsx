@@ -6,7 +6,7 @@ import { createPost, updatePost } from "@/app/admin/posts/actions";
 import { attachMediaAssetToPost } from "@/app/admin/media/actions";
 import allRegionData from "@/data/seo/seoul-regions.json";
 import type { Region } from "@/types/seo";
-import type { MediaAsset } from "@/types/database";
+import type { MediaAsset, MediaAssetAnalysis } from "@/types/database";
 
 type LeakType = { group: string; value: string; slug: string; clue: string };
 type GroupedValue = { group: string; value: string };
@@ -51,7 +51,9 @@ const DETECTION_METHODS = ["육안·수분 상태 점검", "계량기·압력 �
 const WORK_DIRECTIONS = ["원인 확인 후 부분 보수 여부 안내", "밸브·연결부 보수 여부 안내", "배관 부분 굴착·보수 여부 안내", "배수·방수 보수 여부 안내", "피해 복구 범위 상담"];
 
 type Draft = { title: string; excerpt: string; content: string; imageStages: string[] };
-type Props = { assets: MediaAsset[] };
+type SelectionAnalysis = Pick<MediaAssetAnalysis, "analysis_status" | "work_stage" | "visible_subject_tags" | "leak_type_tags" | "symptom_tags" | "confidence">;
+type AnalyzedMediaAsset = MediaAsset & { analysis: SelectionAnalysis | null };
+type Props = { assets: AnalyzedMediaAsset[] };
 type DraftMode = "guide" | "case";
 type DraftInput = { place: string; building: string; buildingName: string; leak: LeakType; symptom: string; damageLocation: string; method: string; workDirection: string; mode: DraftMode; caseMemo: string; imageCount: number };
 type TopicRecommendation = {
@@ -86,6 +88,70 @@ function groupedOptions(items: GroupedValue[]) {
 }
 function randomPick<T>(items: T[], count: number) { return [...items].sort(() => Math.random() - 0.5).slice(0, Math.min(count, items.length)); }
 
+function hasAny(values: string[], terms: string[]) {
+  return terms.some((term) => values.some((value) => value.includes(term)));
+}
+
+function locationTerms(location: string) {
+  if (location.includes("천장")) return ["천장", "벽체"];
+  if (location.includes("바닥")) return ["바닥", "배관"];
+  if (location.includes("욕실")) return ["변기", "세면대", "샤워부스", "배수관", "바닥", "벽체"];
+  if (location.includes("싱크대")) return ["싱크대", "배수관", "배관"];
+  if (location.includes("보일러")) return ["보일러", "분배기", "배관"];
+  if (location.includes("베란다") || location.includes("창틀")) return ["베란다", "창틀", "외벽"];
+  if (location.includes("계량기")) return ["수도계량기", "배관"];
+  return [];
+}
+
+function leakTerms(leak: LeakType) {
+  if (leak.value.includes("보일러")) return ["보일러", "난방배관", "보일러 누수"];
+  if (leak.value.includes("분배기")) return ["분배기", "난방배관"];
+  if (leak.value.includes("계량기")) return ["수도계량기", "수도배관"];
+  if (leak.value.includes("변기")) return ["변기", "화장실 누수"];
+  if (leak.value.includes("세면대")) return ["세면대", "욕실 누수"];
+  if (leak.value.includes("샤워")) return ["샤워부스", "욕실 누수"];
+  if (leak.value.includes("싱크대") || leak.value.includes("주방")) return ["싱크대", "배수관", "주방 배수관"];
+  if (leak.value.includes("하수")) return ["배수관", "하수관"];
+  if (leak.value.includes("천장")) return ["천장", "천장 누수"];
+  if (leak.value.includes("베란다")) return ["베란다", "베란다 누수"];
+  if (leak.value.includes("외벽")) return ["외벽", "외벽 누수"];
+  if (leak.value.includes("옥상")) return ["옥상", "옥상 누수"];
+  if (leak.value.includes("창틀")) return ["창틀", "창틀 누수"];
+  return ["배관", "수도배관", "온수배관", "난방배관"];
+}
+
+function scoreAsset(asset: AnalyzedMediaAsset, input: Pick<DraftInput, "leak" | "symptom" | "damageLocation" | "method" | "workDirection">) {
+  const analysis = asset.analysis;
+  if (!analysis || analysis.analysis_status !== "tagged") return -1;
+  const tags = [...analysis.visible_subject_tags, ...analysis.leak_type_tags];
+  let score = Math.max(0, (analysis.confidence ?? 0) / 20);
+  if (hasAny(tags, leakTerms(input.leak))) score += 8;
+  if (hasAny(analysis.visible_subject_tags, locationTerms(input.damageLocation))) score += 5;
+  if (analysis.symptom_tags.includes(input.symptom)) score += 7;
+  if (["열화상 점검", "가스탐지", "청음탐지", "계량기·압력 검사"].includes(input.method) && (analysis.work_stage === "detection" || analysis.visible_subject_tags.includes("탐지장비"))) score += 4;
+  if (input.workDirection.includes("보수") && (analysis.work_stage === "repair" || analysis.visible_subject_tags.includes("보수공구"))) score += 3;
+  return score;
+}
+
+function pickMatchedAssets(assets: AnalyzedMediaAsset[], input: Pick<DraftInput, "leak" | "symptom" | "damageLocation" | "method" | "workDirection">) {
+  const ranked = assets
+    .map((asset) => ({ asset, score: scoreAsset(asset, input) }))
+    .filter((entry) => entry.score >= 0)
+    .sort((a, b) => b.score - a.score || a.asset.file_name.localeCompare(b.asset.file_name));
+  const useful = ranked.filter((entry) => entry.score >= 8);
+  const pool = useful.length >= 3 ? useful : ranked;
+  const picked: AnalyzedMediaAsset[] = [];
+  const usedSignatures = new Set<string>();
+  for (const { asset } of pool) {
+    const signature = `${asset.analysis?.work_stage ?? "unknown"}:${asset.analysis?.visible_subject_tags[0] ?? ""}`;
+    if (usedSignatures.has(signature) && pool.length - picked.length > 5) continue;
+    picked.push(asset);
+    usedSignatures.add(signature);
+    if (picked.length === 5) break;
+  }
+  return picked;
+}
+
 function buildDraft(input: DraftInput): Draft {
   const { place, building, buildingName, leak, symptom, damageLocation, method, workDirection, mode, caseMemo, imageCount } = input;
   const property = buildingName.trim() ? `${buildingName} ${building}` : building;
@@ -119,7 +185,7 @@ export function AutoPostComposer({ assets }: Props) {
   const [mode, setMode] = useState<DraftMode>("guide");
   const [caseMemo, setCaseMemo] = useState("");
   const [recommendations, setRecommendations] = useState<TopicRecommendation[]>(() => randomPick(TOPIC_RECIPES, 6));
-  const [picked, setPicked] = useState<MediaAsset[]>([]);
+  const [picked, setPicked] = useState<AnalyzedMediaAsset[]>([]);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -131,7 +197,7 @@ export function AutoPostComposer({ assets }: Props) {
   function generate() {
     setError(null);
     if (mode === "case" && caseMemo.trim().length < 20) { setError("사례형 글은 확인된 현장 메모를 20자 이상 입력해 주세요."); return; }
-    const nextPicked = randomPick(assets, assets.length ? 5 : 0);
+    const nextPicked = pickMatchedAssets(assets, { leak, symptom, damageLocation, method, workDirection });
     setPicked(nextPicked);
     setDraft(buildDraft({ place, building, buildingName, leak, symptom, damageLocation, method, workDirection, mode, caseMemo, imageCount: nextPicked.length }));
   }
@@ -159,7 +225,7 @@ export function AutoPostComposer({ assets }: Props) {
         if (!created.ok) return setError(created.error);
         const imageIds: string[] = [];
         for (let index = 0; index < picked.length; index += 1) {
-          const attached = await attachMediaAssetToPost({ postId: created.postId, assetId: picked[index].id, workStage: draft.imageStages[index], altText: `${place} ${leak.value} ${draft.imageStages[index]} 현장 사진`, caption: `${leak.value} 점검 안내의 ${draft.imageStages[index]} 사진입니다.` });
+          const attached = await attachMediaAssetToPost({ postId: created.postId, assetId: picked[index].id, workStage: draft.imageStages[index], altText: `${leak.value} 점검 안내 사진 — ${draft.imageStages[index]}`, caption: `${leak.value} 점검 안내를 위한 참고 사진입니다. 사진에 보이는 범위는 실제 현장 확인 뒤 안내합니다.` });
           if (!attached.ok) return setError(`사진 ${index + 1} 연결 실패: ${attached.error}`);
           imageIds.push(attached.imageId);
         }
@@ -183,7 +249,7 @@ export function AutoPostComposer({ assets }: Props) {
     <label className="grid gap-2 text-sm font-bold text-slate-800">대표 증상<select value={symptom} onChange={(event) => setSymptom(event.target.value)} className={selectClass}>{groupedOptions(SYMPTOMS).map(({ group, items }) => <optgroup key={group} label={group}>{items.map((item) => <option key={item.value}>{item.value}</option>)}</optgroup>)}</select></label>
     <label className="grid gap-2 text-sm font-bold text-slate-800">점검 방법<select value={method} onChange={(event) => setMethod(event.target.value)} className={selectClass}>{DETECTION_METHODS.map((item) => <option key={item}>{item}</option>)}</select></label>
     <label className="grid gap-2 text-sm font-bold text-slate-800">보수 방향<select value={workDirection} onChange={(event) => setWorkDirection(event.target.value)} className={selectClass}>{WORK_DIRECTIONS.map((item) => <option key={item}>{item}</option>)}</select></label>
-    <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-slate-700"><p className="font-bold text-slate-800">사진 선택은 다음 단계에서 개선합니다</p><p className="mt-1">현재는 등록 사진 중 최대 5장을 무작위로 선택합니다. 사진 내용을 분석·태그화한 뒤 이 선택값과 맞는 사진을 우선 연결하도록 바꿉니다.</p></div>
+    <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm leading-6 text-slate-700"><p className="font-bold text-slate-800">AI 사진 자동 선택</p><p className="mt-1">누수 유형·피해 위치·증상·탐지 단계와 맞는 <strong>태그 완료 사진</strong>만 우선 고릅니다. 내용이 모호한 사진은 자동 선택에서 제외합니다.</p></div>
     <button type="button" onClick={generate} className="bg-brand-600 hover:bg-brand-700 w-full rounded-lg px-4 py-3 font-bold text-white">자동 초안 만들기</button>
     {error && <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm font-semibold text-red-700">{error}</p>}
   </div><div className="rounded-xl border border-slate-200 bg-slate-50 p-5">{draft ? <><p className="text-brand-700 text-xs font-bold tracking-wider">임시저장 전 미리보기</p><h2 className="mt-2 text-xl font-extrabold text-slate-900">{draft.title}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{draft.excerpt}</p><p className="mt-5 rounded-lg bg-white p-3 text-sm font-semibold text-slate-700">선택 사진: {picked.length}장 · 저장 시 글 속 사진 위치와 ALT·캡션이 등록됩니다.</p><pre className="mt-4 max-h-80 overflow-auto rounded-lg bg-white p-4 text-sm leading-6 whitespace-pre-wrap text-slate-700">{draft.content.replace(/\[\[AUTO_IMAGE_\d+\]\]/g, "[사진]")}</pre><button type="button" disabled={pending} onClick={saveDraft} className="mt-5 w-full rounded-lg bg-slate-900 px-4 py-3 font-bold text-white disabled:bg-slate-400">{pending ? "사진과 초안을 저장 중..." : "임시저장하고 편집하기"}</button></> : <p className="text-sm leading-6 text-slate-500">왼쪽에서 현장 조건을 선택하면, 선택값에 맞춰 서로 다른 점검 흐름의 초안을 만듭니다. 발행은 하지 않으며 먼저 임시저장됩니다.</p>}</div></div>;
