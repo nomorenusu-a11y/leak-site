@@ -215,13 +215,13 @@ export function AutoPostComposer({ assets }: Props) {
     setDraft(null);
     setError(null);
   }
-  function saveDraft() {
+  function saveDraft(published: boolean) {
     if (!draft || !district) return;
     setError(null);
     startTransition(async () => {
       try {
         const slug = `auto-${district.slug}-${dong?.slug ?? "district"}-${leak.slug}-${Date.now().toString(36)}`;
-        const created = await createPost({ title: draft.title, slug, content: draft.content.replace(/\[\[AUTO_IMAGE_\d+\]\]/g, ""), excerpt: draft.excerpt, category: "leak", region_tags: [district.name], published: false });
+        const created = await createPost({ title: draft.title, slug, content: draft.content.replace(/\[\[AUTO_IMAGE_\d+\]\]/g, ""), excerpt: draft.excerpt, category: "leak", region_tags: [district.name], published });
         if (!created.ok) return setError(created.error);
         const imageIds: string[] = [];
         for (let index = 0; index < picked.length; index += 1) {
@@ -230,9 +230,9 @@ export function AutoPostComposer({ assets }: Props) {
           imageIds.push(attached.imageId);
         }
         const content = draft.content.replace(/\[\[AUTO_IMAGE_(\d+)\]\]/g, (_, raw) => imageIds[Number(raw)] ? `[[post-image:${imageIds[Number(raw)]}]]` : "");
-        const updated = await updatePost(created.postId, { title: draft.title, slug, content, excerpt: draft.excerpt, category: "leak", region_tags: [district.name], published: false });
+        const updated = await updatePost(created.postId, { title: draft.title, slug, content, excerpt: draft.excerpt, category: "leak", region_tags: [district.name], published });
         if (!updated.ok) return setError(updated.error);
-        router.push(`/admin/posts/${created.postId}/edit`); router.refresh();
+        router.push(published ? `/posts/${created.slug}` : `/admin/posts/${created.postId}/edit`); router.refresh();
       } catch { setError("임시저장 중 문제가 생겼습니다. 사진 파일 크기와 네트워크를 확인한 뒤 다시 시도해 주세요."); }
     });
   }
@@ -252,5 +252,5 @@ export function AutoPostComposer({ assets }: Props) {
     <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm leading-6 text-slate-700"><p className="font-bold text-slate-800">AI 사진 자동 선택</p><p className="mt-1">누수 유형·피해 위치·증상·탐지 단계와 맞는 <strong>태그 완료 사진</strong>만 우선 고릅니다. 내용이 모호한 사진은 자동 선택에서 제외합니다.</p></div>
     <button type="button" onClick={generate} className="bg-brand-600 hover:bg-brand-700 w-full rounded-lg px-4 py-3 font-bold text-white">자동 초안 만들기</button>
     {error && <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm font-semibold text-red-700">{error}</p>}
-  </div><div className="rounded-xl border border-slate-200 bg-slate-50 p-5">{draft ? <><p className="text-brand-700 text-xs font-bold tracking-wider">임시저장 전 미리보기</p><h2 className="mt-2 text-xl font-extrabold text-slate-900">{draft.title}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{draft.excerpt}</p><p className="mt-5 rounded-lg bg-white p-3 text-sm font-semibold text-slate-700">선택 사진: {picked.length}장 · 저장 시 글 속 사진 위치와 ALT·캡션이 등록됩니다.</p><pre className="mt-4 max-h-80 overflow-auto rounded-lg bg-white p-4 text-sm leading-6 whitespace-pre-wrap text-slate-700">{draft.content.replace(/\[\[AUTO_IMAGE_\d+\]\]/g, "[사진]")}</pre><button type="button" disabled={pending} onClick={saveDraft} className="mt-5 w-full rounded-lg bg-slate-900 px-4 py-3 font-bold text-white disabled:bg-slate-400">{pending ? "사진과 초안을 저장 중..." : "임시저장하고 편집하기"}</button></> : <p className="text-sm leading-6 text-slate-500">왼쪽에서 현장 조건을 선택하면, 선택값에 맞춰 서로 다른 점검 흐름의 초안을 만듭니다. 발행은 하지 않으며 먼저 임시저장됩니다.</p>}</div></div>;
+  </div><div className="rounded-xl border border-slate-200 bg-slate-50 p-5">{draft ? <><p className="text-brand-700 text-xs font-bold tracking-wider">임시저장 전 미리보기</p><h2 className="mt-2 text-xl font-extrabold text-slate-900">{draft.title}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{draft.excerpt}</p><p className="mt-5 rounded-lg bg-white p-3 text-sm font-semibold text-slate-700">선택 사진: {picked.length}장 · 저장 시 글 속 사진 위치와 ALT·캡션이 등록됩니다.</p><pre className="mt-4 max-h-80 overflow-auto rounded-lg bg-white p-4 text-sm leading-6 whitespace-pre-wrap text-slate-700">{draft.content.replace(/\[\[AUTO_IMAGE_\d+\]\]/g, "[사진]")}</pre><div className="mt-5 grid gap-2 sm:grid-cols-2"><button type="button" disabled={pending} onClick={() => saveDraft(false)} className="rounded-lg bg-slate-900 px-4 py-3 font-bold text-white disabled:bg-slate-400">{pending ? "저장 중..." : "임시저장하고 편집하기"}</button><button type="button" disabled={pending} onClick={() => saveDraft(true)} className="rounded-lg bg-brand-600 px-4 py-3 font-bold text-white disabled:bg-slate-400">{pending ? "발행 중..." : "공개 발행하기"}</button></div><p className="mt-2 text-xs leading-5 text-slate-500">공개 발행하면 즉시 <strong>/posts</strong>와 해당 글 URL에 노출됩니다. 실제 사례형은 현장 메모와 사진을 확인한 뒤 발행하세요.</p></> : <p className="text-sm leading-6 text-slate-500">왼쪽에서 현장 조건을 선택하면, 선택값에 맞춰 서로 다른 점검 흐름의 초안을 만듭니다. 발행은 하지 않으며 먼저 임시저장됩니다.</p>}</div></div>;
 }

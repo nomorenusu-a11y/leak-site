@@ -35,6 +35,7 @@ export function PostForm({ mode, post, images = [] }: Props) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<PostFormFieldErrors>({});
+  const [published, setPublished] = useState(post?.published ?? true);
 
   // controlled state
   const [title, setTitle] = useState(post?.title ?? "");
@@ -138,10 +139,11 @@ export function PostForm({ mode, post, images = [] }: Props) {
             <input
               type="checkbox"
               name="published"
-              defaultChecked={post?.published ?? true}
+              checked={published}
+              onChange={(event) => setPublished(event.target.checked)}
               className="size-4"
             />
-            발행됨 (체크 해제 시 임시저장)
+            {published ? "공개 발행" : "임시저장"}
           </label>
         </Field>
       </div>
@@ -206,7 +208,7 @@ export function PostForm({ mode, post, images = [] }: Props) {
           disabled={pending}
           className="bg-brand-600 hover:bg-brand-700 rounded-lg px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors disabled:cursor-not-allowed disabled:bg-slate-400"
         >
-          {pending ? "저장 중..." : mode === "create" ? "글 생성" : "변경사항 저장"}
+          {pending ? "저장 중..." : published ? "공개 발행하기" : "임시저장"}
         </button>
       </div>
     </form>
