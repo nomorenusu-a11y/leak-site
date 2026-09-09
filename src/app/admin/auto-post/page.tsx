@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { ClipboardCheck, Images } from "lucide-react";
 import { assertAdmin } from "@/lib/auth";
 import { AutoPostComposer } from "@/components/admin/AutoPostComposer";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -25,13 +27,15 @@ export default async function AutoPostPage() {
   const analyzedAssets = ((assets ?? []) as MediaAsset[]).map((asset) => ({ ...asset, analysis: analysisByAssetId.get(asset.id) ?? null }));
   return (
     <>
-      <header>
-        <p className="text-brand-700 text-sm font-bold">서울 지역 SEO 초안</p>
-        <h1 className="mt-1 text-2xl font-extrabold text-slate-900 sm:text-3xl">자동 글쓰기</h1>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-          지역과 누수 유형을 고르고 사진 폴더를 선택하면, 사진 순서와 글·사진 배치를 자동으로 만든
-          뒤 임시저장합니다.
-        </p>
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-brand-700 text-sm font-bold">서울 지역 SEO 초안</p>
+          <h1 className="mt-1 text-2xl font-extrabold text-slate-900 sm:text-3xl">자동 글쓰기</h1>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+            지역·건물·누수 유형을 고르면 AI 태그 완료 사진과 글·사진 흐름을 자동으로 만듭니다. 먼저 미리보고 임시저장 또는 공개 발행을 선택하세요.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2"><Link href="/admin/posts?status=draft" className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700"><ClipboardCheck size={16} /> 발행 대기함</Link><Link href="/admin/media" className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700"><Images size={16} /> 사진 라이브러리</Link></div>
       </header>
       <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
         <AutoPostComposer assets={analyzedAssets} />
