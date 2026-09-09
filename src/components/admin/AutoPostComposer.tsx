@@ -53,7 +53,7 @@ const WORK_DIRECTIONS = ["원인 확인 후 부분 보수 여부 안내", "밸�
 type Draft = { title: string; excerpt: string; content: string; imageStages: string[] };
 type SelectionAnalysis = Pick<MediaAssetAnalysis, "analysis_status" | "work_stage" | "visible_subject_tags" | "leak_type_tags" | "symptom_tags" | "confidence">;
 type AnalyzedMediaAsset = MediaAsset & { analysis: SelectionAnalysis | null };
-type Props = { assets: AnalyzedMediaAsset[] };
+type Props = { assets: AnalyzedMediaAsset[]; existingTitles: string[] };
 type DraftMode = "guide" | "case";
 type DraftInput = { place: string; building: string; buildingName: string; leak: LeakType; symptom: string; damageLocation: string; method: string; workDirection: string; mode: DraftMode; caseMemo: string; imageCount: number };
 type TopicRecommendation = {
@@ -152,7 +152,32 @@ function pickMatchedAssets(assets: AnalyzedMediaAsset[], input: Pick<DraftInput,
   return picked;
 }
 
-function buildDraft(input: DraftInput): Draft {
+function regionalGuideLinks(district: Region, dong?: Region) {
+  const links = [
+    `- [${district.name} 누수탐지 지역 안내](/seoul/${district.slug}) — ${district.name}의 법정동별 누수 증상과 상담 정보를 확인하세요.`,
+  ];
+  if (dong) {
+    links.unshift(
+      `- [${dong.name} 누수탐지 지역 안내](/seoul/${district.slug}/${dong.slug}) — ${dong.name} 아파트·빌라·주택에서 확인할 증상과 상담 준비사항을 확인하세요.`,
+    );
+  }
+  return `## 관련 지역 안내\n\n${links.join("\n")}`;
+}
+
+function relatedSearchIntent(place: string, building: string, leak: LeakType) {
+  const examples = [
+    `${place} ${building} 누수`,
+    `${place} 화장실·욕실 누수`,
+    `${place} 천장 누수`,
+    `${place} 수도배관 누수`,
+    `${place} 온수·난방배관 누수`,
+    `${place} 보일러 누수`,
+  ];
+  const focused = `${place} ${leak.value}`;
+  return `## 이런 증상도 함께 확인합니다\n\n${focused} 점검을 찾는 분들은 아래와 같은 상황도 함께 문의합니다. 증상이 비슷해도 원인은 다를 수 있어 현장 상태를 기준으로 확인합니다.\n\n${examples.map((item) => `- **${item}**`).join("\n")}`;
+}
+
+function buildDraft(input: DraftInput, district: Region, dong?: Region): Draft {
   const { place, building, buildingName, leak, symptom, damageLocation, method, workDirection, mode, caseMemo, imageCount } = input;
   const property = buildingName.trim() ? `${buildingName} ${building}` : building;
   const subject = `${place} ${property}`;
@@ -167,11 +192,30 @@ function buildDraft(input: DraftInput): Draft {
     `## 4. ${workDirection}\n\n원인이 확인되기 전에는 불필요하게 넓은 철거나 공사 범위를 정하지 않습니다. 확인된 위치, 배관 경로, 마감재 상태를 기준으로 ${workDirection}을(를) 설명드리고, 필요한 경우 피해 부위의 복구 순서도 함께 상담합니다.\n\n[[AUTO_IMAGE_3]]`,
     `## 5. 작업 뒤 재확인과 복구 상담\n\n보수 뒤에는 사용 조건에서 같은 증상이 다시 나타나는지 확인하는 과정이 필요합니다. ${symptom}이 계속되거나 피해 범위가 넓어지는 경우에는 지체하지 말고 현재 상태를 사진과 함께 알려 주세요.\n\n[[AUTO_IMAGE_4]]`,
   ].slice(0, imageCount);
-  const title = mode === "case" ? `${place} ${buildingName ? `${buildingName} ` : ""}${leak.value} ${symptom} 점검·보수 사례` : `${place} ${buildingName ? `${buildingName} ` : ""}${leak.value} | ${symptom} 점검 안내`;
-  return { title, excerpt: `${subject}에서 ${symptom}이 보일 때 ${leak.value} 가능성을 어떻게 구분하고 상담하는지 안내합니다.`, imageStages: stages, content: `## ${place} ${leak.value} 상담 안내\n\n${opening}\n\n${sections.join("\n\n")}\n\n## ${place} 누수 상담\n\n${place} ${property}에서 ${symptom}이 보이거나 ${leak.value} 점검이 필요하면 **010-5700-4026**으로 전화해 주세요. 피해 위치와 발생 조건을 알려 주시면 점검 방향부터 안내해 드립니다.` };
+  const title = mode === "case"
+    ? `${place} 누수탐지 | ${buildingName ? `${buildingName} ` : ""}${leak.value} ${symptom} 점검·보수 사례`
+    : `${place} 누수탐지 | ${buildingName ? `${buildingName} ` : ""}${leak.value} ${symptom} 점검 안내`;
+  return {
+    title,
+    excerpt: `${subject}에서 ${symptom}이 보일 때 ${leak.value} 가능성을 어떻게 구분하는지 안내합니다. ${place} 누수탐지 상담은 증상과 건물 조건을 함께 확인합니다.`,
+    imageStages: stages,
+    content: `## ${place} ${property} ${leak.value} 점검\n\n${opening}\n\n${relatedSearchIntent(place, building, leak)}\n\n${sections.join("\n\n")}\n\n${regionalGuideLinks(district, dong)}\n\n## ${place} 누수 상담\n\n${place} ${property}에서 ${symptom}이 보이거나 ${leak.value} 점검이 필요하면 **[010-5700-4026](tel:+821057004026)**으로 전화해 주세요. 피해 위치와 발생 조건을 알려 주시면 점검 방향부터 안내해 드립니다.`,
+  };
 }
 
-export function AutoPostComposer({ assets }: Props) {
+function normalizeTitle(value: string) {
+  return value.replace(/[^가-힣a-z0-9]/gi, "").toLowerCase();
+}
+
+function isSimilarTitle(title: string, existingTitles: string[]) {
+  const normalized = normalizeTitle(title);
+  return existingTitles.some((existing) => {
+    const candidate = normalizeTitle(existing);
+    return candidate === normalized || (candidate.length > 14 && (candidate.includes(normalized) || normalized.includes(candidate)));
+  });
+}
+
+export function AutoPostComposer({ assets, existingTitles }: Props) {
   const router = useRouter();
   const [districtId, setDistrictId] = useState(districts[0]?.id ?? "");
   const [dongId, setDongId] = useState("");
@@ -196,10 +240,11 @@ export function AutoPostComposer({ assets }: Props) {
 
   function generate() {
     setError(null);
+    if (!district) { setError("구를 먼저 선택해 주세요."); return; }
     if (mode === "case" && caseMemo.trim().length < 20) { setError("사례형 글은 확인된 현장 메모를 20자 이상 입력해 주세요."); return; }
     const nextPicked = pickMatchedAssets(assets, { leak, symptom, damageLocation, method, workDirection });
     setPicked(nextPicked);
-    setDraft(buildDraft({ place, building, buildingName, leak, symptom, damageLocation, method, workDirection, mode, caseMemo, imageCount: nextPicked.length }));
+    setDraft(buildDraft({ place, building, buildingName, leak, symptom, damageLocation, method, workDirection, mode, caseMemo, imageCount: nextPicked.length }, district, dong));
   }
   function applyRecommendation(topic: TopicRecommendation) {
     const recommendedLeak = LEAK_TYPES.find((item) => item.slug === topic.leakSlug);
@@ -236,6 +281,7 @@ export function AutoPostComposer({ assets }: Props) {
       } catch { setError("임시저장 중 문제가 생겼습니다. 사진 파일 크기와 네트워크를 확인한 뒤 다시 시도해 주세요."); }
     });
   }
+  const duplicateWarning = Boolean(draft && isSimilarTitle(draft.title, existingTitles));
   const selectClass = "rounded-lg border border-slate-300 px-3 py-3 font-normal";
   return <div className="grid gap-8 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]"><div className="space-y-5">
     <label className="grid gap-2 text-sm font-bold text-slate-800">구 선택<select value={districtId} onChange={(event) => { setDistrictId(event.target.value); setDongId(""); }} className={selectClass}>{districts.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
@@ -252,5 +298,5 @@ export function AutoPostComposer({ assets }: Props) {
     <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm leading-6 text-slate-700"><p className="font-bold text-slate-800">AI 사진 자동 선택</p><p className="mt-1">누수 유형·피해 위치·증상·탐지 단계와 맞는 <strong>태그 완료 사진</strong>만 우선 고릅니다. 내용이 모호한 사진은 자동 선택에서 제외합니다.</p></div>
     <button type="button" onClick={generate} className="bg-brand-600 hover:bg-brand-700 w-full rounded-lg px-4 py-3 font-bold text-white">자동 초안 만들기</button>
     {error && <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm font-semibold text-red-700">{error}</p>}
-  </div><div className="rounded-xl border border-slate-200 bg-slate-50 p-5">{draft ? <><p className="text-brand-700 text-xs font-bold tracking-wider">임시저장 전 미리보기</p><h2 className="mt-2 text-xl font-extrabold text-slate-900">{draft.title}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{draft.excerpt}</p><p className="mt-5 rounded-lg bg-white p-3 text-sm font-semibold text-slate-700">선택 사진: {picked.length}장 · 저장 시 글 속 사진 위치와 ALT·캡션이 등록됩니다.</p><pre className="mt-4 max-h-80 overflow-auto rounded-lg bg-white p-4 text-sm leading-6 whitespace-pre-wrap text-slate-700">{draft.content.replace(/\[\[AUTO_IMAGE_\d+\]\]/g, "[사진]")}</pre><div className="mt-5 grid gap-2 sm:grid-cols-2"><button type="button" disabled={pending} onClick={() => saveDraft(false)} className="rounded-lg bg-slate-900 px-4 py-3 font-bold text-white disabled:bg-slate-400">{pending ? "저장 중..." : "임시저장하고 편집하기"}</button><button type="button" disabled={pending} onClick={() => saveDraft(true)} className="rounded-lg bg-brand-600 px-4 py-3 font-bold text-white disabled:bg-slate-400">{pending ? "발행 중..." : "공개 발행하기"}</button></div><p className="mt-2 text-xs leading-5 text-slate-500">공개 발행하면 즉시 <strong>/posts</strong>와 해당 글 URL에 노출됩니다. 실제 사례형은 현장 메모와 사진을 확인한 뒤 발행하세요.</p></> : <p className="text-sm leading-6 text-slate-500">왼쪽에서 현장 조건을 선택하면, 선택값에 맞춰 서로 다른 점검 흐름의 초안을 만듭니다. 발행은 하지 않으며 먼저 임시저장됩니다.</p>}</div></div>;
+  </div><div className="rounded-xl border border-slate-200 bg-slate-50 p-5">{draft ? <><p className="text-brand-700 text-xs font-bold tracking-wider">네이버 자연검색용 초안 미리보기</p><h2 className="mt-2 text-xl font-extrabold text-slate-900">{draft.title}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{draft.excerpt}</p>{duplicateWarning && <p className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm font-semibold text-amber-800">비슷한 제목의 기존 글이 있습니다. 지역·건물명·증상 또는 누수 유형을 바꾼 뒤 저장해 주세요.</p>}<p className="mt-5 rounded-lg bg-white p-3 text-sm font-semibold text-slate-700">선택 사진: {picked.length}장 · 저장 시 글 속 사진 위치와 ALT·캡션이 등록됩니다.</p><pre className="mt-4 max-h-80 overflow-auto rounded-lg bg-white p-4 text-sm leading-6 whitespace-pre-wrap text-slate-700">{draft.content.replace(/\[\[AUTO_IMAGE_\d+\]\]/g, "[사진]")}</pre><div className="mt-5 grid gap-2 sm:grid-cols-2"><button type="button" disabled={pending || duplicateWarning} onClick={() => saveDraft(false)} className="rounded-lg bg-slate-900 px-4 py-3 font-bold text-white disabled:bg-slate-400">{pending ? "저장 중..." : "임시저장하고 편집하기"}</button><button type="button" disabled={pending || duplicateWarning} onClick={() => saveDraft(true)} className="rounded-lg bg-brand-600 px-4 py-3 font-bold text-white disabled:bg-slate-400">{pending ? "발행 중..." : "공개 발행하기"}</button></div><p className="mt-2 text-xs leading-5 text-slate-500">공개 발행하면 해당 글은 사이트맵에 반영됩니다. 실제 사례형은 현장 메모와 사진을 확인한 뒤 발행하세요.</p></> : <p className="text-sm leading-6 text-slate-500">왼쪽에서 지역·건물·증상·누수 유형을 고르면, 모바일 자연검색에서 읽히는 제목과 글·사진 흐름의 초안을 만듭니다. 먼저 임시저장으로 검토하세요.</p>}</div></div>;
 }
