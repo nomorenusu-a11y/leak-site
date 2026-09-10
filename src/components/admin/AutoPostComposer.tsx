@@ -236,6 +236,7 @@ export function AutoPostComposer({ assets, existingTitles }: Props) {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [batchStatus, setBatchStatus] = useState<string | null>(null);
   const district = districts.find((item) => item.id === districtId);
   const availableDongs = dongs.filter((item) => item.parent_id === districtId);
   const dong = availableDongs.find((item) => item.id === dongId);
@@ -284,12 +285,90 @@ export function AutoPostComposer({ assets, existingTitles }: Props) {
       } catch { setError("임시저장 중 문제가 생겼습니다. 사진 파일 크기와 네트워크를 확인한 뒤 다시 시도해 주세요."); }
     });
   }
+  function createSeoulStarterDrafts() {
+    setError(null);
+    setBatchStatus(null);
+    startTransition(async () => {
+      const usedTitles = new Set(existingTitles.map(normalizeTitle));
+      let createdCount = 0;
+      let skippedCount = 0;
+      let failedCount = 0;
+
+      // One legal-dong guide per district is intentionally a small starter set.
+      // They are never marked as field cases and remain unpublished for review.
+      for (const [index, starterDistrict] of districts.entries()) {
+        const starterDong = dongs.find((item) => item.parent_id === starterDistrict.id);
+        const topic = TOPIC_RECIPES[index % TOPIC_RECIPES.length];
+        const starterLeak = LEAK_TYPES.find((item) => item.slug === topic.leakSlug);
+        if (!starterDong || !starterLeak) { failedCount += 1; continue; }
+        const input: DraftInput = {
+          place: starterDong.name,
+          building: topic.building,
+          buildingName: "",
+          leak: starterLeak,
+          symptom: topic.symptom,
+          damageLocation: topic.damageLocation,
+          method: topic.method,
+          workDirection: topic.workDirection,
+          mode: "guide",
+          caseMemo: "",
+          imageCount: 0,
+        };
+        const selectedAssets = pickMatchedAssets(assets, input);
+        input.imageCount = selectedAssets.length;
+        const starterDraft = buildDraft(input, starterDistrict, starterDong);
+        if (usedTitles.has(normalizeTitle(starterDraft.title))) { skippedCount += 1; continue; }
+        try {
+          const slug = `starter-${starterDistrict.slug}-${starterDong.slug}-${starterLeak.slug}-${Date.now().toString(36)}-${index}`;
+          const created = await createPost({
+            title: starterDraft.title,
+            slug,
+            content: starterDraft.content.replace(/\[\[AUTO_IMAGE_\d+\]\]/g, ""),
+            excerpt: starterDraft.excerpt,
+            category: "leak",
+            region_tags: [starterDistrict.name],
+            published: false,
+          });
+          if (!created.ok) { failedCount += 1; continue; }
+          const imageIds: string[] = [];
+          for (const [imageIndex, asset] of selectedAssets.entries()) {
+            const attached = await attachMediaAssetToPost({
+              postId: created.postId,
+              assetId: asset.id,
+              workStage: starterDraft.imageStages[imageIndex],
+              altText: `${starterDong.name} ${starterLeak.value} 점검 안내 사진 — ${starterDraft.imageStages[imageIndex]}`,
+              caption: `${starterDong.name} ${starterLeak.value} 점검 안내를 위한 참고 사진입니다. 사진에 보이는 범위는 실제 현장 확인 뒤 안내합니다.`,
+            });
+            if (attached.ok) imageIds.push(attached.imageId);
+          }
+          const content = starterDraft.content.replace(/\[\[AUTO_IMAGE_(\d+)\]\]/g, (_, raw) => imageIds[Number(raw)] ? `[[post-image:${imageIds[Number(raw)]}]]` : "");
+          const updated = await updatePost(created.postId, {
+            title: starterDraft.title,
+            slug,
+            content,
+            excerpt: starterDraft.excerpt,
+            category: "leak",
+            region_tags: [starterDistrict.name],
+            published: false,
+          });
+          if (!updated.ok) { failedCount += 1; continue; }
+          usedTitles.add(normalizeTitle(starterDraft.title));
+          createdCount += 1;
+        } catch {
+          failedCount += 1;
+        }
+      }
+      setBatchStatus(`서울 시작 초안: ${createdCount}개 저장${skippedCount ? ` · 중복 건너뜀 ${skippedCount}개` : ""}${failedCount ? ` · 확인 필요 ${failedCount}개` : ""}`);
+      router.refresh();
+    });
+  }
   const duplicateWarning = Boolean(draft && isSimilarTitle(draft.title, existingTitles));
   const selectClass = "rounded-lg border border-slate-300 px-3 py-3 font-normal";
   return <div className="grid gap-8 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]"><div className="space-y-5">
     <label className="grid gap-2 text-sm font-bold text-slate-800">구 선택<select value={districtId} onChange={(event) => { setDistrictId(event.target.value); setDongId(""); }} className={selectClass}>{districts.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
     <label className="grid gap-2 text-sm font-bold text-slate-800">법정동 선택 <span className="font-normal text-slate-500">(선택)</span><select value={dongId} onChange={(event) => setDongId(event.target.value)} className={selectClass}><option value="">구 전체</option>{availableDongs.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
     <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"><div className="flex items-center justify-between gap-3"><div><p className="text-sm font-extrabold text-slate-900">오늘의 글 주제 추천</p><p className="mt-1 text-xs leading-5 text-slate-500">서로 다른 건물·증상·누수 유형을 섞어 제안합니다.</p></div><button type="button" onClick={() => setRecommendations(randomPick(TOPIC_RECIPES, 6))} className="shrink-0 rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700">다른 6개</button></div><div className="mt-3 grid gap-2">{recommendations.map((topic, index) => { const topicLeak = LEAK_TYPES.find((item) => item.slug === topic.leakSlug); return <button key={`${topic.leakSlug}-${topic.symptom}-${index}`} type="button" onClick={() => applyRecommendation(topic)} className="rounded-lg border border-slate-200 p-3 text-left text-sm transition hover:border-brand-400 hover:bg-brand-50"><span className="font-bold text-slate-900">{place} {topic.building} {topicLeak?.value}</span><span className="mt-1 block text-xs text-slate-600">{topic.damageLocation} · {topic.symptom}</span></button>; })}</div><p className="mt-3 text-xs leading-5 text-slate-500">선택하면 아래 입력값이 자동으로 채워집니다. 실제 사례로 공개할 때는 현장 메모와 사진을 확인해 사례형으로 전환합니다.</p></div>
+    <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4"><p className="text-sm font-extrabold text-slate-900">서울 25개 구 시작 초안</p><p className="mt-1 text-xs leading-5 text-slate-600">각 구의 법정동 1곳에 서로 다른 누수 유형·증상·건물 조건을 배정해 임시저장합니다. 실제 시공사례나 공개 글로 만들지 않습니다.</p><button type="button" disabled={pending} onClick={createSeoulStarterDrafts} className="mt-3 w-full rounded-lg bg-indigo-700 px-4 py-3 text-sm font-bold text-white disabled:bg-indigo-300">{pending ? "서울 초안 저장 중..." : "서울 25개 구 초안 25개 만들기"}</button>{batchStatus && <p className="mt-3 rounded-lg bg-white p-3 text-xs font-bold text-indigo-800">{batchStatus}</p>}</div>
     <div className="rounded-xl border border-brand-100 bg-brand-50 p-4"><p className="text-sm font-extrabold text-slate-900">글 작성 기준</p><div className="mt-3 grid gap-2 text-sm text-slate-700"><label><input type="radio" checked={mode === "guide"} onChange={() => setMode("guide")} /> <span className="ml-2 font-bold">점검·상담 안내</span><span className="ml-1 text-slate-500">확인 전 정보 중심</span></label><label><input type="radio" checked={mode === "case"} onChange={() => setMode("case")} /> <span className="ml-2 font-bold">실제 시공사례</span><span className="ml-1 text-slate-500">확인 메모 필수</span></label></div>{mode === "case" && <textarea value={caseMemo} onChange={(event) => setCaseMemo(event.target.value)} placeholder="예: 아랫집 주방 천장 물자국 확인, 온수관 압력 저하 확인, 부분 굴착 후 배관 보수" className="mt-3 min-h-24 w-full rounded-lg border border-slate-300 p-3 text-sm font-normal" />}</div>
     <label className="grid gap-2 text-sm font-bold text-slate-800">건물 유형<select value={building} onChange={(event) => setBuilding(event.target.value)} className={selectClass}>{BUILDINGS.map((item) => <option key={item}>{item}</option>)}</select></label>
     <label className="grid gap-2 text-sm font-bold text-slate-800">건물명 <span className="font-normal text-slate-500">(선택)</span><input value={buildingName} maxLength={60} onChange={(event) => setBuildingName(event.target.value)} placeholder="예: 한신아파트" className={selectClass} /></label>
