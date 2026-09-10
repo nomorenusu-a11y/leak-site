@@ -16,6 +16,9 @@ export async function GET() {
   url.searchParams.set("redirect_uri", kakaoRedirectUri());
   url.searchParams.set("response_type", "code");
   url.searchParams.set("scope", "talk_message");
+  // The notification recipient can change over time. Always show Kakao's
+  // account picker instead of silently reusing the browser's current session.
+  url.searchParams.set("prompt", "select_account");
   url.searchParams.set("state", state);
   const response = NextResponse.redirect(url);
   response.cookies.set(STATE_COOKIE, state, { ...adminSessionCookieOptions(10 * 60), httpOnly: true });
