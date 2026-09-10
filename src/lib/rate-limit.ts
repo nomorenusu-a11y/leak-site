@@ -18,6 +18,26 @@ export type RateLimitResult = {
 };
 
 /**
+ * 현재 제한 상태만 확인한다. 성공한 로그인까지 실패 횟수로 기록하지 않기 위해
+ * 인증 전에는 이 함수를 사용하고, 비밀번호가 틀린 경우에만 hit()을 호출한다.
+ */
+export function check(key: string, limit: number): RateLimitResult {
+  const now = Date.now();
+  const bucket = buckets.get(key);
+  if (!bucket || bucket.resetAt <= now) {
+    if (bucket) buckets.delete(key);
+    return { allowed: true, remaining: limit, resetAt: now, retryAfterSeconds: 0 };
+  }
+  const allowed = bucket.count < limit;
+  return {
+    allowed,
+    remaining: Math.max(0, limit - bucket.count),
+    resetAt: bucket.resetAt,
+    retryAfterSeconds: allowed ? 0 : Math.max(1, Math.ceil((bucket.resetAt - now) / 1000)),
+  };
+}
+
+/**
  * @param key      식별자 (IP 등)
  * @param limit    윈도우 내 최대 허용 횟수
  * @param windowMs 윈도우 길이 (ms)
