@@ -1,8 +1,23 @@
 import Link from "next/link";
 import { assertAdmin } from "@/lib/auth";
-import { kakaoOwnerNotifyConnected } from "@/lib/kakao/owner-notify";
+import { kakaoOwnerNotifyConnected, sendKakaoOwnerNotification } from "@/lib/kakao/owner-notify";
+import { revalidatePath } from "next/cache";
 
 export const dynamic = "force-dynamic";
+
+async function sendKakaoTestAction() {
+  "use server";
+  await assertAdmin();
+  await sendKakaoOwnerNotification({
+    id: "test",
+    customerName: "알림 테스트",
+    phone: "010-5700-4026",
+    region: "테스트",
+    apartment: null,
+    symptom: "견적 신청 알림이 정상적으로 도착하는지 확인하는 테스트입니다.",
+  });
+  revalidatePath("/admin/integrations/kakao");
+}
 
 export default async function KakaoIntegrationPage({ searchParams }: { searchParams: Promise<{ connected?: string; error?: string }> }) {
   await assertAdmin();
@@ -19,7 +34,7 @@ export default async function KakaoIntegrationPage({ searchParams }: { searchPar
       <p className={`mt-2 text-lg font-extrabold ${connected ? "text-emerald-300" : "text-amber-300"}`}>{connected ? "연결됨 — 새 접수부터 카카오 알림 발송" : "연결 필요 — 아직 알림은 발송되지 않음"}</p>
       <div className="mt-6 flex flex-wrap gap-3">
         <Link href="/admin/integrations/kakao/authorize" className="rounded-xl bg-yellow-300 px-5 py-3 text-sm font-black text-slate-950">{connected ? "카카오 계정 다시 연결" : "대표님 카카오톡 연결"}</Link>
-        {connected && <form action="/admin/integrations/kakao/dispatch" method="post"><button className="rounded-xl border border-white/15 px-5 py-3 text-sm font-bold text-white hover:bg-white/[.06]">테스트 알림 보내기</button></form>}
+        {connected && <form action={sendKakaoTestAction}><button className="rounded-xl border border-white/15 px-5 py-3 text-sm font-bold text-white hover:bg-white/[.06]">테스트 알림 보내기</button></form>}
       </div>
     </div>
     <ol className="mt-7 space-y-3 rounded-2xl border border-white/[.08] bg-white/[.025] p-6 text-sm leading-6 text-slate-300"><li><strong className="text-white">1.</strong> ‘대표님 카카오톡 연결’을 한 번 누릅니다.</li><li><strong className="text-white">2.</strong> 카카오 동의 화면에서 메시지 전송을 허용합니다.</li><li><strong className="text-white">3.</strong> 테스트 알림을 받아본 뒤 견적 폼 접수부터 자동 발송됩니다.</li></ol>
