@@ -71,6 +71,7 @@ const serverSchema = z.object({
   // 검색콘솔 verification — server 또는 NEXT_PUBLIC_ 모두 fallback (meta.ts 참고)
   GOOGLE_SITE_VERIFICATION: optionalString,
   NAVER_SITE_VERIFICATION: optionalString,
+  KAKAO_REST_API_KEY: optionalSecret(20),
 });
 
 function readPublicEnv() {
@@ -123,6 +124,7 @@ export function serverEnv() {
     SESSION_SECRET: process.env.SESSION_SECRET,
     GOOGLE_SITE_VERIFICATION: process.env.GOOGLE_SITE_VERIFICATION,
     NAVER_SITE_VERIFICATION: process.env.NAVER_SITE_VERIFICATION,
+    KAKAO_REST_API_KEY: process.env.KAKAO_REST_API_KEY,
   });
   if (!parsed.success) {
     console.error(
@@ -211,4 +213,11 @@ export function getAdminCredentials() {
     );
   }
   return { password, secret };
+}
+
+/** 견적 접수를 대표자 카카오톡 '나와의 채팅'으로 전달하는 서버 전용 설정. */
+export function getKakaoOwnerNotifyConfig() {
+  const key = serverEnv().KAKAO_REST_API_KEY;
+  if (!key) throw new Error("KAKAO_REST_API_KEY가 설정되지 않았습니다.");
+  return { restApiKey: key };
 }

@@ -277,6 +277,16 @@ export type DemoRequestData = {
   symptom: string;
 };
 
+export type AdminIntegration = {
+  provider: "kakao_owner_notify";
+  access_token_encrypted: string;
+  refresh_token_encrypted: string;
+  expires_at: string;
+  scope: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 // ============================================================
 // Database 제네릭 — supabase-js / @supabase/ssr 클라이언트에 주입
 // ============================================================
@@ -335,6 +345,12 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      admin_integrations: {
+        Row: AdminIntegration;
+        Insert: Omit<AdminIntegration, "created_at" | "updated_at">;
+        Update: Partial<Omit<AdminIntegration, "provider" | "created_at">>;
+        Relationships: [];
       };
       site_content: {
         Row: SiteContent;

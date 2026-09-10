@@ -5,6 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useState, type ReactNode } from "react";
 import {
   BarChart3,
+  BellRing,
   ClipboardCheck,
   FileText,
   Images,
@@ -26,6 +27,7 @@ const NAV: NavItem[] = [
   { href: "/admin/posts", label: "게시글 관리", group: "콘텐츠 운영", icon: <FileText size={17} /> },
   { href: "/admin/media", label: "사진 라이브러리", group: "콘텐츠 운영", icon: <Images size={17} /> },
   { href: "/admin/requests", label: "견적 신청", group: "고객 관리", icon: <PhoneCall size={17} /> },
+  { href: "/admin/integrations/kakao", label: "카카오 접수 알림", group: "고객 관리", icon: <BellRing size={17} /> },
   { href: "/admin/live-board", label: "실시간 현황판", group: "고객 관리", icon: <BarChart3 size={17} /> },
   { href: "/admin/hero", label: "히어로", group: "사이트 설정", icon: <MonitorCog size={17} /> },
   { href: "/admin/reviews", label: "후기 관리", group: "사이트 설정", icon: <MessageSquareText size={17} /> },
