@@ -99,12 +99,6 @@ export function Footer() {
           </p>
         )}
 
-        {BUSINESS.address && (
-          <p className="mt-2 text-center text-xs text-slate-400 sm:text-sm">
-            주소: {BUSINESS.address}
-          </p>
-        )}
-
         <p className="mt-6 text-center text-xs text-slate-500">
           COPYRIGHT © {BUSINESS.name}. ALL RIGHTS RESERVED.
         </p>
