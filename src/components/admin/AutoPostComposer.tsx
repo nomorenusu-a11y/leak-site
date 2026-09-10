@@ -237,6 +237,7 @@ export function AutoPostComposer({ assets, existingTitles }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const [batchStatus, setBatchStatus] = useState<string | null>(null);
+  const [publishStatus, setPublishStatus] = useState<string | null>(null);
   const district = districts.find((item) => item.id === districtId);
   const availableDongs = dongs.filter((item) => item.parent_id === districtId);
   const dong = availableDongs.find((item) => item.id === dongId);
@@ -362,6 +363,24 @@ export function AutoPostComposer({ assets, existingTitles }: Props) {
       router.refresh();
     });
   }
+  function publishFiveGuides() {
+    setError(null);
+    setPublishStatus(null);
+    startTransition(async () => {
+      try {
+        const response = await fetch("/admin/api/publish-starter-guides", { method: "POST" });
+        const result = await response.json() as { ok?: boolean; error?: string; deletedDrafts?: number; created?: Array<{ title: string; images: number }> };
+        if (!response.ok || !result.ok) {
+          setError(result.error ?? "공개 안내 발행에 실패했습니다.");
+          return;
+        }
+        setPublishStatus(`임시저장 ${result.deletedDrafts ?? 0}개를 삭제하고, 공개 안내 ${result.created?.length ?? 0}개를 발행했습니다. 연결된 참고 사진은 ${result.created?.reduce((total, item) => total + item.images, 0) ?? 0}장입니다.`);
+        router.refresh();
+      } catch {
+        setError("공개 안내 발행 요청에 실패했습니다. 네트워크를 확인한 뒤 다시 시도해 주세요.");
+      }
+    });
+  }
   const duplicateWarning = Boolean(draft && isSimilarTitle(draft.title, existingTitles));
   const selectClass = "rounded-lg border border-slate-300 px-3 py-3 font-normal";
   return <div className="grid gap-8 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]"><div className="space-y-5">
@@ -369,6 +388,7 @@ export function AutoPostComposer({ assets, existingTitles }: Props) {
     <label className="grid gap-2 text-sm font-bold text-slate-800">법정동 선택 <span className="font-normal text-slate-500">(선택)</span><select value={dongId} onChange={(event) => setDongId(event.target.value)} className={selectClass}><option value="">구 전체</option>{availableDongs.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
     <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"><div className="flex items-center justify-between gap-3"><div><p className="text-sm font-extrabold text-slate-900">오늘의 글 주제 추천</p><p className="mt-1 text-xs leading-5 text-slate-500">서로 다른 건물·증상·누수 유형을 섞어 제안합니다.</p></div><button type="button" onClick={() => setRecommendations(randomPick(TOPIC_RECIPES, 6))} className="shrink-0 rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700">다른 6개</button></div><div className="mt-3 grid gap-2">{recommendations.map((topic, index) => { const topicLeak = LEAK_TYPES.find((item) => item.slug === topic.leakSlug); return <button key={`${topic.leakSlug}-${topic.symptom}-${index}`} type="button" onClick={() => applyRecommendation(topic)} className="rounded-lg border border-slate-200 p-3 text-left text-sm transition hover:border-brand-400 hover:bg-brand-50"><span className="font-bold text-slate-900">{place} {topic.building} {topicLeak?.value}</span><span className="mt-1 block text-xs text-slate-600">{topic.damageLocation} · {topic.symptom}</span></button>; })}</div><p className="mt-3 text-xs leading-5 text-slate-500">선택하면 아래 입력값이 자동으로 채워집니다. 실제 사례로 공개할 때는 현장 메모와 사진을 확인해 사례형으로 전환합니다.</p></div>
     <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4"><p className="text-sm font-extrabold text-slate-900">서울 25개 구 시작 초안</p><p className="mt-1 text-xs leading-5 text-slate-600">각 구의 법정동 1곳에 서로 다른 누수 유형·증상·건물 조건을 배정해 임시저장합니다. 실제 시공사례나 공개 글로 만들지 않습니다.</p><button type="button" disabled={pending} onClick={createSeoulStarterDrafts} className="mt-3 w-full rounded-lg bg-indigo-700 px-4 py-3 text-sm font-bold text-white disabled:bg-indigo-300">{pending ? "서울 초안 저장 중..." : "서울 25개 구 초안 25개 만들기"}</button>{batchStatus && <p className="mt-3 rounded-lg bg-white p-3 text-xs font-bold text-indigo-800">{batchStatus}</p>}</div>
+    <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4"><p className="text-sm font-extrabold text-slate-900">운영용 공개 안내 5개 발행</p><p className="mt-1 text-xs leading-5 text-slate-600">현재 임시저장 글을 모두 삭제하고 대치동·쌍문동·연남동·문정동·불광동의 서로 다른 점검 안내 5개를 공개합니다. 실제 시공사례로 표기하지 않으며, 사진은 태그가 맞는 참고 사진만 연결합니다.</p><button type="button" disabled={pending} onClick={publishFiveGuides} className="mt-3 w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-bold text-white disabled:bg-emerald-300">{pending ? "발행 작업 중..." : "임시저장 정리 후 공개 안내 5개 발행"}</button>{publishStatus && <p className="mt-3 rounded-lg bg-white p-3 text-xs font-bold text-emerald-800">{publishStatus}</p>}</div>
     <div className="rounded-xl border border-brand-100 bg-brand-50 p-4"><p className="text-sm font-extrabold text-slate-900">글 작성 기준</p><div className="mt-3 grid gap-2 text-sm text-slate-700"><label><input type="radio" checked={mode === "guide"} onChange={() => setMode("guide")} /> <span className="ml-2 font-bold">점검·상담 안내</span><span className="ml-1 text-slate-500">확인 전 정보 중심</span></label><label><input type="radio" checked={mode === "case"} onChange={() => setMode("case")} /> <span className="ml-2 font-bold">실제 시공사례</span><span className="ml-1 text-slate-500">확인 메모 필수</span></label></div>{mode === "case" && <textarea value={caseMemo} onChange={(event) => setCaseMemo(event.target.value)} placeholder="예: 아랫집 주방 천장 물자국 확인, 온수관 압력 저하 확인, 부분 굴착 후 배관 보수" className="mt-3 min-h-24 w-full rounded-lg border border-slate-300 p-3 text-sm font-normal" />}</div>
     <label className="grid gap-2 text-sm font-bold text-slate-800">건물 유형<select value={building} onChange={(event) => setBuilding(event.target.value)} className={selectClass}>{BUILDINGS.map((item) => <option key={item}>{item}</option>)}</select></label>
     <label className="grid gap-2 text-sm font-bold text-slate-800">건물명 <span className="font-normal text-slate-500">(선택)</span><input value={buildingName} maxLength={60} onChange={(event) => setBuildingName(event.target.value)} placeholder="예: 한신아파트" className={selectClass} /></label>
