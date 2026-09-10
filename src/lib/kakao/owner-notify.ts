@@ -109,7 +109,11 @@ export async function sendKakaoOwnerNotification(input: { id: string; customerNa
     body,
     cache: "no-store",
   });
-  if (!response.ok) throw new Error(`카카오 알림 발송 실패 (${response.status})`);
+  const result = await response.json().catch(() => null) as { result_code?: number; msg?: string } | null;
+  if (!response.ok || result?.result_code !== 0) {
+    throw new Error(`카카오 알림 발송 실패 (${response.status}${result?.msg ? `: ${result.msg}` : ""})`);
+  }
+  console.info("[kakao-owner-notify] sent", { requestId: input.id });
 }
 
 export async function kakaoOwnerNotifyConnected() {
