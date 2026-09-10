@@ -18,6 +18,20 @@ export const COOKIE_NAME = "admin_session";
 // 입력하지 않도록 한 번의 로그인으로 30일간 유지한다. 로그아웃하면 즉시 만료된다.
 export const SESSION_DURATION_SECONDS = 30 * 24 * 60 * 60; // 30일
 
+/**
+ * 로그인·프록시 갱신·로그아웃에서 반드시 같은 범위로 쿠키를 다루기 위한 공통 옵션.
+ * path를 루트로 고정해야 /admin 하위의 모든 화면과 Server Action이 동일한 세션을 받는다.
+ */
+export function adminSessionCookieOptions(maxAge = SESSION_DURATION_SECONDS) {
+  return {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge,
+  };
+}
+
 // ============================================================
 // base64url helpers
 // ============================================================

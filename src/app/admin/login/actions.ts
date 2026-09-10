@@ -4,7 +4,7 @@ import { cookies, headers } from "next/headers";
 import { z } from "zod";
 import {
   COOKIE_NAME,
-  SESSION_DURATION_SECONDS,
+  adminSessionCookieOptions,
   signSession,
   verifyPassword,
 } from "@/lib/auth";
@@ -86,11 +86,7 @@ export async function loginAction(
   const token = await signSession(secret);
   const jar = await cookies();
   jar.set(COOKIE_NAME, token, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: SESSION_DURATION_SECONDS,
+    ...adminSessionCookieOptions(),
   });
 
   return { status: "success", redirectTo: parsed.data.from ?? "/admin" };
