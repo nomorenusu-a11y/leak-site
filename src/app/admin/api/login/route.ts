@@ -6,7 +6,7 @@ import {
   verifyPassword,
 } from "@/lib/auth";
 import { getAdminCredentials } from "@/lib/env";
-import { hit } from "@/lib/rate-limit";
+import { check, hit } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   const form = await request.formData();
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
 
   const xff = request.headers.get("x-forwarded-for");
   const ip = xff ? xff.split(",")[0]!.trim() : "unknown";
-  const rl = hit(`login:${ip}`, 5, 5 * 60 * 1000);
+  const rl = check(`login:${ip}`, 5);
   if (!rl.allowed) {
     return errorRedirect(
       `너무 많이 시도했습니다. ${rl.retryAfterSeconds}초 후 다시 시도해 주세요.`,
@@ -44,6 +44,14 @@ export async function POST(request: NextRequest) {
   }
 
   if (!verifyPassword(password, actualPassword)) {
+    const failed = hit(`login:${ip}`, 5, 5 * 60 * 1000);
+    if (!failed.allowed) {
+      return errorRedirect(
+        `너무 많이 시도했습니다. ${failed.retryAfterSeconds}초 후 다시 시도해 주세요.`,
+        fromPath,
+        request,
+      );
+    }
     return errorRedirect("비밀번호가 일치하지 않습니다.", fromPath, request);
   }
 

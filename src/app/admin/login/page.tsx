@@ -33,7 +33,7 @@ export default async function AdminLoginPage({
     <main className="min-h-screen bg-slate-50 px-4 py-10">
       <div className="mx-auto mt-10 max-w-sm rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <h1 className="text-xl font-extrabold text-slate-900">관리자 로그인</h1>
-        <p className="mt-1 text-sm text-slate-600">비밀번호를 입력하세요.</p>
+        <p className="mt-1 text-sm text-slate-600">한 번 로그인하면 같은 브라우저에서 30일 동안 유지됩니다.</p>
         <div className="mt-5">
           <LoginForm from={fromValid} error={error} />
         </div>

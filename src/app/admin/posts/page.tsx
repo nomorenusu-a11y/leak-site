@@ -37,14 +37,9 @@ export default async function AdminPostsPage({
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">시공 사례</h1>
-          <p className="mt-1 text-sm text-slate-600">발행된 글과 임시저장된 글을 관리합니다.</p>
+          <p className="mt-1 text-sm text-slate-600">초안은 발행 대기함에서 검토하고, 준비된 글만 공개합니다.</p>
         </div>
-        <Link
-          href="/admin/posts/new"
-          className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-brand-700"
-        >
-          + 새 글 작성
-        </Link>
+        <div className="flex flex-wrap gap-2"><Link href="/admin/auto-post" className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50">자동 글쓰기</Link><Link href="/admin/posts/new" className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-brand-700">+ 새 글 작성</Link></div>
       </header>
 
       <div className="mt-5 flex flex-wrap gap-2">

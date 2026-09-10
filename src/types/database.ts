@@ -130,6 +130,45 @@ export type PostImageInsert = {
 };
 
 // ============================================================
+// media_assets — reusable administrator photo library
+// ============================================================
+
+export type MediaAsset = {
+  id: string;
+  url: string;
+  file_name: string;
+  mime_type: "image/jpeg" | "image/png" | "image/webp";
+  source_sha256: string | null;
+  source_relative_path: string | null;
+  active: boolean;
+  created_at: string;
+};
+
+export type MediaAssetInsert = Pick<MediaAsset, "url" | "file_name" | "mime_type"> & {
+  source_sha256?: string | null;
+  source_relative_path?: string | null;
+  active?: boolean;
+};
+
+export type MediaAssetAnalysis = {
+  asset_id: string;
+  analysis_status: "pending" | "analyzing" | "tagged" | "needs_review" | "failed";
+  analysis_version: string | null;
+  scene_summary: string | null;
+  work_stage: "damage" | "inspection" | "detection" | "repair" | "completion" | "unknown" | null;
+  visible_subject_tags: string[];
+  leak_type_tags: string[];
+  symptom_tags: string[];
+  confidence: number | null;
+  ai_result: Record<string, unknown>;
+  human_tags: Record<string, unknown>;
+  reviewed_at: string | null;
+  analyzed_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+// ============================================================
 // site_content
 // ============================================================
 
@@ -274,6 +313,25 @@ export type Database = {
             foreignKeyName: "post_images_post_id_fkey";
             columns: ["post_id"];
             referencedRelation: "posts";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      media_assets: {
+        Row: MediaAsset;
+        Insert: MediaAssetInsert;
+        Update: Partial<MediaAssetInsert> & Partial<Pick<MediaAsset, "active">>;
+        Relationships: [];
+      };
+      media_asset_analysis: {
+        Row: MediaAssetAnalysis;
+        Insert: Pick<MediaAssetAnalysis, "asset_id"> & Partial<Omit<MediaAssetAnalysis, "asset_id" | "created_at" | "updated_at">>;
+        Update: Partial<Omit<MediaAssetAnalysis, "asset_id" | "created_at">>;
+        Relationships: [
+          {
+            foreignKeyName: "media_asset_analysis_asset_id_fkey";
+            columns: ["asset_id"];
+            referencedRelation: "media_assets";
             referencedColumns: ["id"];
           },
         ];

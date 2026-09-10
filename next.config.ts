@@ -1,6 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // 관리자 사진 업로드의 개별 파일 제한은 5MB다. Server Action 기본 본문 한도(1MB)를
+  // 그대로 두면 사진을 선택한 자동 초안 저장이 중간에 끊긴다.
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "6mb",
+    },
+  },
   async redirects() {
     return [
       {
@@ -23,10 +30,7 @@ const nextConfig: NextConfig = {
   },
   compiler: {
     // production 빌드에서만 console.log/info/debug 등 제거. console.error/warn은 유지.
-    removeConsole:
-      process.env.NODE_ENV === "production"
-        ? { exclude: ["error", "warn"] }
-        : false,
+    removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error", "warn"] } : false,
   },
 };
 

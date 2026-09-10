@@ -573,3 +573,21 @@ body {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* Admin console: dark, high-density operational UI. */
+.admin-console .bg-white { background-color: #111827; }
+.admin-console .bg-slate-50 { background-color: #0d121d; }
+.admin-console .bg-slate-100 { background-color: #172033; }
+.admin-console .text-slate-900 { color: #f8fafc; }
+.admin-console .text-slate-800 { color: #e2e8f0; }
+.admin-console .text-slate-700 { color: #cbd5e1; }
+.admin-console .text-slate-600 { color: #94a3b8; }
+.admin-console .text-slate-500 { color: #94a3b8; }
+.admin-console .border-slate-200 { border-color: rgba(148, 163, 184, 0.16); }
+.admin-console .border-slate-300 { border-color: rgba(148, 163, 184, 0.24); }
+.admin-console .divide-slate-200 > :not(:last-child) { border-color: rgba(148, 163, 184, 0.14); }
+.admin-console .hover\:bg-slate-50:hover { background-color: rgba(255,255,255,.045); }
+.admin-console input:not([type="checkbox"]):not([type="radio"]),
+.admin-console textarea,
+.admin-console select { background-color: #090d14; color: #e2e8f0; border-color: rgba(148, 163, 184, 0.28); }
+.admin-console select option { background-color: #111827; color: #e2e8f0; }

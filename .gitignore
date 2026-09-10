@@ -36,6 +36,8 @@ yarn-error.log*
 
 # local dev/test scripts (one-off migrations, integration tests, etc.)
 /scripts/
+!/scripts/
+!/scripts/sync-photo-library.ts
 
 # client-provided source assets (logo/사진 원본) — git에 절대 올라가면 안 됨
 /uploads/

@@ -9,7 +9,7 @@ import {
   verifyPassword,
 } from "@/lib/auth";
 import { getAdminCredentials } from "@/lib/env";
-import { hit } from "@/lib/rate-limit";
+import { check, hit } from "@/lib/rate-limit";
 
 const inputSchema = z.object({
   password: z.string().min(1).max(200),
@@ -50,7 +50,7 @@ export async function loginAction(
   }
 
   const ip = await clientIp();
-  const rl = hit(`login:${ip}`, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS);
+  const rl = check(`login:${ip}`, RATE_LIMIT_MAX);
   if (!rl.allowed) {
     return {
       status: "error",
@@ -73,6 +73,13 @@ export async function loginAction(
   }
 
   if (!verifyPassword(parsed.data.password, actualPassword)) {
+    const failed = hit(`login:${ip}`, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS);
+    if (!failed.allowed) {
+      return {
+        status: "error",
+        message: `너무 많이 시도했습니다. ${failed.retryAfterSeconds}초 후 다시 시도해 주세요.`,
+      };
+    }
     return { status: "error", message: "비밀번호가 일치하지 않습니다." };
   }
 
