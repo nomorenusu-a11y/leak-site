@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { COOKIE_NAME } from "@/lib/auth";
+import { adminSessionCookieOptions, COOKIE_NAME } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -11,11 +11,7 @@ export function GET(request: NextRequest) {
   const url = new URL("/admin/login", request.url);
   const res = NextResponse.redirect(url);
   res.cookies.set(COOKIE_NAME, "", {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 0,
+    ...adminSessionCookieOptions(0),
   });
   return res;
 }
