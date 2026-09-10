@@ -108,7 +108,12 @@ export async function POST() {
     }
 
     const rendered = content.replace(/\[\[AUTO_IMAGE_(\d+)\]\]/g, (_, raw) => imageIds[Number(raw)] ? `[[post-image:${imageIds[Number(raw)]}]]` : "");
-    await db.from("posts").update({ content: rendered, published: true, published_at: new Date().toISOString() }).eq("id", post.id);
+    await db.from("posts").update({
+      content: rendered,
+      cover_image_url: matched[0]?.url ?? null,
+      published: true,
+      published_at: new Date().toISOString(),
+    }).eq("id", post.id);
     created.push({ slug: post.slug, title: post.title, images: imageIds.length });
   }
 
