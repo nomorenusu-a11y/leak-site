@@ -13,7 +13,10 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getAdminCredentials } from "@/lib/env";
 
-export const COOKIE_NAME = "admin_session";
+// 이전 배포에서 사용하던 `admin_session` 쿠키가 브라우저에 남아 있을 경우,
+// host-only 쿠키와 충돌해 관리자 메뉴마다 로그아웃되는 문제가 생길 수 있다.
+// 이름을 버전으로 분리해 오래된 쿠키를 완전히 무시한다.
+export const COOKIE_NAME = "nomorenusu_admin_session_v2";
 // 관리자 본인만 사용하는 콘솔이므로, 같은 브라우저에서는 매번 비밀번호를
 // 입력하지 않도록 한 번의 로그인으로 30일간 유지한다. 로그아웃하면 즉시 만료된다.
 export const SESSION_DURATION_SECONDS = 30 * 24 * 60 * 60; // 30일
@@ -28,6 +31,10 @@ export function adminSessionCookieOptions(maxAge = SESSION_DURATION_SECONDS) {
     sameSite: "lax" as const,
     secure: process.env.NODE_ENV === "production",
     path: "/",
+    // 운영 도메인의 apex/www 전환에도 같은 로그인 세션을 사용한다.
+    // Preview의 vercel.app 호스트에는 도메인 속성을 넣지 않는다.
+    ...(process.env.VERCEL_ENV === "production" ? { domain: "nomorenusu.com" } : {}),
+    priority: "high" as const,
     maxAge,
   };
 }
