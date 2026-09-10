@@ -61,8 +61,9 @@ export async function saveKakaoOwnerTokens(tokens: KakaoTokens) {
 }
 
 export async function connectKakaoOwnerFromCode(code: string) {
-  const { restApiKey } = getKakaoOwnerNotifyConfig();
+  const { restApiKey, clientSecret } = getKakaoOwnerNotifyConfig();
   const body = new URLSearchParams({ grant_type: "authorization_code", client_id: restApiKey, redirect_uri: kakaoRedirectUri(), code });
+  if (clientSecret) body.set("client_secret", clientSecret);
   const response = await fetch("https://kauth.kakao.com/oauth/token", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded;charset=utf-8" }, body, cache: "no-store" });
   if (!response.ok) throw new Error(`카카오 토큰 발급 실패 (${response.status})`);
   await saveKakaoOwnerTokens(await response.json() as KakaoTokens);
@@ -76,8 +77,9 @@ async function currentAccessToken(): Promise<string> {
   const stored = data as StoredIntegration;
   if (new Date(stored.expires_at).getTime() > Date.now() + 5 * 60_000) return decrypt(stored.access_token_encrypted);
 
-  const { restApiKey } = getKakaoOwnerNotifyConfig();
+  const { restApiKey, clientSecret } = getKakaoOwnerNotifyConfig();
   const body = new URLSearchParams({ grant_type: "refresh_token", client_id: restApiKey, refresh_token: await decrypt(stored.refresh_token_encrypted) });
+  if (clientSecret) body.set("client_secret", clientSecret);
   const response = await fetch("https://kauth.kakao.com/oauth/token", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded;charset=utf-8" }, body, cache: "no-store" });
   if (!response.ok) throw new Error(`카카오 토큰 갱신 실패 (${response.status})`);
   const refreshed = await response.json() as KakaoTokens;

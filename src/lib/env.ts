@@ -72,6 +72,7 @@ const serverSchema = z.object({
   GOOGLE_SITE_VERIFICATION: optionalString,
   NAVER_SITE_VERIFICATION: optionalString,
   KAKAO_REST_API_KEY: optionalSecret(20),
+  KAKAO_CLIENT_SECRET: optionalSecret(20),
 });
 
 function readPublicEnv() {
@@ -124,7 +125,8 @@ export function serverEnv() {
     SESSION_SECRET: process.env.SESSION_SECRET,
     GOOGLE_SITE_VERIFICATION: process.env.GOOGLE_SITE_VERIFICATION,
     NAVER_SITE_VERIFICATION: process.env.NAVER_SITE_VERIFICATION,
-    KAKAO_REST_API_KEY: process.env.KAKAO_REST_API_KEY,
+  KAKAO_REST_API_KEY: process.env.KAKAO_REST_API_KEY,
+  KAKAO_CLIENT_SECRET: process.env.KAKAO_CLIENT_SECRET,
   });
   if (!parsed.success) {
     console.error(
@@ -219,5 +221,5 @@ export function getAdminCredentials() {
 export function getKakaoOwnerNotifyConfig() {
   const key = serverEnv().KAKAO_REST_API_KEY;
   if (!key) throw new Error("KAKAO_REST_API_KEY가 설정되지 않았습니다.");
-  return { restApiKey: key };
+  return { restApiKey: key, clientSecret: serverEnv().KAKAO_CLIENT_SECRET };
 }
