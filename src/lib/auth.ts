@@ -14,7 +14,9 @@ import { redirect } from "next/navigation";
 import { getAdminCredentials } from "@/lib/env";
 
 export const COOKIE_NAME = "admin_session";
-export const SESSION_DURATION_SECONDS = 7 * 24 * 60 * 60; // 7일
+// 관리자 본인만 사용하는 콘솔이므로, 같은 브라우저에서는 매번 비밀번호를
+// 입력하지 않도록 한 번의 로그인으로 30일간 유지한다. 로그아웃하면 즉시 만료된다.
+export const SESSION_DURATION_SECONDS = 30 * 24 * 60 * 60; // 30일
 
 // ============================================================
 // base64url helpers
