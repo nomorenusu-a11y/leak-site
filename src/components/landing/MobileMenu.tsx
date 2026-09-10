@@ -13,7 +13,6 @@ const NAV: NavItem[] = [
   { href: "/#about", label: "회사소개" },
   { href: "/#services", label: "서비스" },
   { href: "/posts", label: "작업사례" },
-  { href: "/#equipment", label: "최신장비" },
   { href: "/#reviews", label: "고객후기" },
   { href: "/faq", label: "자주 묻는 질문" },
   { href: "/#quote-form", label: "무료 견적 신청" },

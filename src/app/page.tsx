@@ -10,7 +10,6 @@ import { WorksGallery } from "@/components/landing/v2/WorksGallery";
 import { WorksCardsSection } from "@/components/landing/v2/WorksCardsSection";
 import { QuoteFormSectionV2 } from "@/components/landing/v2/QuoteFormSectionV2";
 import { MasterSection } from "@/components/landing/v2/MasterSection";
-import { EquipmentSection } from "@/components/landing/v2/EquipmentSection";
 import { FaqSection } from "@/components/landing/v2/FaqSection";
 import { MobileBottomBar } from "@/components/landing/v2/MobileBottomBar";
 import { FloatingDesktop } from "@/components/landing/v2/FloatingDesktop";
@@ -74,7 +73,6 @@ export default async function HomePage({
         <ServicesList />
         <WorksCardsSection />
         <WorksGallery />
-        <EquipmentSection />
         <TestimonialsSection />
         <QuoteFormSectionV2
           utmSource={utmSource}
