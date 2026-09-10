@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { assertAdmin } from "@/lib/auth";
 import { kakaoOwnerNotifyConnected, sendKakaoOwnerNotification } from "@/lib/kakao/owner-notify";
-import { revalidatePath } from "next/cache";
 import { KakaoTestForm } from "@/components/admin/KakaoTestForm";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +17,6 @@ async function sendKakaoTestAction(_previous: { ok: boolean; message: string } |
       apartment: null,
       symptom: "견적 신청 알림이 정상적으로 도착하는지 확인하는 테스트입니다.",
     });
-    revalidatePath("/admin/integrations/kakao");
     return { ok: true, message: "카카오 전송 성공: ‘나와의 채팅’을 확인하세요." };
   } catch (error) {
     return { ok: false, message: error instanceof Error ? error.message : "카카오 전송에 실패했습니다." };
