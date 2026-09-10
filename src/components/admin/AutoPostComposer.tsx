@@ -269,7 +269,7 @@ export function AutoPostComposer({ assets, existingTitles }: Props) {
     startTransition(async () => {
       try {
         const slug = `auto-${district.slug}-${dong?.slug ?? "district"}-${leak.slug}-${Date.now().toString(36)}`;
-        const created = await createPost({ title: draft.title, slug, content: draft.content.replace(/\[\[AUTO_IMAGE_\d+\]\]/g, ""), excerpt: draft.excerpt, category: "leak", region_tags: [district.name], published });
+        const created = await createPost({ title: draft.title, slug, content: draft.content.replace(/\[\[AUTO_IMAGE_\d+\]\]/g, ""), excerpt: draft.excerpt, cover_image_url: picked[0]?.url ?? "", category: "leak", region_tags: [district.name], published });
         if (!created.ok) return setError(created.error);
         const imageIds: string[] = [];
         for (let index = 0; index < picked.length; index += 1) {
@@ -278,7 +278,7 @@ export function AutoPostComposer({ assets, existingTitles }: Props) {
           imageIds.push(attached.imageId);
         }
         const content = draft.content.replace(/\[\[AUTO_IMAGE_(\d+)\]\]/g, (_, raw) => imageIds[Number(raw)] ? `[[post-image:${imageIds[Number(raw)]}]]` : "");
-        const updated = await updatePost(created.postId, { title: draft.title, slug, content, excerpt: draft.excerpt, category: "leak", region_tags: [district.name], published });
+        const updated = await updatePost(created.postId, { title: draft.title, slug, content, excerpt: draft.excerpt, cover_image_url: picked[0]?.url ?? "", category: "leak", region_tags: [district.name], published });
         if (!updated.ok) return setError(updated.error);
         router.push(published ? `/posts/${created.slug}` : `/admin/posts/${created.postId}/edit`); router.refresh();
       } catch { setError("임시저장 중 문제가 생겼습니다. 사진 파일 크기와 네트워크를 확인한 뒤 다시 시도해 주세요."); }

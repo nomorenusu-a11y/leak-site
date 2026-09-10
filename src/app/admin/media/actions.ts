@@ -92,7 +92,15 @@ export async function attachMediaAssetToPost(input: {
     .select("id")
     .single();
   if (error || !image) return { ok: false, error: "게시글 사진 연결에 실패했습니다." };
+  // A post without an explicit cover should always use its first attached image.
+  // Manual covers remain untouched because this only fills an empty value.
+  await db
+    .from("posts")
+    .update({ cover_image_url: asset.url })
+    .eq("id", input.postId)
+    .is("cover_image_url", null);
   revalidatePath(`/admin/posts/${input.postId}/edit`);
+  revalidatePath("/posts");
   revalidatePath(`/posts/[slug]`, "page");
   return { ok: true, imageId: image.id };
 }

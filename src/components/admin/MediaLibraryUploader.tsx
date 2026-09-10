@@ -42,6 +42,7 @@ async function makeWebOptimizedCopy(file: File): Promise<File> {
 export function MediaLibraryUploader({ assetCount }: { assetCount: number }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [coverMessage, setCoverMessage] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   function registerFolder(files: FileList | null) {
@@ -79,6 +80,23 @@ export function MediaLibraryUploader({ assetCount }: { assetCount: number }) {
     });
   }
 
+  function fillMissingCovers() {
+    setCoverMessage(null);
+    startTransition(async () => {
+      try {
+        const response = await fetch("/admin/api/backfill-post-covers", { method: "POST" });
+        const result = await response.json() as { ok?: boolean; updated?: number; missing?: number; error?: string };
+        if (!response.ok || !result.ok) {
+          setCoverMessage(result.error ?? "대표사진 자동 지정에 실패했습니다.");
+          return;
+        }
+        setCoverMessage(result.updated ? `대표사진이 비어 있던 글 ${result.updated}개에 첫 번째 본문 사진을 지정했습니다.` : "대표사진이 비어 있는 공개 글이 없습니다.");
+      } catch {
+        setCoverMessage("대표사진 자동 지정 요청에 실패했습니다.");
+      }
+    });
+  }
+
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
       <h2 className="text-lg font-extrabold text-slate-900">사진 풀 한 번 등록하기</h2>
@@ -103,6 +121,12 @@ export function MediaLibraryUploader({ assetCount }: { assetCount: number }) {
           {message}
         </p>
       )}
+      <div className="mt-6 border-t border-slate-200 pt-5">
+        <h3 className="text-sm font-extrabold text-slate-900">대표사진 자동 관리</h3>
+        <p className="mt-1 text-sm leading-6 text-slate-600">대표사진을 지정하지 않은 글은 첫 번째 본문 사진을 카드·공유 이미지용 대표사진으로 자동 사용합니다. 이미 정한 대표사진은 바꾸지 않습니다.</p>
+        <button type="button" disabled={pending} onClick={fillMissingCovers} className="mt-3 rounded-lg border border-brand-300 bg-brand-50 px-4 py-2.5 text-sm font-bold text-brand-700 hover:bg-brand-100 disabled:opacity-60">기존 글 대표사진 자동 채우기</button>
+        {coverMessage && <p className="mt-3 rounded-lg bg-slate-50 p-3 text-sm font-semibold text-slate-700">{coverMessage}</p>}
+      </div>
     </section>
   );
 }
