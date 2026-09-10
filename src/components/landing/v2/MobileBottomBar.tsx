@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Phone, Sparkles } from "@/components/icons";
-import { NaverLogo, KakaoLogo } from "@/components/icons/BrandLogos";
+import { FileText, Phone, Sparkles } from "@/components/icons";
+import { KakaoLogo } from "@/components/icons/BrandLogos";
 import { getContactInfo } from "@/lib/contact";
 import { BUSINESS } from "@/lib/business";
 import { EVENTS, trackEvent } from "@/lib/analytics";
@@ -14,7 +14,7 @@ import { EVENTS, trackEvent } from "@/lib/analytics";
  *   1) 견적문의 (brand-600 파랑)
  *   2) 작업사례 (emerald-500 초록 thumbs up)
  *   3) 상담하기 (accent 주황 중앙 큰 원, 전화)
- *   4) 블로그 (네이버 그린 로고)
+ *   4) 최근후기 (홈의 최근 작업사례 후기 섹션)
  *   5) 카톡상담 (카카오 옐로우 로고)
  */
 export function MobileBottomBar() {
@@ -93,20 +93,20 @@ export function MobileBottomBar() {
           </Link>
         )}
 
-        {/* 4) 블로그 — 네이버 로고 */}
-        <a
-          href={BUSINESS.blogUrl}
-          target="_blank"
-          rel="noopener"
+        {/* 4) 최근후기 — 홈페이지 안의 최신 사례로 이동 */}
+        <Link
+          href="/#works-cards"
           onClick={() =>
-            trackEvent(EVENTS.CTA_CLICK, { cta_label: "mobile_bar_blog" })
+            trackEvent(EVENTS.CTA_CLICK, {
+              cta_label: "mobile_bar_recent_works",
+            })
           }
           className="flex h-full flex-col items-center justify-center gap-0.5 text-slate-800"
-          aria-label="네이버 블로그 새 창으로 열기"
+          aria-label="최근 작업사례 후기 보기"
         >
-          <NaverLogo aria-hidden className="size-6" />
-          <span className="text-[10px] font-bold">블로그</span>
-        </a>
+          <FileText aria-hidden className="size-6 text-brand-600" strokeWidth={2.25} />
+          <span className="text-[10px] font-bold">최근후기</span>
+        </Link>
 
         {/* 5) 카톡상담 — 카카오 로고 */}
         <a

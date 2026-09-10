@@ -6,7 +6,6 @@ import { AboutCards } from "@/components/landing/v2/AboutCards";
 import { TimeEmphasis } from "@/components/landing/v2/TimeEmphasis";
 import { ServicesList } from "@/components/landing/v2/ServicesList";
 import { TestimonialsSection } from "@/components/landing/v2/TestimonialsSection";
-import { WorksGallery } from "@/components/landing/v2/WorksGallery";
 import { WorksCardsSection } from "@/components/landing/v2/WorksCardsSection";
 import { QuoteFormSectionV2 } from "@/components/landing/v2/QuoteFormSectionV2";
 import { MasterSection } from "@/components/landing/v2/MasterSection";
@@ -72,7 +71,6 @@ export default async function HomePage({
         <TimeEmphasis />
         <ServicesList />
         <WorksCardsSection />
-        <WorksGallery />
         <TestimonialsSection />
         <QuoteFormSectionV2
           utmSource={utmSource}

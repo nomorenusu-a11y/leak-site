@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { Phone, ArrowUp } from "@/components/icons";
-import { NaverLogo, KakaoLogo } from "@/components/icons/BrandLogos";
+import { Phone, ArrowUp, FileText } from "@/components/icons";
+import { KakaoLogo } from "@/components/icons/BrandLogos";
 import { getContactInfo } from "@/lib/contact";
 import { BUSINESS } from "@/lib/business";
 import { EVENTS, trackEvent } from "@/lib/analytics";
@@ -15,7 +15,7 @@ import { EVENTS, trackEvent } from "@/lib/analytics";
  *   1) 앵커 메뉴: 회사소개·서비스·작업사례·후기·문의
  *   2) 전화 (orange, 큰 강조)
  *   3) 카카오톡 오픈채팅 (yellow)
- *   4) 네이버 블로그 (green)
+ *   4) 최근 작업사례 후기 (blue)
  *   5) TOP (스크롤 600+에서 노출)
  *
  * 모바일은 MobileBottomBar가 담당 — 여기는 md 이상만 렌더.
@@ -106,20 +106,20 @@ export function FloatingDesktop() {
         <span className="text-[10px] font-extrabold">카톡상담</span>
       </a>
 
-      {/* 네이버 블로그 */}
-      <a
-        href={BUSINESS.blogUrl}
-        target="_blank"
-        rel="noopener"
+      {/* 최근 작업사례 후기 */}
+      <Link
+        href="/#works-cards"
         onClick={() =>
-          trackEvent(EVENTS.CTA_CLICK, { cta_label: "floating_blog" })
+          trackEvent(EVENTS.CTA_CLICK, {
+            cta_label: "floating_recent_works",
+          })
         }
-        aria-label="네이버 블로그"
-        className="pointer-events-auto flex w-28 flex-col items-center gap-1 rounded-2xl bg-[#03C75A] px-2 py-3 text-white shadow-lg hover:brightness-95"
+        aria-label="최근 작업사례 후기"
+        className="pointer-events-auto flex w-28 flex-col items-center gap-1 rounded-2xl bg-brand-600 px-2 py-3 text-white shadow-lg hover:bg-brand-700"
       >
-        <NaverLogo aria-hidden className="size-6" />
-        <span className="text-[10px] font-extrabold">블로그</span>
-      </a>
+        <FileText aria-hidden className="size-6" strokeWidth={2.25} />
+        <span className="text-[10px] font-extrabold">최근후기</span>
+      </Link>
 
       {/* TOP */}
       <button
