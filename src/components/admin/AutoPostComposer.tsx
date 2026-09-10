@@ -179,7 +179,10 @@ function relatedSearchIntent(place: string, building: string, leak: LeakType) {
 
 function buildDraft(input: DraftInput, district: Region, dong?: Region): Draft {
   const { place, building, buildingName, leak, symptom, damageLocation, method, workDirection, mode, caseMemo, imageCount } = input;
-  const property = buildingName.trim() ? `${buildingName} ${building}` : building;
+  const normalizedBuildingName = buildingName.trim();
+  const property = normalizedBuildingName
+    ? (normalizedBuildingName.endsWith(building) ? normalizedBuildingName : `${normalizedBuildingName} ${building}`)
+    : building;
   const subject = `${place} ${property}`;
   const stages = ["피해 위치와 범위 확인", `${method} 진행`, `${leak.value} 원인 범위 구분`, workDirection, "작업 후 확인과 상담"].slice(0, imageCount);
   const opening = mode === "case"
@@ -187,9 +190,9 @@ function buildDraft(input: DraftInput, district: Region, dong?: Region): Draft {
     : `${subject}에서 ${symptom}이 보일 때의 점검 순서를 정리한 상담 안내입니다. 증상만으로 원인이나 공사 범위를 단정하지 않고, 현장 확인 뒤 안내합니다.`;
   const sections = [
     `## 1. ${symptom}이 보일 때 먼저 확인할 점\n\n${damageLocation}에 물기나 얼룩이 보이면 물이 드러난 위치와 실제 원인이 같은지부터 확인해야 합니다. 사용 시간, 비가 온 날, 보일러 작동 여부처럼 증상이 달라지는 조건을 함께 기록하면 점검 범위를 좁히는 데 도움이 됩니다.\n\n[[AUTO_IMAGE_0]]`,
-    `## 2. ${leak.value} 의심 시 점검 방향\n\n${leak.clue} ${method}은(는) 겉으로 보이는 피해와 설비 상태를 비교해 원인 범위를 좁히기 위한 과정입니다. 한 가지 반응만으로 결론을 내리지 않고, 건물 구조와 사용 조건을 함께 봐야 합니다.\n\n[[AUTO_IMAGE_1]]`,
+    `## 2. ${leak.value} 의심 시 점검 방향\n\n${leak.clue} ${method} 같은 점검 방법으로 겉으로 보이는 피해와 설비 상태를 비교하며 원인 범위를 좁혀 갑니다. 한 가지 반응만으로 결론을 내리지 않고, 건물 구조와 사용 조건을 함께 봐야 합니다.\n\n[[AUTO_IMAGE_1]]`,
     `## 3. ${damageLocation}에서 원인을 구분하는 과정\n\n${subject}처럼 ${damageLocation}에 증상이 나타난 경우에는 급수·온수·난방·배수·방수·외부 유입 가능성을 순서대로 살핍니다. ${leak.value}로 확인될 경우에도 손상 위치와 주변 마감 상태에 따라 작업 범위가 달라질 수 있습니다.\n\n[[AUTO_IMAGE_2]]`,
-    `## 4. ${workDirection}\n\n원인이 확인되기 전에는 불필요하게 넓은 철거나 공사 범위를 정하지 않습니다. 확인된 위치, 배관 경로, 마감재 상태를 기준으로 ${workDirection}을(를) 설명드리고, 필요한 경우 피해 부위의 복구 순서도 함께 상담합니다.\n\n[[AUTO_IMAGE_3]]`,
+    `## 4. ${workDirection}\n\n원인이 확인되기 전에는 불필요하게 넓은 철거나 공사 범위를 정하지 않습니다. 확인된 위치, 배관 경로, 마감재 상태를 기준으로 ${workDirection}에 관해 설명드리고, 필요한 경우 피해 부위의 복구 순서도 함께 상담합니다.\n\n[[AUTO_IMAGE_3]]`,
     `## 5. 작업 뒤 재확인과 복구 상담\n\n보수 뒤에는 사용 조건에서 같은 증상이 다시 나타나는지 확인하는 과정이 필요합니다. ${symptom}이 계속되거나 피해 범위가 넓어지는 경우에는 지체하지 말고 현재 상태를 사진과 함께 알려 주세요.\n\n[[AUTO_IMAGE_4]]`,
   ].slice(0, imageCount);
   const title = mode === "case"
