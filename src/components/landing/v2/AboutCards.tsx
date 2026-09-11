@@ -15,7 +15,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string; strokeW
 };
 
 /**
- * 회사 소개 — 4가지 핵심 약속을 사진 카드로 노출.
+ * 고객이 확인할 수 있는 4가지 핵심 약속을 사진 카드로 노출.
  *
  * 각 카드: 사진 + 좌상단 코너에 brand 컬러 원형 아이콘 배지 (Headset/Truck/FileText/BicepsFlexed)
  * + 하단 2줄 굵은 카피.
@@ -29,10 +29,10 @@ export async function AboutCards() {
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-bold tracking-wide text-brand-600">ABOUT</p>
           <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-            {siteConfig.name} 회사소개
+            {siteConfig.name}의 약속
           </h2>
           <p className="mt-3 text-slate-600">
-            {siteConfig.name}은 아래와 같은 혜택을 제공합니다.
+            상담부터 작업 후 안내까지, 고객이 확인할 수 있는 기준을 지킵니다.
           </p>
         </Reveal>
 

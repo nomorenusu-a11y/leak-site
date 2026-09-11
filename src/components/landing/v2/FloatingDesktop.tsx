@@ -12,7 +12,7 @@ import { EVENTS, trackEvent } from "@/lib/analytics";
  * 데스크탑 우측 고정 플로팅 (md+).
  *
  * 위→아래 구성:
- *   1) 앵커 메뉴: 회사소개·서비스·작업사례·후기·문의
+ *   1) 앵커 메뉴: 유레카 약속·서비스·작업사례·후기·문의
  *   2) 전화 (orange, 큰 강조)
  *   3) 카카오톡 오픈채팅 (yellow)
  *   4) 최근 작업사례 후기 (blue)
@@ -43,7 +43,7 @@ export function FloatingDesktop() {
   }, []);
 
   const anchors = [
-    { href: "/#about", label: "회사소개" },
+    { href: "/#about", label: "유레카 약속" },
     { href: "/#services", label: "서비스" },
     { href: "/posts", label: "작업사례" },
     { href: "/#reviews", label: "고객후기" },

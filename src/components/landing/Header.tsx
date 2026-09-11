@@ -6,7 +6,7 @@ import { getContactInfo } from "@/lib/contact";
 import { MobileMenu } from "./MobileMenu";
 
 const NAV: { href: string; label: string }[] = [
-  { href: "/#about", label: "회사소개" },
+  { href: "/#about", label: "유레카 약속" },
   { href: "/#services", label: "서비스" },
   { href: "/posts", label: "작업사례" },
   { href: "/#reviews", label: "고객후기" },
