@@ -9,7 +9,7 @@
 import { getContactInfo } from "./contact";
 import { siteConfig } from "./env";
 
-const SERVICE_AREA = process.env.NEXT_PUBLIC_SERVICE_AREA?.trim() || "서울·경기 일부 지역";
+const SERVICE_AREA = process.env.NEXT_PUBLIC_SERVICE_AREA?.trim() || "서울·경기·인천 전 지역";
 const RESPONSE_TIME = process.env.NEXT_PUBLIC_RESPONSE_TIME?.trim() || "30분 이내";
 const EXPERIENCE = process.env.NEXT_PUBLIC_EXPERIENCE?.trim() || "오랜 경력의";
 
@@ -31,7 +31,7 @@ export const BUSINESS = {
   /** 정규화된 연락처 (phone·kakao 둘 다 null일 수 있음 → UI는 그때 fallback) */
   contact: getContactInfo(),
 
-  /** "서울·경기 일부 지역" 같은 운영 가능 지역 표기 */
+  /** "서울·경기·인천 전 지역" 같은 운영 가능 지역 표기 */
   serviceArea: SERVICE_AREA,
 
   /** "30분 이내" 같은 출동·응답 시간 카피. "24분" 같은 cnsolution 우연 일치 금지 */
