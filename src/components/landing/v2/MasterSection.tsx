@@ -31,7 +31,7 @@ export function MasterSection() {
     <section className="border-y border-slate-100 bg-slate-50 py-12 md:py-16">
       <Container>
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-bold tracking-wide text-brand-600">WHY EUREKA</p>
+          <p className="text-sm font-bold tracking-wide text-brand-600">WHY NO MORE NUSU</p>
           <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
             누수 상담은 <span className="text-brand-600">이렇게</span>
             <br />

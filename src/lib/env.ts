@@ -28,7 +28,7 @@ const optionalSecret = (min = 20) =>
 
 const publicSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.string().url().default("http://localhost:3000"),
-  NEXT_PUBLIC_SITE_NAME: z.string().min(1).default("누수 시공"),
+  NEXT_PUBLIC_SITE_NAME: z.string().min(1).default("노모어누수"),
   NEXT_PUBLIC_PHONE: z
     .string()
     .regex(/^\d{8,12}$/, "phone must be digits only")
