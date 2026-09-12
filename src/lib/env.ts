@@ -28,7 +28,7 @@ const optionalSecret = (min = 20) =>
 
 const publicSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.string().url().default("http://localhost:3000"),
-  NEXT_PUBLIC_SITE_NAME: z.string().min(1).default("노모어누수"),
+  NEXT_PUBLIC_SITE_NAME: z.string().min(1).default("누수 시공"),
   NEXT_PUBLIC_PHONE: z
     .string()
     .regex(/^\d{8,12}$/, "phone must be digits only")
@@ -72,7 +72,6 @@ const serverSchema = z.object({
   GOOGLE_SITE_VERIFICATION: optionalString,
   NAVER_SITE_VERIFICATION: optionalString,
   KAKAO_REST_API_KEY: optionalSecret(20),
-  KAKAO_CLIENT_SECRET: optionalSecret(20),
 });
 
 function readPublicEnv() {
@@ -113,6 +112,9 @@ if (!parsedPublic.success) {
 
 export const publicEnv = parsedPublic.data;
 
+// 브랜드명은 운영 환경변수의 과거 값에 의해 되돌아가지 않도록 코드에서 고정한다.
+const BRAND_NAME = "노모어누수";
+
 let cachedServer: z.infer<typeof serverSchema> | null = null;
 export function serverEnv() {
   if (cachedServer) return cachedServer;
@@ -125,8 +127,7 @@ export function serverEnv() {
     SESSION_SECRET: process.env.SESSION_SECRET,
     GOOGLE_SITE_VERIFICATION: process.env.GOOGLE_SITE_VERIFICATION,
     NAVER_SITE_VERIFICATION: process.env.NAVER_SITE_VERIFICATION,
-  KAKAO_REST_API_KEY: process.env.KAKAO_REST_API_KEY,
-  KAKAO_CLIENT_SECRET: process.env.KAKAO_CLIENT_SECRET,
+    KAKAO_REST_API_KEY: process.env.KAKAO_REST_API_KEY,
   });
   if (!parsed.success) {
     console.error(
@@ -141,7 +142,7 @@ export function serverEnv() {
 
 export const siteConfig = {
   url: publicEnv.NEXT_PUBLIC_SITE_URL,
-  name: publicEnv.NEXT_PUBLIC_SITE_NAME,
+  name: BRAND_NAME,
   phone: publicEnv.NEXT_PUBLIC_PHONE,
   kakao:
     publicEnv.NEXT_PUBLIC_KAKAO_CHANNEL_URL ?? publicEnv.NEXT_PUBLIC_KAKAO_CHANNEL,
@@ -221,5 +222,5 @@ export function getAdminCredentials() {
 export function getKakaoOwnerNotifyConfig() {
   const key = serverEnv().KAKAO_REST_API_KEY;
   if (!key) throw new Error("KAKAO_REST_API_KEY가 설정되지 않았습니다.");
-  return { restApiKey: key, clientSecret: serverEnv().KAKAO_CLIENT_SECRET };
+  return { restApiKey: key };
 }

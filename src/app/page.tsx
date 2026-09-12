@@ -64,7 +64,7 @@ export default async function HomePage({
         }}
       />
       <Header />
-      <main className="flex-1 pb-24">
+      <main className="theme-shell flex-1 pb-24">
         <HeroV2 cityLabel={label} />
         <AboutCards />
         <MasterSection />

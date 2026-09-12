@@ -47,7 +47,7 @@ function Card({ s, cover }: { s: ServiceData; cover?: string }) {
   const imgSrc = cover ?? s.image;
   const Icon = ICON_MAP[s.icon] ?? Wrench;
   return (
-    <article className="group h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+    <article className="group h-full overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-[0_10px_35px_rgba(15,23,42,0.07)] transition-all duration-300 hover:-translate-y-1 hover:border-brand-200 hover:shadow-[0_20px_45px_rgba(15,23,42,0.13)]">
       <div className="relative aspect-[16/10] bg-slate-100">
         {imgSrc ? (
           <Image
@@ -62,14 +62,14 @@ function Card({ s, cover }: { s: ServiceData; cover?: string }) {
             <Icon aria-hidden className="text-brand-400 size-16" strokeWidth={1.5} />
           </div>
         )}
-        <div className="text-brand-700 absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 text-xs font-extrabold shadow-sm">
+        <div className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-[#061b35]/90 px-3 py-1.5 text-xs font-extrabold text-cyan-200 shadow-sm backdrop-blur-md">
           <Icon aria-hidden className="size-3.5" strokeWidth={2.25} />
           {s.ko}
         </div>
       </div>
-      <div className="p-5">
-        <h3 className="text-lg font-bold text-slate-900">{s.ko}</h3>
-        <p className="mt-1.5 text-sm text-slate-600">{s.desc}</p>
+      <div className="border-t-2 border-cyan-400 p-5">
+        <h3 className="text-lg font-black text-slate-950">{s.ko}</h3>
+        <p className="mt-2 min-h-10 text-sm leading-6 text-slate-600">{s.desc}</p>
         <Link
           href={href}
           className="text-brand-700 mt-3 inline-flex items-center gap-1 text-sm font-bold hover:underline"
@@ -95,14 +95,14 @@ export async function ServicesList() {
   ]);
 
   return (
-    <section id="services" className="scroll-mt-20 py-8 md:py-12">
+    <section id="services" className="scroll-mt-20 bg-white py-16 md:py-24">
       <Container>
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
-          <p className="text-brand-600 text-sm font-bold tracking-wide">SERVICES</p>
-          <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+          <p className="section-kicker">SERVICES</p>
+          <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
             {siteConfig.name}의 서비스 목록
           </h2>
-          <p className="mt-3 text-slate-600">
+          <p className="mt-5 text-base leading-7 text-slate-600 sm:text-lg">
             다양한 상황의 누수·배관 서비스를 받아보실 수 있습니다
           </p>
         </Reveal>

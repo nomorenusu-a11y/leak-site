@@ -51,7 +51,7 @@ export function MobileBottomBar() {
           className="flex h-full flex-col items-center justify-center gap-0.5 text-slate-800"
           aria-label="작업사례 보기"
         >
-          <ThumbsUpIcon className="size-6 text-emerald-500" />
+          <ThumbsUpIcon className="size-6 text-cyan-600" />
           <span className="text-[10px] font-bold">작업사례</span>
         </Link>
 
@@ -67,11 +67,11 @@ export function MobileBottomBar() {
           >
             <span
               aria-hidden
-              className="mobile-center-pulse absolute left-1/2 -top-7 flex size-14 -translate-x-1/2 items-center justify-center rounded-full bg-accent-500 text-white shadow-lg shadow-accent-500/40 ring-4 ring-white"
+              className="mobile-center-pulse absolute left-1/2 -top-7 flex size-14 -translate-x-1/2 items-center justify-center rounded-full bg-[#061b35] text-cyan-300 shadow-lg shadow-slate-950/30 ring-4 ring-cyan-300"
             >
               <Phone className="size-6" strokeWidth={2.25} aria-hidden />
             </span>
-            <span className="text-[10px] font-extrabold text-accent-600">
+            <span className="text-[10px] font-extrabold text-brand-800">
               상담하기
             </span>
           </a>

@@ -12,7 +12,7 @@ import { EVENTS, trackEvent } from "@/lib/analytics";
  * 데스크탑 우측 고정 플로팅 (md+).
  *
  * 위→아래 구성:
- *   1) 앵커 메뉴: 노모어누수 약속·서비스·작업사례·후기·문의
+ *   1) 앵커 메뉴: 회사소개·서비스·작업사례·후기·문의
  *   2) 전화 (orange, 큰 강조)
  *   3) 카카오톡 오픈채팅 (yellow)
  *   4) 최근 작업사례 후기 (blue)
@@ -43,7 +43,7 @@ export function FloatingDesktop() {
   }, []);
 
   const anchors = [
-    { href: "/#about", label: "노모어누수 약속" },
+    { href: "/#about", label: "노모어누수" },
     { href: "/#services", label: "서비스" },
     { href: "/posts", label: "작업사례" },
     { href: "/#reviews", label: "고객후기" },
@@ -84,7 +84,7 @@ export function FloatingDesktop() {
             trackEvent(EVENTS.CLICK_CALL, { cta_label: "floating_call" })
           }
           aria-label={`전화 ${phone.display}로 상담`}
-          className="pointer-events-auto flex w-28 flex-col items-center gap-1 rounded-2xl bg-accent-500 px-2 py-3 text-white shadow-lg shadow-accent-500/30 hover:bg-accent-600"
+          className="pointer-events-auto flex w-28 flex-col items-center gap-1 rounded-2xl bg-cyan-400 px-2 py-3 text-[#061b35] shadow-lg shadow-cyan-500/20 hover:bg-cyan-300"
         >
           <Phone aria-hidden className="size-6" strokeWidth={2.25} />
           <span className="text-[10px] font-extrabold">전화상담</span>

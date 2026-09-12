@@ -16,9 +16,6 @@ export async function GET() {
   url.searchParams.set("redirect_uri", kakaoRedirectUri());
   url.searchParams.set("response_type", "code");
   url.searchParams.set("scope", "talk_message");
-  // Reauthenticate when changing the recipient. Together with the requested
-  // talk_message scope, this lets Kakao show any missing consent screen.
-  url.searchParams.set("prompt", "login");
   url.searchParams.set("state", state);
   const response = NextResponse.redirect(url);
   response.cookies.set(STATE_COOKIE, state, { ...adminSessionCookieOptions(10 * 60), httpOnly: true });

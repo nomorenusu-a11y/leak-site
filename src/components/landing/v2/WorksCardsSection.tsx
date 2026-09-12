@@ -44,19 +44,19 @@ export async function WorksCardsSection() {
   if (posts.length === 0) return null;
 
   return (
-    <section id="works-cards" className="scroll-mt-20 bg-slate-50 py-8 md:py-12">
+    <section id="works-cards" className="brand-grid scroll-mt-20 bg-[#071e3d] py-16 text-white md:py-24">
       <Container>
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
-          <p className="text-brand-600 text-sm font-bold tracking-wide">WORKS</p>
-          <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+          <p className="section-kicker section-kicker-dark">FIELD NOTES</p>
+          <h2 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-4xl lg:text-5xl">
             최근 작업사례 후기
           </h2>
-          <p className="mt-3 text-slate-600">
+          <p className="mt-5 text-base leading-7 text-slate-300 sm:text-lg">
             지역과 현장 유형별로 실제 진행한 작업 후기를 확인해보세요
           </p>
         </Reveal>
 
-        <RevealGroup stagger={0.08} className="mt-6 grid gap-4 sm:grid-cols-2">
+        <RevealGroup stagger={0.08} className="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-14">
           {posts.map((p) => {
             const cover = p.cover_image_url ?? PLACEHOLDER;
             const isPlaceholder = !p.cover_image_url;
@@ -65,7 +65,7 @@ export async function WorksCardsSection() {
               <RevealItem key={p.id} variant="up">
                 <Link
                   href={`/posts/${p.slug}`}
-                  className="group flex h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                  className="group flex h-full overflow-hidden rounded-[1.25rem] border border-white/10 bg-white/[0.07] shadow-xl shadow-black/10 transition-all duration-200 hover:-translate-y-1 hover:border-cyan-300/30 hover:bg-white/[0.1]"
                 >
                   {/* 좌측 썸네일 */}
                   <div className="relative aspect-square w-32 shrink-0 overflow-hidden bg-slate-100 sm:w-40">
@@ -84,19 +84,19 @@ export async function WorksCardsSection() {
                       <span className="bg-brand-50 text-brand-700 inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-extrabold">
                         ▶ 작업사례
                       </span>
-                      <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-600">
+                      <span className="rounded-md bg-white/10 px-2 py-0.5 text-[11px] font-bold text-slate-300">
                         {categoryLabel(p.category)}
                       </span>
                     </div>
-                    <h3 className="group-hover:text-brand-700 line-clamp-2 text-sm font-extrabold text-slate-900 sm:text-base">
-                      <span className="text-brand-700">[{siteConfig.name}]</span> {title}
+                    <h3 className="line-clamp-2 text-sm font-extrabold text-white group-hover:text-cyan-200 sm:text-base">
+                      <span className="text-cyan-300">[{siteConfig.name}]</span> {title}
                     </h3>
                     {p.excerpt && (
-                      <p className="line-clamp-2 text-xs text-slate-600 sm:text-sm">{p.excerpt}</p>
+                      <p className="line-clamp-2 text-xs leading-5 text-slate-300 sm:text-sm">{p.excerpt}</p>
                     )}
-                    <div className="mt-auto flex items-center justify-between gap-2 pt-1 text-xs text-slate-500">
+                    <div className="mt-auto flex items-center justify-between gap-2 pt-1 text-xs text-slate-400">
                       <span>{formatDateYMD(p.published_at)}</span>
-                      <span className="text-brand-700 inline-flex items-center gap-0.5 font-bold">
+                      <span className="inline-flex items-center gap-0.5 font-bold text-cyan-300">
                         자세히 보기
                         <ChevronRight aria-hidden className="size-3.5" strokeWidth={2.5} />
                       </span>
@@ -111,7 +111,7 @@ export async function WorksCardsSection() {
         <div className="mt-10 flex justify-center">
           <Link
             href="/posts"
-            className="border-brand-600 text-brand-700 hover:bg-brand-600 inline-flex items-center gap-2 rounded-full border-2 bg-white px-6 py-3 text-sm font-extrabold transition-colors hover:text-white sm:text-base"
+            className="inline-flex items-center gap-2 rounded-full border border-cyan-300/40 bg-white/5 px-6 py-3 text-sm font-extrabold text-white transition-colors hover:bg-white/10 sm:text-base"
           >
             더보기
             <ChevronRight aria-hidden className="size-4" strokeWidth={2.5} />

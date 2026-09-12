@@ -20,13 +20,14 @@ const REGIONS = ["서울특별시", "경기도", "인천광역시"];
  */
 export function Footer() {
   const bizSegments: string[] = [];
+  if (BUSINESS.legalName) bizSegments.push(BUSINESS.legalName);
   if (BUSINESS.ownerName) bizSegments.push(`대표자: ${BUSINESS.ownerName}`);
   if (BUSINESS.contact.phone) bizSegments.push(`전화: ${BUSINESS.contact.phone.display}`);
   if (BUSINESS.businessRegNo) bizSegments.push(`사업자정보: ${BUSINESS.businessRegNo}`);
   if (BUSINESS.email) bizSegments.push(`이메일: ${BUSINESS.email}`);
 
   const menu = [
-    { href: "/#about", label: "노모어누수 약속" },
+    { href: "/#about", label: "노모어누수" },
     { href: "/#services", label: "서비스안내" },
     { href: "/posts", label: "작업사례" },
     { href: "/#quote-form", label: "문의하기" },
