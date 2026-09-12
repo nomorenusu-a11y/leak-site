@@ -16,25 +16,29 @@ export function FaqAccordion({ items }: Props) {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
   return (
-    <ul className="space-y-2">
+    <ul className="space-y-3">
       {items.map((it, i) => {
         const open = openIdx === i;
         return (
           <li
             key={it.question}
-            className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+            className={`overflow-hidden rounded-2xl border bg-white transition-shadow ${
+              open
+                ? "border-brand-200 shadow-md shadow-brand-950/5"
+                : "border-slate-200 shadow-sm hover:border-slate-300"
+            }`}
           >
             <button
               type="button"
               aria-expanded={open}
               onClick={() => setOpenIdx(open ? null : i)}
-              className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition hover:bg-slate-50 sm:px-6 sm:py-5"
+              className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left transition hover:bg-slate-50 sm:px-6 sm:py-5"
             >
-              <span className="flex items-baseline gap-2">
-                <span className="text-base font-black text-brand-600 sm:text-lg">
-                  Q{i + 1}
+              <span className="flex items-center gap-3">
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-xs font-black text-brand-700 sm:size-8">
+                  Q
                 </span>
-                <span className="text-base font-bold text-slate-900 sm:text-lg">
+                <span className="text-sm font-extrabold leading-snug text-slate-900 sm:text-base">
                   {it.question}
                 </span>
               </span>
@@ -47,10 +51,10 @@ export function FaqAccordion({ items }: Props) {
               />
             </button>
             {open && (
-              <div className="border-t border-slate-100 bg-slate-50/60 px-5 py-4 text-sm leading-relaxed text-slate-700 sm:px-6 sm:py-5 sm:text-base">
+              <div className="border-t border-brand-100 bg-brand-50/40 px-4 py-4 text-sm leading-relaxed text-slate-700 sm:px-6 sm:py-5 sm:text-base">
                 <p className="flex items-start gap-2">
-                  <span className="text-base font-black text-brand-400 sm:text-lg">
-                    A.
+                  <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-black text-brand-600 shadow-sm">
+                    A
                   </span>
                   <span>{it.answer}</span>
                 </p>

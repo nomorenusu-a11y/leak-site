@@ -13,26 +13,27 @@ export async function MasterSection() {
   const titleLines = data.title.split("\n");
 
   return (
-    <section className="bg-white py-8 md:py-12">
+    <section className="brand-grid relative overflow-hidden bg-[#061b35] py-16 text-white md:py-24">
+      <div aria-hidden className="absolute -left-40 top-10 size-96 rounded-full bg-brand-500/15 blur-3xl" />
       <Container>
-        <Reveal variant="up" className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-bold tracking-wide text-brand-600">ABOUT US</p>
-          <h2 className="mt-3 text-2xl font-extrabold leading-snug tracking-tight text-slate-900 sm:text-3xl">
+        <Reveal variant="up" className="relative mx-auto max-w-3xl text-center">
+          <p className="section-kicker section-kicker-dark">OUR PROMISE</p>
+          <h2 className="mt-4 text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
             {titleLines.map((line, i) => (
               <span key={i}>{i > 0 && <br />}{line}</span>
             ))}
           </h2>
-          <p className="mt-5 text-slate-600">
+          <p className="mt-6 text-base leading-7 text-slate-300 sm:text-lg">
             {siteConfig.name}{data.subtitle}
           </p>
-          <p className="mt-3 text-xl font-extrabold text-slate-900 sm:text-2xl">
-            <span className="text-brand-600">{data.cta}</span>
+          <p className="mt-3 text-xl font-black text-white sm:text-2xl">
+            <span className="text-cyan-300">{data.cta}</span>
           </p>
         </Reveal>
 
         <RevealGroup
           stagger={0.1}
-          className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          className="relative mt-10 grid gap-4 sm:grid-cols-2 lg:mt-14 lg:grid-cols-3 lg:gap-5"
         >
           {data.cards.map((card) => {
             const Icon = ICON_MAP[card.icon];
@@ -47,16 +48,16 @@ export async function MasterSection() {
 
             return (
               <RevealItem key={card.key} variant="up">
-                <article className="flex h-full flex-col items-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 px-6 py-8 text-center text-white shadow-md">
+                <article className="flex h-full flex-col items-center rounded-[1.4rem] border border-white/10 bg-white/[0.06] px-6 py-8 text-center text-white shadow-2xl shadow-black/10 backdrop-blur-sm transition hover:border-cyan-300/30 hover:bg-white/[0.09] sm:px-8 sm:py-10">
                   <div className="flex h-20 items-center justify-center sm:h-24">
                     {visual}
                   </div>
-                  <p className="mt-5 text-sm leading-relaxed text-white/85">
+                  <p className="mt-5 text-sm leading-7 text-slate-300">
                     {card.body.split("\n").map((line, i) => (
                       <span key={i}>{i > 0 && <br />}{line}</span>
                     ))}
                   </p>
-                  <p className="mt-5 text-lg font-extrabold leading-snug sm:text-xl">
+                  <p className="mt-5 border-t border-white/10 pt-5 text-lg font-black leading-snug text-cyan-200 sm:text-xl">
                     {card.highlight.split("\n").map((line, i) => (
                       <span key={i}>{i > 0 && <br />}{line}</span>
                     ))}

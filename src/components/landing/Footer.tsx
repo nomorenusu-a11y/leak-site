@@ -27,7 +27,7 @@ export function Footer() {
   if (BUSINESS.email) bizSegments.push(`이메일: ${BUSINESS.email}`);
 
   const menu = [
-    { href: "/#about", label: "회사소개" },
+    { href: "/#about", label: "노모어누수" },
     { href: "/#services", label: "서비스안내" },
     { href: "/posts", label: "작업사례" },
     { href: "/#quote-form", label: "문의하기" },
@@ -96,12 +96,6 @@ export function Footer() {
                 )}
               </span>
             ))}
-          </p>
-        )}
-
-        {BUSINESS.address && (
-          <p className="mt-2 text-center text-xs text-slate-400 sm:text-sm">
-            주소: {BUSINESS.address}
           </p>
         )}
 

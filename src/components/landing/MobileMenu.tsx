@@ -10,10 +10,9 @@ type NavItem = { href: string; label: string };
 
 const NAV: NavItem[] = [
   { href: "/", label: "홈" },
-  { href: "/#about", label: "회사소개" },
+  { href: "/#about", label: "노모어누수" },
   { href: "/#services", label: "서비스" },
   { href: "/posts", label: "작업사례" },
-  { href: "/#equipment", label: "최신장비" },
   { href: "/#reviews", label: "고객후기" },
   { href: "/faq", label: "자주 묻는 질문" },
   { href: "/#quote-form", label: "무료 견적 신청" },
@@ -49,7 +48,7 @@ export function MobileMenu() {
         aria-label="메뉴 열기"
         aria-expanded={open}
         onClick={() => setOpen(true)}
-        className="inline-flex size-10 items-center justify-center rounded-lg text-slate-800 hover:bg-slate-100 lg:hidden"
+        className="inline-flex size-10 items-center justify-center rounded-lg text-white hover:bg-white/10 lg:hidden"
       >
         <Menu aria-hidden className="size-6" strokeWidth={2.25} />
       </button>
@@ -64,14 +63,14 @@ export function MobileMenu() {
             aria-hidden
           />
           {/* Panel */}
-          <aside className="absolute left-0 top-0 flex h-full w-[82%] max-w-sm flex-col bg-white shadow-2xl animate-[slideInLeft_.25s_ease-out]">
-            <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
-              <span className="text-base font-extrabold text-slate-900">메뉴</span>
+          <aside className="absolute left-0 top-0 flex h-full w-[86%] max-w-sm flex-col bg-[#061b35] text-white shadow-2xl animate-[slideInLeft_.25s_ease-out]">
+            <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+              <span className="text-base font-black">노모어누수 메뉴</span>
               <button
                 type="button"
                 aria-label="메뉴 닫기"
                 onClick={() => setOpen(false)}
-                className="inline-flex size-10 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100"
+                className="inline-flex size-10 items-center justify-center rounded-lg text-slate-200 hover:bg-white/10"
               >
                 <X aria-hidden className="size-5" strokeWidth={2.25} />
               </button>
@@ -84,10 +83,10 @@ export function MobileMenu() {
                     <Link
                       href={it.href}
                       onClick={() => setOpen(false)}
-                      className="flex items-center justify-between rounded-xl px-3 py-3.5 text-base font-bold text-slate-800 hover:bg-slate-50"
+                      className="flex items-center justify-between rounded-xl px-3 py-3.5 text-base font-bold text-slate-100 hover:bg-white/10"
                     >
                       <span>{it.label}</span>
-                      <ChevronRight aria-hidden className="size-5 text-slate-400" strokeWidth={2} />
+                      <ChevronRight aria-hidden className="size-5 text-cyan-300" strokeWidth={2} />
                     </Link>
                   </li>
                 ))}
@@ -95,7 +94,7 @@ export function MobileMenu() {
             </nav>
 
             {/* 하단 CTA */}
-            <div className="space-y-2 border-t border-slate-200 p-4">
+            <div className="space-y-2 border-t border-white/10 p-4">
               {phone && (
                 <a
                   href={`tel:${phone.tel}`}
@@ -103,7 +102,7 @@ export function MobileMenu() {
                     trackEvent(EVENTS.CLICK_CALL, { cta_label: "drawer_call" });
                     setOpen(false);
                   }}
-                  className="flex items-center justify-center gap-2 rounded-xl bg-accent-500 px-4 py-3.5 text-base font-extrabold text-white shadow-md shadow-accent-500/30"
+                  className="flex items-center justify-center gap-2 rounded-xl bg-cyan-400 px-4 py-3.5 text-base font-extrabold text-[#061b35] shadow-md shadow-cyan-500/20"
                 >
                   <Phone aria-hidden className="size-5" strokeWidth={2.25} />
                   <span>{phone.display}</span>

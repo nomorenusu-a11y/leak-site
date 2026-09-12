@@ -35,16 +35,16 @@ export async function TestimonialsSection() {
   }));
 
   return (
-    <section id="reviews" className="scroll-mt-20 bg-slate-50 py-8 md:py-12">
+    <section id="reviews" className="scroll-mt-20 bg-[#eef5fc] py-16 md:py-24">
       <Container>
         <Reveal variant="up" className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-bold tracking-wide text-brand-600">
+          <p className="section-kicker">
             REVIEWS
           </p>
-          <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-            BEST 후기 모아보기
+          <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
+            작업으로 증명한 <span className="text-brand-600">고객 후기</span>
           </h2>
-          <p className="mt-3 text-slate-600">
+          <p className="mt-5 text-base leading-7 text-slate-600 sm:text-lg">
             실제 시공 후 받은 고객님들의 후기입니다
           </p>
         </Reveal>

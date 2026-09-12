@@ -90,6 +90,55 @@ body {
   overflow-x: clip;
 }
 
+/* 노모어누수 사이트 전역 시각 언어 */
+.theme-shell {
+  background: #ffffff;
+}
+
+.brand-grid {
+  background-image:
+    linear-gradient(rgba(76, 201, 240, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(76, 201, 240, 0.045) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.section-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #2563eb;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+}
+
+.section-kicker::before {
+  content: "";
+  width: 1.75rem;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2563eb, #22d3ee);
+}
+
+.section-kicker-dark {
+  color: #67e8f9;
+}
+
+.section-kicker-dark::before {
+  background: linear-gradient(90deg, #67e8f9, rgba(103, 232, 249, 0.15));
+}
+
+@media (max-width: 639px) {
+  .brand-grid {
+    background-size: 24px 24px;
+  }
+
+  .theme-shell section h2 {
+    word-break: keep-all;
+    text-wrap: balance;
+  }
+}
+
 /* Live board: 새 row 진입 — 슬라이드 + yellow flash로 "방금 들어왔다" 시각 강조 */
 @keyframes board-row-in {
   0% {

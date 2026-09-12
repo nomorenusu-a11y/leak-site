@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { sendKakaoOwnerNotification } from "@/lib/kakao/owner-notify";
 import type { LeakRequestInsert } from "@/types/database";
 
 // =============================================================================
@@ -213,9 +214,11 @@ export async function submitQuote(
     city_code: data.city_code ?? null,
   };
 
-  const { error: insertError } = await supabase
+  const { data: inserted, error: insertError } = await supabase
     .from("leak_requests")
-    .insert(row);
+    .insert(row)
+    .select("id")
+    .single();
 
   if (insertError) {
     console.error("[submit-quote] insert error:", insertError);
@@ -223,6 +226,21 @@ export async function submitQuote(
       status: "error",
       message: "신청을 저장하지 못했어요. 잠시 후 다시 시도해 주세요.",
     };
+  }
+
+  // 접수 저장은 우선 보장한다. 카카오 알림이 일시 실패해도 고객에게
+  // 재접수를 요구하지 않으며, 관리자는 관리자 화면에서 접수 내용을 확인할 수 있다.
+  try {
+    await sendKakaoOwnerNotification({
+      id: inserted.id,
+      customerName: data.customer_name,
+      phone: data.phone,
+      region: data.region,
+      apartment: data.apartment,
+      symptom: data.symptom,
+    });
+  } catch (error) {
+    console.error("[submit-quote] Kakao owner notification failed:", error);
   }
 
   return { status: "success", utmSource: data.utm_source };

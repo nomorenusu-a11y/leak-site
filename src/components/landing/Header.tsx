@@ -6,10 +6,9 @@ import { getContactInfo } from "@/lib/contact";
 import { MobileMenu } from "./MobileMenu";
 
 const NAV: { href: string; label: string }[] = [
-  { href: "/#about", label: "회사소개" },
+  { href: "/#about", label: "노모어누수" },
   { href: "/#services", label: "서비스" },
   { href: "/posts", label: "작업사례" },
-  { href: "/#equipment", label: "최신장비" },
   { href: "/#reviews", label: "고객후기" },
   { href: "/faq", label: "자주 묻는 질문" },
 ];
@@ -28,10 +27,10 @@ export function Header({ showBack = false }: Props) {
   const { phone } = getContactInfo();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white">
+    <header className="sticky top-0 z-30 border-b border-white/10 bg-[#061b35]/95 text-white shadow-[0_8px_30px_rgba(2,12,27,0.18)] backdrop-blur-xl">
       {/* 상단 무료상담 띠 (PC만) */}
       {phone && (
-        <div className="hidden bg-brand-700 text-white md:block">
+        <div className="hidden border-b border-white/10 bg-[#0a4ba8] text-white md:block">
           <Container className="flex h-9 items-center justify-center gap-3 text-xs font-bold">
             <span className="inline-flex items-center gap-1 rounded-full bg-highlight-400 px-2 py-0.5 text-[11px] font-extrabold text-brand-900">
               무료상담
@@ -52,9 +51,9 @@ export function Header({ showBack = false }: Props) {
       <Container className="flex h-16 items-center justify-between gap-3">
         {/* 좌측: 로고 + 슬로건 + (서브페이지) 홈 링크 */}
         <div className="flex items-center gap-2">
-          <Logo size="md" hideTextOnMobile />
-          <span className="hidden text-xs font-semibold text-slate-500 lg:inline-block">
-            신속함과 정직함으로 누수를 해결합니다
+          <Logo size="md" hideTextOnMobile textClass="text-white" />
+          <span className="hidden border-l border-white/20 pl-3 text-xs font-semibold text-slate-300 lg:inline-block">
+            탐지부터 복구까지, 끝까지 책임집니다
           </span>
           {showBack && (
             <Link
@@ -75,7 +74,7 @@ export function Header({ showBack = false }: Props) {
               <li key={it.href}>
                 <Link
                   href={it.href}
-                  className="rounded-md px-2.5 py-1.5 text-sm font-bold text-slate-700 hover:bg-slate-100 hover:text-brand-700"
+                  className="rounded-lg px-3 py-2 text-sm font-bold text-slate-200 transition hover:bg-white/10 hover:text-white"
                 >
                   {it.label}
                 </Link>
@@ -86,7 +85,7 @@ export function Header({ showBack = false }: Props) {
           {phone && (
             <a
               href={`tel:${phone.tel}`}
-              className="ml-1 inline-flex size-10 items-center justify-center rounded-full bg-highlight-400 text-brand-900 shadow-sm hover:bg-highlight-300"
+              className="ml-2 inline-flex size-10 items-center justify-center rounded-full bg-cyan-400 text-[#061b35] shadow-lg shadow-cyan-500/20 transition hover:bg-cyan-300"
               aria-label={`전화 ${phone.display}로 상담`}
             >
               <Phone aria-hidden className="size-5" strokeWidth={2.5} />

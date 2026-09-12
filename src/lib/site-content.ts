@@ -95,7 +95,7 @@ export const DEFAULT_ABOUT_CARDS: AboutCardData[] = [
 
 export const DEFAULT_MASTER_SECTION: MasterSectionData = {
   title: "아무나 장인이라 불리지 않습니다\n오직 전문가만이 장인이라 할 수 있습니다",
-  subtitle: "을 선택해주신 고객님들께서 후회하지 않도록",
+  subtitle: "를 선택해주신 고객님들께서 후회하지 않도록",
   cta: "깔끔하게! 100%! 해결해드리겠습니다.",
   cards: [
     { key: "dispatch", icon: "Truck", body: "서울·경기·인천 전지역 어디라도\n긴급출동하여 해결해드립니다.", highlight: "수도권 전지역!\n365일 긴급출동!" },

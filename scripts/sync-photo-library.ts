@@ -16,6 +16,8 @@ const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp"]);
 const MAX_CONCURRENT_UPLOADS = 2;
 const DRY_RUN = process.env.MEDIA_SYNC_DRY_RUN === "1";
 const BATCH_SIZE = Number.parseInt(process.env.MEDIA_SYNC_BATCH_SIZE ?? "0", 10) || 0;
+const FAILURE_LOG = "/tmp/leak-site-media-sync-failures.json";
+const COMPLETED_LOG = "/tmp/leak-site-media-sync-completed.json";
 
 const sourceDir = process.env.MEDIA_SOURCE_DIR;
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -69,6 +71,9 @@ async function main() {
   const root = path.resolve(sourceDir!);
   const files = await listImages(root);
   let known = new Set<string>();
+  const completedHashes = new Set<string>(
+    JSON.parse(await fs.readFile(COMPLETED_LOG, "utf8").catch(() => "[]")) as string[],
+  );
   if (!DRY_RUN) {
     if (useDirectSupabase) {
       const { data: existing, error: existingError } = await supabase
@@ -82,8 +87,9 @@ async function main() {
           .filter((value): value is string => Boolean(value)),
       );
     } else {
-      const response = await fetch(syncEndpoint!, {
-        headers: { authorization: `Bearer ${syncToken}` },
+      const response = await fetch(`${syncEndpoint!}?sync=${Date.now()}`, {
+        headers: { authorization: `Bearer ${syncToken}`, "cache-control": "no-store" },
+        cache: "no-store",
       });
       if (!response.ok) throw new Error(`기존 라이브러리 조회 실패: ${response.status}`);
       const payload = (await response.json()) as { hashes?: unknown };
@@ -93,12 +99,16 @@ async function main() {
           : [],
       );
     }
+    for (const hash of completedHashes) known.add(hash);
   }
   let processed = 0;
   let skipped = 0;
   let scheduled = 0;
   let optimizedBytes = 0;
   const failures: string[] = [];
+  const failedHashes = new Set<string>(
+    JSON.parse(await fs.readFile(FAILURE_LOG, "utf8").catch(() => "[]")) as string[],
+  );
 
   console.log(
     `${DRY_RUN ? "사전 검사" : "동기화"}: 사진 ${files.length}장. 영상 파일은 자동으로 제외됩니다.`,
@@ -111,6 +121,10 @@ async function main() {
     const relativePath = path.relative(root, filePath);
     try {
       const hash = await sha256(filePath);
+      if (failedHashes.has(hash)) {
+        skipped += 1;
+        return;
+      }
       if (known.has(hash)) {
         skipped += 1;
         return;
@@ -152,6 +166,7 @@ async function main() {
         );
         if (insertError) throw new Error(`등록 실패: ${insertError.message}`);
         known.add(hash);
+        completedHashes.add(hash);
       }
       if (!DRY_RUN && !useDirectSupabase) {
         const form = new FormData();
@@ -168,6 +183,8 @@ async function main() {
           body: form,
         });
         if (!response.ok) throw new Error(`전송 실패: ${response.status}`);
+        known.add(hash);
+        completedHashes.add(hash);
       }
       processed += 1;
       if (processed % 10 === 0 || processed === files.length - skipped) {
@@ -176,6 +193,8 @@ async function main() {
         );
       }
     } catch (error) {
+      const hash = await sha256(filePath).catch(() => null);
+      if (hash) failedHashes.add(hash);
       failures.push(`${relativePath}: ${error instanceof Error ? error.message : String(error)}`);
       console.error(`건너뜀(오류) · ${relativePath}`);
     }
@@ -185,7 +204,10 @@ async function main() {
   );
   if (failures.length) {
     console.error(`처리하지 못한 파일 ${failures.length}장:\n${failures.join("\n")}`);
-    process.exitCode = 1;
+    await fs.writeFile(FAILURE_LOG, JSON.stringify([...failedHashes], null, 2));
+  }
+  if (!DRY_RUN) {
+    await fs.writeFile(COMPLETED_LOG, JSON.stringify([...completedHashes], null, 2));
   }
 }
 
