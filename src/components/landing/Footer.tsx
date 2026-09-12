@@ -20,7 +20,6 @@ const REGIONS = ["서울특별시", "경기도", "인천광역시"];
  */
 export function Footer() {
   const bizSegments: string[] = [];
-  if (BUSINESS.legalName) bizSegments.push(`운영사업자: ${BUSINESS.legalName}`);
   if (BUSINESS.ownerName) bizSegments.push(`대표자: ${BUSINESS.ownerName}`);
   if (BUSINESS.contact.phone) bizSegments.push(`전화: ${BUSINESS.contact.phone.display}`);
   if (BUSINESS.businessRegNo) bizSegments.push(`사업자정보: ${BUSINESS.businessRegNo}`);
