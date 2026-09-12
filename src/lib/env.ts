@@ -112,6 +112,9 @@ if (!parsedPublic.success) {
 
 export const publicEnv = parsedPublic.data;
 
+// 브랜드명은 운영 환경변수의 과거 값에 의해 되돌아가지 않도록 코드에서 고정한다.
+const BRAND_NAME = "노모어누수";
+
 let cachedServer: z.infer<typeof serverSchema> | null = null;
 export function serverEnv() {
   if (cachedServer) return cachedServer;
@@ -139,7 +142,7 @@ export function serverEnv() {
 
 export const siteConfig = {
   url: publicEnv.NEXT_PUBLIC_SITE_URL,
-  name: publicEnv.NEXT_PUBLIC_SITE_NAME,
+  name: BRAND_NAME,
   phone: publicEnv.NEXT_PUBLIC_PHONE,
   kakao:
     publicEnv.NEXT_PUBLIC_KAKAO_CHANNEL_URL ?? publicEnv.NEXT_PUBLIC_KAKAO_CHANNEL,
