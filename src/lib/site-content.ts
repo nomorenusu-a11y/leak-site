@@ -81,9 +81,20 @@ export const DEFAULT_TESTIMONIALS: TestimonialData[] = [
 
 export const DEFAULT_FAQ_ITEMS: FaqItemData[] = [
   { question: "누수 탐지비는 얼마인가요?", answer: "현장마다 상황과 케이스가 달라 정확한 금액은 현장 견적으로 안내드립니다. 방문 진단 후 사진과 함께 견적을 확정해 드리며, 동의 없이 추가 청구는 발생하지 않습니다." },
-  { question: "출장은 어느 지역까지 가능한가요?", answer: "서울 전 지역과 성남 분당 등 수도권 일부까지 출동합니다. 그 외 지역은 일정에 따라 조율 가능하니 카톡으로 문의 주세요." },
-  { question: "보증 기간은 어떻게 되나요?", answer: "시공 부위에 대해 1년 무상 사후 보증을 제공합니다. 동일 부위 누수 재발 시 추가 비용 없이 재시공합니다." },
+  { question: "누수 흔적만 보고 원인을 알 수 있나요?", answer: "천장 얼룩이나 벽지 젖음만으로는 배관, 욕실 방수, 외벽·창호 등 원인을 단정하기 어렵습니다. 물이 보이는 위치와 사용 패턴을 함께 확인해 점검 범위를 좁혀갑니다." },
+  { question: "욕실 방수층 문제와 배관 누수는 어떻게 구분하나요?", answer: "샤워나 바닥 물 사용 때만 아래층에 영향이 생기는지, 급수·온수 사용과 관계없이 증상이 이어지는지 등을 먼저 확인합니다. 현장 점검으로 방수 문제와 배관 문제를 구분한 뒤 필요한 방식으로 안내합니다." },
+  { question: "수도계량기가 계속 돌아가면 누수인가요?", answer: "모든 수도 사용을 멈춘 뒤에도 계량기 표시가 계속 움직이면 수도계량기 이후 급수관 누수 가능성을 확인해볼 수 있습니다. 다만 변기 물탱크나 보일러·정수기 등 연결 설비도 함께 점검해야 합니다." },
+  { question: "아랫집 천장에 물자국이 생겼는데 우리 집이 원인인가요?", answer: "물자국이 보이는 위치와 실제 누수 원인은 다를 수 있습니다. 위층 욕실·주방 사용, 난방·온수 사용, 공용 배관 여부 등을 함께 확인해야 하므로 성급히 원인을 단정하기보다 먼저 상황을 기록해 두는 것이 좋습니다." },
+  { question: "보일러 압력이 계속 떨어지면 난방배관 누수일 수 있나요?", answer: "반복적으로 압력이 떨어질 때 난방 배관이나 보일러 연결부를 점검할 필요가 있습니다. 단순 보충 문제인지 실제 누수인지 구분하려면 압력 변화와 주변 습기·누수 흔적을 함께 확인합니다." },
+  { question: "누수 탐지 전에는 벽이나 바닥을 꼭 열어야 하나요?", answer: "처음부터 넓게 철거하지 않습니다. 증상과 배관 상태를 점검해 의심 범위를 좁힌 뒤, 보수가 필요한 위치가 확인되었을 때 필요한 범위만 협의하여 진행합니다." },
+  { question: "청음·열화상·가스탐지는 각각 언제 사용하나요?", answer: "배관 종류와 현장 조건에 따라 점검 방법이 달라집니다. 한 가지 장비 결과만으로 단정하지 않고, 현장 상황에 맞는 확인 과정을 조합해 원인 범위를 살핍니다." },
+  { question: "누수 탐지할 때 소음이나 먼지는 어느 정도 생기나요?", answer: "점검 단계에서는 비교적 소음과 먼지가 적지만, 보수가 필요한 위치를 열 때는 소음과 분진이 생길 수 있습니다. 작업 전 범위와 보호 방법을 설명드리고, 필요한 구간만 진행합니다." },
+  { question: "누수 후 벽지·바닥 복구와 건조는 어떻게 하나요?", answer: "누수 원인을 먼저 정리한 뒤 젖은 범위와 자재 상태를 확인합니다. 건조와 복구 범위는 습기 정도, 마감재, 현장 환기 조건에 따라 달라지므로 현장 상태를 보고 안내합니다." },
+  { question: "누수보험 접수를 위해 수리 전에 무엇을 준비해야 하나요?", answer: "보험사와 상품마다 필요 서류가 다를 수 있으므로 접수 전 약관과 담당자 안내를 먼저 확인하세요. 물자국·젖은 부위·발생 시점은 사진으로 남겨 두고, 작업 전 필요한 사진이나 서류를 안내받는 것이 좋습니다." },
+  { question: "아파트·빌라·단독주택 모두 점검 가능한가요?", answer: "건물 유형에 따라 배관 구조와 확인할 지점이 달라집니다. 아파트·빌라·단독주택 모두 증상과 구조를 먼저 듣고, 해당 현장에 맞는 점검 방향을 안내합니다." },
   { question: "24시간 출동이 가능한가요?", answer: "야간·휴일 상담은 항상 가능하고, 긴급 누수 출동은 인력 일정에 따라 우선 배정해 드립니다. 먼저 전화 또는 카톡으로 상황을 알려주세요." },
+  { question: "출장은 어느 지역까지 가능한가요?", answer: "서울·경기·인천 전 지역으로 출장합니다. 아파트·빌라·주택 등 건물 유형과 증상을 먼저 알려주시면 방문 가능한 시간과 점검 방향을 빠르게 안내드립니다." },
+  { question: "보증 기간은 어떻게 되나요?", answer: "시공 부위에 대해 1년 무상 사후 보증을 제공합니다. 동일 부위 누수 재발 시 추가 비용 없이 재시공합니다." },
 ];
 
 export const DEFAULT_ABOUT_CARDS: AboutCardData[] = [
@@ -179,7 +190,19 @@ export async function setSiteContent(key: string, value: unknown): Promise<void>
 export const getHeroBanner = () => getSiteContent<HeroBannerData>("hero_banner", DEFAULT_HERO_BANNER);
 export const getHeroSlides = () => getSiteContent<HeroSlideData[]>("hero_slides", DEFAULT_HERO_SLIDES);
 export const getTestimonials = () => getSiteContent<TestimonialData[]>("testimonials", DEFAULT_TESTIMONIALS);
-export const getFaqItems = () => getSiteContent<FaqItemData[]>("faq_items", DEFAULT_FAQ_ITEMS);
+export async function getFaqItems(): Promise<FaqItemData[]> {
+  const savedItems = await getSiteContent<FaqItemData[]>("faq_items", []);
+  if (savedItems.length === 0) return DEFAULT_FAQ_ITEMS;
+
+  // 기존 관리 화면에서 수정한 답변은 보존하고, 새 기본 질문을 그 사이에 채운다.
+  const savedByQuestion = new Map(savedItems.map((item) => [item.question, item]));
+  const knownQuestions = new Set(DEFAULT_FAQ_ITEMS.map((item) => item.question));
+  const expandedItems = DEFAULT_FAQ_ITEMS.map(
+    (item) => savedByQuestion.get(item.question) ?? item,
+  );
+  const customItems = savedItems.filter((item) => !knownQuestions.has(item.question));
+  return [...expandedItems, ...customItems];
+}
 export const getAboutCards = () => getSiteContent<AboutCardData[]>("about_cards", DEFAULT_ABOUT_CARDS);
 export const getMasterSection = () => getSiteContent<MasterSectionData>("master_section", DEFAULT_MASTER_SECTION);
 export const getTimeSection = () => getSiteContent<TimeSectionData>("time_section", DEFAULT_TIME_SECTION);

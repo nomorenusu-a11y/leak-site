@@ -94,7 +94,7 @@ export function LiveStatusTableClient({
 
   return (
     <div
-      className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+      className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -113,7 +113,7 @@ export function LiveStatusTableClient({
       {/* 행 */}
       <ul
         aria-live="polite"
-        className="flex flex-1 flex-col divide-y divide-slate-100"
+        className="flex flex-col divide-y divide-slate-100"
       >
         {visible.map((item) => {
           const isNew = item.id === justAddedId;
@@ -123,9 +123,9 @@ export function LiveStatusTableClient({
               key={item.id}
               data-just-added={isNew ? "true" : "false"}
               data-status-changed={isChanged ? "true" : "false"}
-              className="flex flex-1 items-center"
+              className="flex min-h-[58px] shrink-0 items-center sm:min-h-[60px]"
             >
-              <div className="grid w-full grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 px-4 py-1 sm:grid-cols-[6.5rem_7rem_1fr_1fr_7rem] sm:px-5">
+              <div className="grid w-full grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 px-4 py-2 sm:grid-cols-[6.5rem_7rem_1fr_1fr_7rem] sm:px-5">
                 <span className="inline-flex w-fit items-center gap-1 rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-bold text-brand-700 sm:text-sm">
                   {toCategoryLabel(item.category)}
                   {isNew && (
