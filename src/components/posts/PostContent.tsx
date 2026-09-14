@@ -46,7 +46,7 @@ export function PostContent({
           <div className="relative w-full">
             <Image
               src={image.url}
-              alt={image.alt_text ?? ""}
+              alt={image.alt_text?.trim() || `${stage} 누수 점검 현장 사진`}
               width={1600}
               height={1200}
               sizes="(max-width: 768px) 100vw, 768px"

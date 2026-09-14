@@ -37,7 +37,7 @@ export function CaseStudyArticle({
               ))}
             </div>
             <figure className="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-              <Image src={image.url} alt={image.alt_text ?? ""} width={1600} height={1200} sizes="(max-width: 768px) 100vw, 768px" className="h-auto w-full object-contain" />
+              <Image src={image.url} alt={image.alt_text?.trim() || "누수 점검 현장 사진"} width={1600} height={1200} sizes="(max-width: 768px) 100vw, 768px" className="h-auto w-full object-contain" />
               <figcaption className="border-t border-slate-100 px-4 py-3.5 text-sm leading-6 text-slate-700">{step.caption}</figcaption>
             </figure>
             {step.afterPhoto && (

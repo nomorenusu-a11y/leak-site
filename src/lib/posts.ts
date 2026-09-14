@@ -38,6 +38,7 @@ export async function getPublishedPosts({
     .from("posts")
     .select("*", { count: "exact" })
     .eq("published", true)
+    .lte("published_at", new Date().toISOString())
     .order("published_at", { ascending: false })
     .order("id")
     .range(offset, offset + perPage - 1);
@@ -76,6 +77,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     .select("*")
     .eq("slug", slug)
     .eq("published", true)
+    .lte("published_at", new Date().toISOString())
     .maybeSingle();
   if (error) {
     console.warn("[posts] getPostBySlug:", error.message);
@@ -108,6 +110,7 @@ export async function getPostsByRegionTag(
     .from("posts")
     .select("*", { count: "exact" })
     .eq("published", true)
+    .lte("published_at", new Date().toISOString())
     .contains("region_tags", [tag])
     .order("published_at", { ascending: false })
     .order("id")
@@ -135,6 +138,7 @@ export async function getRelatedPosts(post: Post, limit = 3): Promise<Post[]> {
     .from("posts")
     .select("*")
     .eq("published", true)
+    .lte("published_at", new Date().toISOString())
     .neq("id", post.id)
     .overlaps("region_tags", post.region_tags)
     .order("published_at", { ascending: false })
@@ -161,6 +165,7 @@ export async function getAdjacentPosts(
     .from("posts")
     .select("slug, title, published_at")
     .eq("published", true)
+    .lte("published_at", new Date().toISOString())
     .order("published_at", { ascending: false });
   if (error || !data) return { prev: null, next: null };
   const idx = data.findIndex((p) => p.slug === currentSlug);
@@ -179,6 +184,7 @@ export async function getAllPublishedSlugs(): Promise<{ slug: string; updated_at
       .from("posts")
       .select("slug, updated_at")
       .eq("published", true)
+      .lte("published_at", new Date().toISOString())
       .order("id")
       .range(from, to);
     // Never cache a successful-looking, partial sitemap on an API failure.
@@ -239,7 +245,7 @@ export async function getBoardStats(): Promise<BoardStats> {
  */
 export async function getActiveRegionTags(): Promise<string[]> {
   const supabase = createSupabaseAnonClient();
-  const { data, error } = await supabase.from("posts").select("region_tags").eq("published", true);
+  const { data, error } = await supabase.from("posts").select("region_tags").eq("published", true).lte("published_at", new Date().toISOString());
   if (error || !data) return [];
   const set = new Set<string>();
   for (const row of data) {

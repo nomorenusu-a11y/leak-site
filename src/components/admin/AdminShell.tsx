@@ -5,6 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useState, type ReactNode } from "react";
 import {
   BarChart3,
+  CalendarDays,
   BellRing,
   ClipboardCheck,
   FileText,
@@ -23,6 +24,7 @@ type NavItem = { href: string; label: string; group?: string; icon: ReactNode };
 const NAV: NavItem[] = [
   { href: "/admin", label: "운영 대시보드", icon: <LayoutDashboard size={17} /> },
   { href: "/admin/auto-post", label: "자동 글쓰기", group: "콘텐츠 운영", icon: <Sparkles size={17} /> },
+  { href: "/admin/calendar", label: "발행 캘린더", group: "콘텐츠 운영", icon: <CalendarDays size={17} /> },
   { href: "/admin/posts?status=draft", label: "발행 대기함", group: "콘텐츠 운영", icon: <ClipboardCheck size={17} /> },
   { href: "/admin/posts", label: "게시글 관리", group: "콘텐츠 운영", icon: <FileText size={17} /> },
   { href: "/admin/media", label: "사진 라이브러리", group: "콘텐츠 운영", icon: <Images size={17} /> },

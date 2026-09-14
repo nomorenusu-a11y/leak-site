@@ -15,7 +15,7 @@ export function PostGallery({ images }: { images: PostImage[] }) {
             <div className="relative aspect-[4/3] w-full">
               <Image
                 src={img.url}
-                alt={img.alt_text ?? ""}
+                alt={img.alt_text?.trim() || "누수 점검 현장 사진"}
                 fill
                 sizes="(max-width: 640px) 100vw, 33vw"
                 className="object-cover"

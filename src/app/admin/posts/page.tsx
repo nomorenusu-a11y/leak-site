@@ -21,14 +21,16 @@ export default async function AdminPostsPage({
 }) {
   await assertAdmin();
   const sp = await searchParams;
-  const status = firstString(sp.status); // 'published' | 'draft' | undefined
+  const status = firstString(sp.status); // 'published' | 'scheduled' | 'draft' | undefined
   const keyword = (firstString(sp.q) ?? "").trim().slice(0, 80);
 
   const supabase = createSupabaseAdminClient();
-  const [publishedCount, draftCount, rowsResult] = await Promise.all([
-    supabase.from("posts").select("*", { count: "exact", head: true }).eq("published", true),
+  const now = new Date().toISOString();
+  const [publishedCount, scheduledCount, draftCount, rowsResult] = await Promise.all([
+    supabase.from("posts").select("*", { count: "exact", head: true }).eq("published", true).lte("published_at", now),
+    supabase.from("posts").select("*", { count: "exact", head: true }).eq("published", true).gt("published_at", now),
     supabase.from("posts").select("*", { count: "exact", head: true }).eq("published", false),
-    loadPosts(supabase, status, keyword),
+    loadPosts(supabase, status, keyword, now),
   ]);
   const items = rowsResult.data ?? [];
 
@@ -46,17 +48,19 @@ export default async function AdminPostsPage({
         </div>
       </header>
 
-      <section className="mt-6 grid gap-3 sm:grid-cols-3">
-        <StatusCard href="/admin/posts" label="전체 콘텐츠" value={(publishedCount.count ?? 0) + (draftCount.count ?? 0)} description="공개와 검토 대기 글" tone="blue" />
+      <section className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <StatusCard href="/admin/posts" label="전체 콘텐츠" value={(publishedCount.count ?? 0) + (scheduledCount.count ?? 0) + (draftCount.count ?? 0)} description="공개·예약·검토 대기 글" tone="blue" />
         <StatusCard href="/admin/posts?status=published" label="공개 글" value={publishedCount.count ?? 0} description="검색 유입을 받을 수 있는 글" tone="emerald" />
+        <StatusCard href="/admin/posts?status=scheduled" label="공개 예약" value={scheduledCount.count ?? 0} description="예약 시각에 자동 공개될 글" tone="violet" />
         <StatusCard href="/admin/posts?status=draft" label="발행 대기" value={draftCount.count ?? 0} description="사진·문구를 확인할 글" tone="amber" />
       </section>
 
       <section className="mt-6 overflow-hidden rounded-2xl border border-white/[0.09] bg-[#0d121d]">
         <div className="flex flex-col gap-4 border-b border-white/[0.08] p-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap gap-2">
-            <FilterChip href="/admin/posts" label={`전체 ${(publishedCount.count ?? 0) + (draftCount.count ?? 0)}`} active={!status} />
+            <FilterChip href="/admin/posts" label={`전체 ${(publishedCount.count ?? 0) + (scheduledCount.count ?? 0) + (draftCount.count ?? 0)}`} active={!status} />
             <FilterChip href="/admin/posts?status=published" label={`공개 ${publishedCount.count ?? 0}`} active={status === "published"} />
+            <FilterChip href="/admin/posts?status=scheduled" label={`예약 ${scheduledCount.count ?? 0}`} active={status === "scheduled"} />
             <FilterChip href="/admin/posts?status=draft" label={`발행 대기 ${draftCount.count ?? 0}`} active={status === "draft"} />
           </div>
           <form className="flex w-full gap-2 lg:w-auto" action="/admin/posts" method="get">
@@ -80,12 +84,13 @@ export default async function AdminPostsPage({
   );
 }
 
-async function loadPosts(supabase: ReturnType<typeof createSupabaseAdminClient>, status: string | undefined, keyword: string) {
+async function loadPosts(supabase: ReturnType<typeof createSupabaseAdminClient>, status: string | undefined, keyword: string, now: string) {
   let query = supabase
     .from("posts")
     .select("id, title, slug, region_tags, published, view_count, published_at, updated_at")
     .order("updated_at", { ascending: false });
-  if (status === "published") query = query.eq("published", true);
+  if (status === "published") query = query.eq("published", true).lte("published_at", now);
+  if (status === "scheduled") query = query.eq("published", true).gt("published_at", now);
   if (status === "draft") query = query.eq("published", false);
   if (keyword) query = query.ilike("title", `%${keyword.replaceAll("%", "\\%").replaceAll("_", "\\_")}%`);
   return query;
@@ -106,8 +111,8 @@ function FilterChip({ href, label, active }: { href: string; label: string; acti
   );
 }
 
-function StatusCard({ href, label, value, description, tone }: { href: string; label: string; value: number; description: string; tone: "blue" | "emerald" | "amber" }) {
-  const toneClass = { blue: "bg-blue-400", emerald: "bg-emerald-400", amber: "bg-amber-400" }[tone];
+function StatusCard({ href, label, value, description, tone }: { href: string; label: string; value: number; description: string; tone: "blue" | "emerald" | "amber" | "violet" }) {
+  const toneClass = { blue: "bg-blue-400", emerald: "bg-emerald-400", amber: "bg-amber-400", violet: "bg-violet-400" }[tone];
   return <Link href={href} className="rounded-2xl border border-white/[0.09] bg-[#0d121d] p-5 transition hover:border-white/20 hover:bg-white/[0.035]"><span className={`block h-1 w-10 rounded-full ${toneClass}`} /><p className="mt-4 text-xs font-bold uppercase tracking-[0.12em] text-slate-500">{label}</p><p className="mt-1 text-3xl font-black text-white">{value.toLocaleString("ko-KR")}</p><p className="mt-2 text-xs text-slate-500">{description}</p></Link>;
 }
 
@@ -133,6 +138,7 @@ function PostRow({
     return await deletePost(id);
   }
 
+  const scheduled = published && new Date(publishedAt) > new Date();
   return (
     <tr className="transition-colors hover:bg-white/[0.035]">
       <td className="px-5 py-4">
@@ -148,7 +154,12 @@ function PostRow({
         <span className="text-xs text-slate-400">{regionTags.join(", ") || "-"}</span>
       </td>
       <td className="px-4 py-4">
-        {published ? (
+        {scheduled ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-400/10 px-2.5 py-1 text-xs font-bold text-blue-200">
+            <span aria-hidden className="size-1.5 rounded-full bg-blue-400" />
+            예약
+          </span>
+        ) : published ? (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-400/10 px-2.5 py-1 text-xs font-bold text-emerald-300">
             <span aria-hidden className="size-1.5 rounded-full bg-emerald-500" />
             발행
@@ -166,13 +177,7 @@ function PostRow({
       </td>
       <td className="px-5 py-4">
         <div className="flex items-center justify-end gap-2">
-          <Link
-            href={`/posts/${slug}`}
-            target="_blank"
-            className="rounded-lg border border-white/10 px-2.5 py-1.5 text-xs font-bold text-slate-300 hover:bg-white/[0.08]"
-          >
-            보기
-          </Link>
+          {scheduled ? <span className="rounded-lg border border-white/5 px-2.5 py-1.5 text-xs font-bold text-slate-600">공개 전</span> : <Link href={`/posts/${slug}`} target="_blank" className="rounded-lg border border-white/10 px-2.5 py-1.5 text-xs font-bold text-slate-300 hover:bg-white/[0.08]">보기</Link>}
           <Link
             href={`/admin/posts/${id}/edit`}
             className="rounded-lg border border-white/10 px-2.5 py-1.5 text-xs font-bold text-slate-300 hover:bg-white/[0.08]"

@@ -24,7 +24,7 @@ export function PostCard({ post }: { post: Post }) {
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
         <Image
           src={cover.src}
-          alt=""
+          alt={`${post.title} 대표 사진`}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="object-cover transition-transform duration-500 group-hover:scale-105"
