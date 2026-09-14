@@ -19,10 +19,10 @@ export function formatRelative(input: Date | string | number, now: Date = new Da
 
 export function formatDateYMD(input: Date | string | number): string {
   const d = typeof input === "string" || typeof input === "number" ? new Date(input) : input;
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}.${m}.${day}`;
+  const parts = kstParts(d.getTime());
+  const m = String(parts.month).padStart(2, "0");
+  const day = String(parts.day).padStart(2, "0");
+  return `${parts.year}.${m}.${day}`;
 }
 
 const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
@@ -36,6 +36,7 @@ function kstStartOfDay(t: number): number {
 
 /** KST 기준 "MM:DD" 또는 "HH:MM" 등을 만들기 위한 KST 시각 부품. */
 function kstParts(t: number): {
+  year: number;
   month: number;
   day: number;
   hour: number;
@@ -43,6 +44,7 @@ function kstParts(t: number): {
 } {
   const d = new Date(t + KST_OFFSET_MS);
   return {
+    year: d.getUTCFullYear(),
     month: d.getUTCMonth() + 1,
     day: d.getUTCDate(),
     hour: d.getUTCHours(),
