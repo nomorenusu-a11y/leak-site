@@ -75,6 +75,15 @@ export const DAILY_PUBLISH_TIMES = [
 
 export const DAILY_PUBLISH_COUNTS = DAILY_PUBLISH_TIMES.map((times) => times.length);
 
+export function getPublishSlot(index: number) {
+  let remaining = index;
+  for (const [dayIndex, times] of DAILY_PUBLISH_TIMES.entries()) {
+    if (remaining < times.length) return { dayIndex, time: times[remaining] };
+    remaining -= times.length;
+  }
+  throw new RangeError(`No publishing slot for guide index ${index}`);
+}
+
 export function buildGuideContent(guide: ScheduledGuide) {
   const place = `${guide.district} ${guide.dong}`;
   return `## ${guide.symptom}, 먼저 이렇게 확인합니다\n\n${place} ${guide.building}에서 **${guide.symptom}**이 나타나면 보이는 물기만으로 ${guide.leak}이라고 단정하기 어렵습니다. 물을 사용한 시간, 비가 온 날, 보일러 작동 여부처럼 증상이 달라지는 조건을 먼저 기록해 주세요. 이 정보가 불필요한 철거를 줄이고 점검 순서를 정하는 데 도움이 됩니다.\n\n[[AUTO_IMAGE_0]]\n\n## ${place} ${guide.leak} 점검 순서\n\n현장에서는 ${guide.location}을 중심으로 **${guide.check}**합니다. 급수·온수·난방·배수·방수·외부 유입은 증상이 비슷할 수 있어 한 가지 반응만으로 공사 범위를 정하지 않습니다. 계량기, 압력, 수분 분포와 사용 조건을 서로 비교해 원인 가능성을 좁힙니다.\n\n[[AUTO_IMAGE_1]]\n\n## 지금 바로 할 수 있는 확인\n\n1. 모든 수전과 물 사용 기기를 잠시 멈춥니다.\n2. 계량기 또는 보일러 압력계 변화를 사진으로 남깁니다.\n3. 젖은 범위와 물이 나타난 시간을 기록합니다.\n4. 아래층 피해가 있다면 천장 전체와 가까운 사진을 함께 확보합니다.\n\n물을 억지로 더 사용해 증상을 재현하면 피해가 커질 수 있습니다. 전기 설비 주변까지 젖었다면 해당 공간 사용을 멈추고 먼저 안전을 확보해 주세요.\n\n[[AUTO_IMAGE_2]]\n\n## 확인 뒤 보수 범위를 결정합니다\n\n원인이 확인되면 **${guide.repair}**하는 방향을 설명드립니다. 점검 결과와 건물 구조, 마감재 상태에 따라 작업 범위는 달라질 수 있습니다. 원인을 찾기 전에 넓게 철거하거나 같은 증상만 보고 공사를 확정하지 않습니다.\n\n[[AUTO_IMAGE_3]]\n\n## 상담할 때 보내주시면 좋은 사진\n\n- 물자국이나 젖은 부위 전체가 보이는 사진\n- 가장 심한 부분을 가까이 찍은 사진\n- 계량기 또는 보일러 압력계 사진\n- 아래층 피해가 있다면 위·아래층 위치를 비교할 수 있는 사진\n\n사진과 함께 ${place}, 건물 형태, 처음 발견한 시점, 물 사용과의 관계를 알려주시면 현장 도착 전 점검 방향을 안내하기 쉽습니다. **서울·경기·인천 전 지역 출장 상담**이 가능하며 전화 **010-5700-4026** 또는 카카오 상담을 이용할 수 있습니다.\n\n## 자주 묻는 질문\n\n### ${guide.leak}이면 바로 공사를 해야 하나요?\n\n증상만으로 공사를 결정하지 않습니다. 먼저 원인 계통과 위치를 확인하고 필요한 보수 범위를 설명받는 것이 좋습니다.\n\n### 누수보험 서류도 준비할 수 있나요?\n\n보험 적용 여부는 계약마다 다릅니다. 가입 보험사에 보장 항목을 먼저 확인한 뒤, 현장 사진과 작업 내역 등 실제 진행 내용에 맞는 자료를 준비하세요.`;

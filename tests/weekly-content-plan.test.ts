@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildGuideContent, DAILY_PUBLISH_COUNTS, DAILY_PUBLISH_TIMES, WEEKLY_GUIDES } from "../src/lib/weekly-content-plan";
+import { buildGuideContent, DAILY_PUBLISH_COUNTS, DAILY_PUBLISH_TIMES, getPublishSlot, WEEKLY_GUIDES } from "../src/lib/weekly-content-plan";
 
 test("weekly plan contains five to ten guides at varied times each day", () => {
   assert.equal(WEEKLY_GUIDES.length, 49);
@@ -9,6 +9,10 @@ test("weekly plan contains five to ten guides at varied times each day", () => {
   assert.ok(DAILY_PUBLISH_COUNTS.every((count) => count >= 5 && count <= 10));
   assert.ok(new Set(DAILY_PUBLISH_COUNTS).size > 1);
   assert.equal(new Set(DAILY_PUBLISH_TIMES.flat()).size, 49);
+  const slots = WEEKLY_GUIDES.map((_, index) => getPublishSlot(index));
+  assert.deepEqual(slots.map((slot) => slot.dayIndex), DAILY_PUBLISH_COUNTS.flatMap((count, day) => Array.from({ length: count }, () => day)));
+  assert.equal(slots[0].time, "08:37");
+  assert.equal(slots.at(-1)?.time, "23:11");
 });
 
 test("scheduled guides are useful, clearly framed advice rather than invented cases", () => {
