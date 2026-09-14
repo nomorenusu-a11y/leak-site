@@ -29,8 +29,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ];
 
-  for (const region of SEOUL_REGIONS) {
-    const content = await getPublicRegionContent(region);
+  const regionContents = await Promise.all(
+    SEOUL_REGIONS.map(async (region) => ({
+      region,
+      content: await getPublicRegionContent(region),
+    })),
+  );
+
+  for (const { region, content } of regionContents) {
     if (content?.indexable)
       entries.push({
         url: `${base}${regionPath(region)}`,
