@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { readAdminSession } from "@/lib/auth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { buildGuideContent, getPublishSlot, WEEKLY_GUIDES, type ScheduledGuide } from "@/lib/weekly-content-plan";
+import { buildGuideContent, CAMPAIGN_GUIDES, CAMPAIGN_START_DATE, getPublishSlot, type ScheduledGuide } from "@/lib/weekly-content-plan";
 
 type Asset = { id: string; url: string; file_name: string };
 type Analysis = {
@@ -22,13 +22,6 @@ function addDays(date: string, days: number) {
   const value = new Date(`${date}T12:00:00+09:00`);
   value.setUTCDate(value.getUTCDate() + days);
   return kstDate(value);
-}
-
-function weekMonday() {
-  const today = kstDate(new Date());
-  const noon = new Date(`${today}T12:00:00+09:00`);
-  const weekday = noon.getUTCDay();
-  return addDays(today, -(weekday === 0 ? 6 : weekday - 1));
 }
 
 function scoreAsset(asset: Asset, analysis: Analysis | undefined, guide: ScheduledGuide, offset: number) {
@@ -51,11 +44,10 @@ export async function POST() {
   ]);
   const analysisByAsset = new Map((analyses ?? []).map((row) => [row.asset_id, row as Analysis]));
   const media = (assets ?? []) as Asset[];
-  const monday = weekMonday();
   const usedAssetIds = new Set<string>();
-  const prepared = WEEKLY_GUIDES.map((guide, index) => {
+  const prepared = CAMPAIGN_GUIDES.map((guide, index) => {
     const { dayIndex, time } = getPublishSlot(index);
-    const date = addDays(monday, dayIndex);
+    const date = addDays(CAMPAIGN_START_DATE, dayIndex);
     const publishedAt = new Date(`${date}T${time}:00+09:00`).toISOString();
     const slug = `${date.replaceAll("-", "")}-${guide.slugKey}`;
     const title = `${guide.dong} ${guide.leak} | ${guide.symptom} 점검 안내`;
@@ -70,6 +62,18 @@ export async function POST() {
     return { guide, selected, publishedAt, slug, title, excerpt };
   });
 
+  const desiredSlugs = new Set(prepared.map((item) => item.slug));
+  const campaignKeys = new Set(CAMPAIGN_GUIDES.map((guide) => guide.slugKey));
+  const { data: existingCampaign, error: existingError } = await db.from("posts").select("id, slug").like("slug", "202609%");
+  if (existingError) return NextResponse.json({ ok: false, error: "기존 9월 예약 확인에 실패했습니다." }, { status: 500 });
+  const staleIds = (existingCampaign ?? [])
+    .filter((post) => !desiredSlugs.has(post.slug) && [...campaignKeys].some((key) => post.slug.endsWith(`-${key}`)))
+    .map((post) => post.id);
+  if (staleIds.length) {
+    const { error: staleError } = await db.from("posts").delete().in("id", staleIds);
+    if (staleError) return NextResponse.json({ ok: false, error: "잘못 배치된 기존 예약 정리에 실패했습니다." }, { status: 500 });
+  }
+
   const baseRows = prepared.map(({ guide, selected, publishedAt, slug, title, excerpt }) => ({
       title,
       slug,
@@ -83,7 +87,7 @@ export async function POST() {
   }));
   const { data: posts, error: postsError } = await db.from("posts").upsert(baseRows, { onConflict: "slug" }).select("id, slug, title");
   if (postsError || !posts || posts.length !== prepared.length) {
-    return NextResponse.json({ ok: false, error: "이번 주 게시물 묶음 저장에 실패했습니다." }, { status: 500 });
+    return NextResponse.json({ ok: false, error: "9월 예약 게시물 묶음 저장에 실패했습니다." }, { status: 500 });
   }
 
   const postBySlug = new Map(posts.map((post) => [post.slug, post]));
@@ -134,5 +138,5 @@ export async function POST() {
   revalidatePath("/admin/calendar");
   revalidatePath("/admin/posts");
   revalidatePath("/sitemap.xml");
-  return NextResponse.json({ ok: true, monday, created });
+  return NextResponse.json({ ok: true, startDate: CAMPAIGN_START_DATE, endDate: "2026-09-30", removed: staleIds.length, created });
 }
