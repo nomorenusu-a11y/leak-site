@@ -52,9 +52,8 @@ export async function POST() {
   const analysisByAsset = new Map((analyses ?? []).map((row) => [row.asset_id, row as Analysis]));
   const media = (assets ?? []) as Asset[];
   const monday = weekMonday();
-  const created: Array<{ slug: string; title: string; publishedAt: string; images: number }> = [];
   const usedAssetIds = new Set<string>();
-  for (const [index, guide] of WEEKLY_GUIDES.entries()) {
+  const prepared = WEEKLY_GUIDES.map((guide, index) => {
     const { dayIndex, time } = getPublishSlot(index);
     const date = addDays(monday, dayIndex);
     const publishedAt = new Date(`${date}T${time}:00+09:00`).toISOString();
@@ -68,8 +67,10 @@ export async function POST() {
       .sort((a, b) => Number(usedAssetIds.has(a.asset.id)) - Number(usedAssetIds.has(b.asset.id)) || b.score - a.score || a.asset.file_name.localeCompare(b.asset.file_name));
     const selected = ranked.slice(0, 4).map((item) => item.asset);
     selected.forEach((asset) => usedAssetIds.add(asset.id));
+    return { guide, selected, publishedAt, slug, title, excerpt };
+  });
 
-    const { data: post, error: postError } = await db.from("posts").upsert({
+  const baseRows = prepared.map(({ guide, selected, publishedAt, slug, title, excerpt }) => ({
       title,
       slug,
       content: buildGuideContent(guide).replace(/\[\[AUTO_IMAGE_\d+\]\]/g, ""),
@@ -79,27 +80,51 @@ export async function POST() {
       region_tags: [guide.district],
       published: true,
       published_at: publishedAt,
-    }, { onConflict: "slug" }).select("id, slug, title").single();
-    if (postError || !post) return NextResponse.json({ ok: false, error: `${guide.dong} 예약 저장에 실패했습니다.` }, { status: 500 });
+  }));
+  const { data: posts, error: postsError } = await db.from("posts").upsert(baseRows, { onConflict: "slug" }).select("id, slug, title");
+  if (postsError || !posts || posts.length !== prepared.length) {
+    return NextResponse.json({ ok: false, error: "이번 주 게시물 묶음 저장에 실패했습니다." }, { status: 500 });
+  }
 
-    await db.from("post_images").delete().eq("post_id", post.id);
-    const imageIds: string[] = [];
-    for (const [imageIndex, asset] of selected.entries()) {
-      const stage = ["증상 범위 확인", "원인 점검", "누수 탐지", "보수 범위 안내"][imageIndex];
-      const { data: image } = await db.from("post_images").insert({
+  const postBySlug = new Map(posts.map((post) => [post.slug, post]));
+  const postIds = posts.map((post) => post.id);
+  const { error: deleteError } = await db.from("post_images").delete().in("post_id", postIds);
+  if (deleteError) return NextResponse.json({ ok: false, error: "기존 예약 사진 정리에 실패했습니다." }, { status: 500 });
+
+  const stages = ["증상 범위 확인", "원인 점검", "누수 탐지", "보수 범위 안내"];
+  const imageRows = prepared.flatMap(({ guide, selected, slug }) => {
+    const post = postBySlug.get(slug);
+    if (!post) return [];
+    return selected.map((asset, imageIndex) => {
+      const stage = stages[imageIndex];
+      return {
         post_id: post.id,
         url: asset.url,
         sort_order: imageIndex,
         alt_text: `${guide.district} ${guide.dong} ${guide.leak} ${stage} 참고 사진`,
         caption: `${guide.dong} ${guide.leak} 점검 과정의 참고 사진입니다. 실제 원인과 작업 범위는 현장 확인 결과에 따라 달라집니다.`,
         work_stage: stage,
-      }).select("id").single();
-      if (image) imageIds.push(image.id);
-    }
-    const content = buildGuideContent(guide).replace(/\[\[AUTO_IMAGE_(\d+)\]\]/g, (_, raw) => imageIds[Number(raw)] ? `[[post-image:${imageIds[Number(raw)]}]]` : "");
-    await db.from("posts").update({ content, cover_image_url: selected[0]?.url ?? null }).eq("id", post.id);
-    created.push({ slug: post.slug, title: post.title, publishedAt, images: imageIds.length });
-  }
+      };
+    });
+  });
+  const { data: insertedImages, error: imagesError } = imageRows.length
+    ? await db.from("post_images").insert(imageRows).select("id, post_id, sort_order")
+    : { data: [], error: null };
+  if (imagesError) return NextResponse.json({ ok: false, error: "예약 사진 묶음 저장에 실패했습니다." }, { status: 500 });
+
+  const imageIdBySlot = new Map((insertedImages ?? []).map((image) => [`${image.post_id}:${image.sort_order}`, image.id]));
+  const finalRows = prepared.map(({ guide, selected, publishedAt, slug, title, excerpt }) => {
+    const post = postBySlug.get(slug)!;
+    const content = buildGuideContent(guide).replace(/\[\[AUTO_IMAGE_(\d+)\]\]/g, (_, raw) => {
+      const id = imageIdBySlot.get(`${post.id}:${Number(raw)}`);
+      return id ? `[[post-image:${id}]]` : "";
+    });
+    return { title, slug, content, excerpt, cover_image_url: selected[0]?.url ?? null, category: "leak", region_tags: [guide.district], published: true, published_at: publishedAt };
+  });
+  const { error: finalError } = await db.from("posts").upsert(finalRows, { onConflict: "slug" });
+  if (finalError) return NextResponse.json({ ok: false, error: "사진이 포함된 본문 저장에 실패했습니다." }, { status: 500 });
+
+  const created = prepared.map(({ slug, title, publishedAt, selected }) => ({ slug, title, publishedAt, images: selected.length }));
 
   revalidatePath("/");
   revalidatePath("/posts");
