@@ -93,7 +93,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
   const isStructuredCaseStudy = Boolean(
     caseDraft && caseDraft.steps.every((step) => images.some((image) => image.id === step.imageId)),
   );
-  const displayPost = caseDraft ? { ...post, title: caseDraft.title, excerpt: caseDraft.excerpt } : post;
+  const displayPost = caseDraft
+    ? { ...post, title: caseDraft.title, excerpt: caseDraft.excerpt }
+    : post;
 
   return (
     <>
@@ -158,18 +160,22 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
               <CaseStudyArticle
                 draft={caseDraft}
                 images={images}
-                inlineCta={<PostCTABlock slug={post.slug} />}
-                endCta={<PostCTABlock slug={post.slug} />}
+                inlineCta={<PostCTABlock slug={post.slug} region={region?.name} />}
+                endCta={<PostCTABlock slug={post.slug} region={region?.name} />}
               />
             ) : (
               <>
                 <PostContent
                   content={post.content}
                   images={images}
-                  inlineCta={hasInlineImages ? <PostCTABlock slug={post.slug} /> : undefined}
+                  inlineCta={
+                    hasInlineImages ? (
+                      <PostCTABlock slug={post.slug} region={region?.name} />
+                    ) : undefined
+                  }
                 />
                 {!hasInlineImages && <PostGallery images={images} />}
-                {!hasInlineImages && <PostCTABlock slug={post.slug} />}
+                {!hasInlineImages && <PostCTABlock slug={post.slug} region={region?.name} />}
               </>
             )}
             <PostNav prev={adjacent.prev} next={adjacent.next} />

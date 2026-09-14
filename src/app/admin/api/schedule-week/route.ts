@@ -2,7 +2,13 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { readAdminSession } from "@/lib/auth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { buildGuideContent, CAMPAIGN_GUIDES, CAMPAIGN_START_DATE, getPublishSlot, type ScheduledGuide } from "@/lib/weekly-content-plan";
+import {
+  buildGuideContent,
+  CAMPAIGN_GUIDES,
+  CAMPAIGN_START_DATE,
+  getPublishSlot,
+  type ScheduledGuide,
+} from "@/lib/weekly-content-plan";
 
 type Asset = { id: string; url: string; file_name: string };
 type Analysis = {
@@ -15,7 +21,12 @@ type Analysis = {
 };
 
 function kstDate(date: Date) {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
 }
 
 function addDays(date: string, days: number) {
@@ -24,10 +35,18 @@ function addDays(date: string, days: number) {
   return kstDate(value);
 }
 
-function scoreAsset(asset: Asset, analysis: Analysis | undefined, guide: ScheduledGuide, offset: number) {
+function scoreAsset(
+  asset: Asset,
+  analysis: Analysis | undefined,
+  guide: ScheduledGuide,
+  offset: number,
+) {
   if (!analysis || analysis.analysis_status !== "tagged") return -1;
   const tags = [...(analysis.visible_subject_tags ?? []), ...(analysis.leak_type_tags ?? [])];
-  const matches = guide.keywords.reduce((sum, keyword) => sum + (tags.some((tag) => tag.includes(keyword)) ? 8 : 0), 0);
+  const matches = guide.keywords.reduce(
+    (sum, keyword) => sum + (tags.some((tag) => tag.includes(keyword)) ? 8 : 0),
+    0,
+  );
   const stageBonus = analysis.work_stage && analysis.work_stage !== "unknown" ? 2 : 0;
   const rotation = ((asset.id.charCodeAt(0) + offset) % 11) / 20;
   return matches + stageBonus + (analysis.confidence ?? 0) / 25 + rotation;
@@ -35,12 +54,19 @@ function scoreAsset(asset: Asset, analysis: Analysis | undefined, guide: Schedul
 
 export async function POST() {
   const session = await readAdminSession();
-  if (!session.ok) return NextResponse.json({ ok: false, error: "관리자 로그인이 필요합니다." }, { status: 401 });
+  if (!session.ok)
+    return NextResponse.json({ ok: false, error: "관리자 로그인이 필요합니다." }, { status: 401 });
 
   const db = createSupabaseAdminClient();
   const [{ data: assets }, { data: analyses }] = await Promise.all([
     db.from("media_assets").select("id, url, file_name").eq("active", true).limit(2000),
-    db.from("media_asset_analysis").select("asset_id, analysis_status, work_stage, visible_subject_tags, leak_type_tags, confidence").eq("analysis_status", "tagged").limit(2000),
+    db
+      .from("media_asset_analysis")
+      .select(
+        "asset_id, analysis_status, work_stage, visible_subject_tags, leak_type_tags, confidence",
+      )
+      .eq("analysis_status", "tagged")
+      .limit(2000),
   ]);
   const analysisByAsset = new Map((analyses ?? []).map((row) => [row.asset_id, row as Analysis]));
   const media = (assets ?? []) as Asset[];
@@ -54,46 +80,94 @@ export async function POST() {
     const excerpt = `${guide.district} ${guide.dong} ${guide.building}에서 ${guide.symptom}이 보일 때 ${guide.leak} 가능성을 구분하는 점검 순서와 상담 준비사항입니다.`;
 
     const ranked = media
-      .map((asset) => ({ asset, score: scoreAsset(asset, analysisByAsset.get(asset.id), guide, index) }))
+      .map((asset) => ({
+        asset,
+        score: scoreAsset(asset, analysisByAsset.get(asset.id), guide, index),
+      }))
       .filter((item) => item.score >= 8)
-      .sort((a, b) => Number(usedAssetIds.has(a.asset.id)) - Number(usedAssetIds.has(b.asset.id)) || b.score - a.score || a.asset.file_name.localeCompare(b.asset.file_name));
+      .sort(
+        (a, b) =>
+          Number(usedAssetIds.has(a.asset.id)) - Number(usedAssetIds.has(b.asset.id)) ||
+          b.score - a.score ||
+          a.asset.file_name.localeCompare(b.asset.file_name),
+      );
     const selected = ranked.slice(0, 4).map((item) => item.asset);
     selected.forEach((asset) => usedAssetIds.add(asset.id));
     return { guide, selected, publishedAt, slug, title, excerpt };
   });
 
+  const insufficientImages = prepared.filter(({ selected }) => selected.length < 2);
+  if (insufficientImages.length > 0) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: `관련 사진이 2장 미만인 글이 ${insufficientImages.length}개라 예약 저장을 중단했습니다. 사진 분석 결과를 보완한 뒤 다시 실행해 주세요.`,
+        items: insufficientImages.slice(0, 10).map(({ guide, selected }) => ({
+          title: `${guide.dong} ${guide.leak}`,
+          images: selected.length,
+        })),
+      },
+      { status: 422 },
+    );
+  }
+
   const desiredSlugs = new Set(prepared.map((item) => item.slug));
   const campaignKeys = new Set(CAMPAIGN_GUIDES.map((guide) => guide.slugKey));
-  const { data: existingCampaign, error: existingError } = await db.from("posts").select("id, slug").like("slug", "202609%");
-  if (existingError) return NextResponse.json({ ok: false, error: "기존 9월 예약 확인에 실패했습니다." }, { status: 500 });
+  const { data: existingCampaign, error: existingError } = await db
+    .from("posts")
+    .select("id, slug")
+    .like("slug", "202609%");
+  if (existingError)
+    return NextResponse.json(
+      { ok: false, error: "기존 9월 예약 확인에 실패했습니다." },
+      { status: 500 },
+    );
   const staleIds = (existingCampaign ?? [])
-    .filter((post) => !desiredSlugs.has(post.slug) && [...campaignKeys].some((key) => post.slug.endsWith(`-${key}`)))
+    .filter(
+      (post) =>
+        !desiredSlugs.has(post.slug) &&
+        [...campaignKeys].some((key) => post.slug.endsWith(`-${key}`)),
+    )
     .map((post) => post.id);
   if (staleIds.length) {
     const { error: staleError } = await db.from("posts").delete().in("id", staleIds);
-    if (staleError) return NextResponse.json({ ok: false, error: "잘못 배치된 기존 예약 정리에 실패했습니다." }, { status: 500 });
+    if (staleError)
+      return NextResponse.json(
+        { ok: false, error: "잘못 배치된 기존 예약 정리에 실패했습니다." },
+        { status: 500 },
+      );
   }
 
   const baseRows = prepared.map(({ guide, selected, publishedAt, slug, title, excerpt }) => ({
-      title,
-      slug,
-      content: buildGuideContent(guide).replace(/\[\[AUTO_IMAGE_\d+\]\]/g, ""),
-      excerpt,
-      cover_image_url: selected[0]?.url ?? null,
-      category: "leak",
-      region_tags: [guide.district],
-      published: true,
-      published_at: publishedAt,
+    title,
+    slug,
+    content: buildGuideContent(guide).replace(/\[\[AUTO_IMAGE_\d+\]\]/g, ""),
+    excerpt,
+    cover_image_url: selected[0]?.url ?? null,
+    category: "leak",
+    region_tags: [guide.district],
+    published: true,
+    published_at: publishedAt,
   }));
-  const { data: posts, error: postsError } = await db.from("posts").upsert(baseRows, { onConflict: "slug" }).select("id, slug, title");
+  const { data: posts, error: postsError } = await db
+    .from("posts")
+    .upsert(baseRows, { onConflict: "slug" })
+    .select("id, slug, title");
   if (postsError || !posts || posts.length !== prepared.length) {
-    return NextResponse.json({ ok: false, error: "9월 예약 게시물 묶음 저장에 실패했습니다." }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: "9월 예약 게시물 묶음 저장에 실패했습니다." },
+      { status: 500 },
+    );
   }
 
   const postBySlug = new Map(posts.map((post) => [post.slug, post]));
   const postIds = posts.map((post) => post.id);
   const { error: deleteError } = await db.from("post_images").delete().in("post_id", postIds);
-  if (deleteError) return NextResponse.json({ ok: false, error: "기존 예약 사진 정리에 실패했습니다." }, { status: 500 });
+  if (deleteError)
+    return NextResponse.json(
+      { ok: false, error: "기존 예약 사진 정리에 실패했습니다." },
+      { status: 500 },
+    );
 
   const stages = ["증상 범위 확인", "원인 점검", "누수 탐지", "보수 범위 안내"];
   const imageRows = prepared.flatMap(({ guide, selected, slug }) => {
@@ -114,21 +188,46 @@ export async function POST() {
   const { data: insertedImages, error: imagesError } = imageRows.length
     ? await db.from("post_images").insert(imageRows).select("id, post_id, sort_order")
     : { data: [], error: null };
-  if (imagesError) return NextResponse.json({ ok: false, error: "예약 사진 묶음 저장에 실패했습니다." }, { status: 500 });
+  if (imagesError)
+    return NextResponse.json(
+      { ok: false, error: "예약 사진 묶음 저장에 실패했습니다." },
+      { status: 500 },
+    );
 
-  const imageIdBySlot = new Map((insertedImages ?? []).map((image) => [`${image.post_id}:${image.sort_order}`, image.id]));
+  const imageIdBySlot = new Map(
+    (insertedImages ?? []).map((image) => [`${image.post_id}:${image.sort_order}`, image.id]),
+  );
   const finalRows = prepared.map(({ guide, selected, publishedAt, slug, title, excerpt }) => {
     const post = postBySlug.get(slug)!;
     const content = buildGuideContent(guide).replace(/\[\[AUTO_IMAGE_(\d+)\]\]/g, (_, raw) => {
       const id = imageIdBySlot.get(`${post.id}:${Number(raw)}`);
       return id ? `[[post-image:${id}]]` : "";
     });
-    return { title, slug, content, excerpt, cover_image_url: selected[0]?.url ?? null, category: "leak", region_tags: [guide.district], published: true, published_at: publishedAt };
+    return {
+      title,
+      slug,
+      content,
+      excerpt,
+      cover_image_url: selected[0]?.url ?? null,
+      category: "leak",
+      region_tags: [guide.district],
+      published: true,
+      published_at: publishedAt,
+    };
   });
   const { error: finalError } = await db.from("posts").upsert(finalRows, { onConflict: "slug" });
-  if (finalError) return NextResponse.json({ ok: false, error: "사진이 포함된 본문 저장에 실패했습니다." }, { status: 500 });
+  if (finalError)
+    return NextResponse.json(
+      { ok: false, error: "사진이 포함된 본문 저장에 실패했습니다." },
+      { status: 500 },
+    );
 
-  const created = prepared.map(({ slug, title, publishedAt, selected }) => ({ slug, title, publishedAt, images: selected.length }));
+  const created = prepared.map(({ slug, title, publishedAt, selected }) => ({
+    slug,
+    title,
+    publishedAt,
+    images: selected.length,
+  }));
 
   revalidatePath("/");
   revalidatePath("/posts");
@@ -138,5 +237,11 @@ export async function POST() {
   revalidatePath("/admin/calendar");
   revalidatePath("/admin/posts");
   revalidatePath("/sitemap.xml");
-  return NextResponse.json({ ok: true, startDate: CAMPAIGN_START_DATE, endDate: "2026-09-30", removed: staleIds.length, created });
+  return NextResponse.json({
+    ok: true,
+    startDate: CAMPAIGN_START_DATE,
+    endDate: "2026-09-30",
+    removed: staleIds.length,
+    created,
+  });
 }
