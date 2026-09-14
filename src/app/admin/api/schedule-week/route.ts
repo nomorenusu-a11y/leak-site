@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { readAdminSession } from "@/lib/auth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { buildGuideContent, DAILY_PUBLISH_HOURS, WEEKLY_GUIDES, type ScheduledGuide } from "@/lib/weekly-content-plan";
+import { buildGuideContent, DAILY_PUBLISH_COUNTS, DAILY_PUBLISH_TIMES, WEEKLY_GUIDES, type ScheduledGuide } from "@/lib/weekly-content-plan";
 
 type Asset = { id: string; url: string; file_name: string };
 type Analysis = {
@@ -54,13 +54,18 @@ export async function POST() {
   const monday = weekMonday();
   const created: Array<{ slug: string; title: string; publishedAt: string; images: number }> = [];
   const usedAssetIds = new Set<string>();
+  let guideOffset = 0;
 
   for (const [index, guide] of WEEKLY_GUIDES.entries()) {
-    const dayIndex = Math.floor(index / 5);
-    const slotIndex = index % 5;
+    let dayIndex = 0;
+    while (dayIndex < DAILY_PUBLISH_COUNTS.length - 1 && index >= guideOffset + DAILY_PUBLISH_COUNTS[dayIndex]) {
+      guideOffset += DAILY_PUBLISH_COUNTS[dayIndex];
+      dayIndex += 1;
+    }
+    const slotIndex = index - guideOffset;
     const date = addDays(monday, dayIndex);
-    const hour = String(DAILY_PUBLISH_HOURS[slotIndex]).padStart(2, "0");
-    const publishedAt = new Date(`${date}T${hour}:00:00+09:00`).toISOString();
+    const time = DAILY_PUBLISH_TIMES[dayIndex][slotIndex];
+    const publishedAt = new Date(`${date}T${time}:00+09:00`).toISOString();
     const slug = `${date.replaceAll("-", "")}-${guide.slugKey}`;
     const title = `${guide.dong} ${guide.leak} | ${guide.symptom} 점검 안내`;
     const excerpt = `${guide.district} ${guide.dong} ${guide.building}에서 ${guide.symptom}이 보일 때 ${guide.leak} 가능성을 구분하는 점검 순서와 상담 준비사항입니다.`;

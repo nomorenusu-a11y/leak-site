@@ -47,9 +47,33 @@ export const WEEKLY_GUIDES: ScheduledGuide[] = [
   { district: "고양시 일산동구", dong: "백석동", building: "오피스텔", leak: "세면대 누수", symptom: "욕실장 안쪽에 곰팡이와 물기가 생김", location: "세면대 수전호스·트랩·벽체 급수관", check: "급수와 배수 사용을 나눠 젖는 위치 확인", repair: "호스·트랩·벽체 연결부 중 원인에 맞춰 보수", slugKey: "baekseok-basin-mold", keywords: ["세면대", "욕실", "배수관", "벽체"] },
   { district: "용인시 수지구", dong: "죽전동", building: "아파트", leak: "분배기 누수", symptom: "분배기함 안에서 녹물과 물기가 보임", location: "난방 분배기 밸브·연결 소켓", check: "각 회로 운전과 밸브 주변 누수 흔적을 확인", repair: "부식된 밸브·연결부와 배관 상태에 맞춰 보수", slugKey: "jukjeon-manifold-rust", keywords: ["분배기", "난방배관", "밸브", "배관"] },
   { district: "부천시 원미구", dong: "중동", building: "빌라", leak: "화장실 누수", symptom: "변기 사용 뒤 아래층 천장에 흔적이 생김", location: "변기 배수 연결부와 욕실 바닥", check: "변기 물내림과 샤워 사용을 분리해 재현", repair: "변기 배수와 방수 문제를 구분해 보수", slugKey: "jungdong-toilet-ceiling", keywords: ["변기", "화장실", "욕실", "천장"] },
+  { district: "강남구", dong: "논현동", building: "상가", leak: "천장 누수", symptom: "영업 중 천장 조명 주변으로 물이 번짐", location: "천장 내부 급수관과 윗층 배수 설비", check: "윗층 물 사용 시간과 천장 수분 분포를 비교", repair: "전기 안전을 확보하고 확인된 배관 구간만 보수", slugKey: "nonhyeon-shop-ceiling-light", keywords: ["천장", "급수배관", "배수관", "탐지장비"] },
+  { district: "노원구", dong: "월계동", building: "아파트", leak: "베란다 누수", symptom: "세탁기 탈수 뒤 베란다 바닥에 물이 고임", location: "세탁기 배수호스와 바닥 배수구", check: "급수·세탁·탈수 단계를 나눠 물이 생기는 시점 확인", repair: "호스와 배수구 연결 상태에 맞춰 필요한 부위 보수", slugKey: "wolgye-laundry-veranda", keywords: ["베란다", "배수관", "바닥", "배관"] },
+  { district: "마포구", dong: "망원동", building: "빌라", leak: "벽체 누수", symptom: "비가 오지 않아도 벽지가 젖고 들뜸", location: "주방과 욕실 사이 벽체 급수관", check: "강우 영향과 계량기·급수 압력 변화를 분리 확인", repair: "결로와 배관 누수를 구분한 뒤 원인 구간 보수", slugKey: "mangwon-wallpaper-moisture", keywords: ["벽체", "급수배관", "수도계량기", "탐지장비"] },
+  { district: "성북구", dong: "정릉동", building: "단독주택", leak: "마당 수도관 누수", symptom: "마당 한쪽이 계속 젖고 계량기가 돌아감", location: "계량기 이후 실외 매립 직수관", check: "실내외 밸브를 나눠 차단하고 계량기 반응 확인", repair: "누수 지점을 좁힌 뒤 최소 범위 굴착과 배관 보수", slugKey: "jeongneung-yard-water-pipe", keywords: ["수도계량기", "직수관", "매립배관", "탐지장비"] },
+  { district: "송파구", dong: "잠실동", building: "아파트", leak: "욕조 누수", symptom: "목욕물을 뺄 때 아래층 천장이 젖음", location: "욕조 배수구와 트랩 연결부", check: "급수와 욕조 배수를 분리해 누수 조건을 재현", repair: "배수 연결부 또는 방수 경계 중 확인된 원인 보수", slugKey: "jamsil-bathtub-drain", keywords: ["욕조", "욕실", "배수관", "천장"] },
+  { district: "구로구", dong: "개봉동", building: "다가구주택", leak: "공용배관 누수", symptom: "여러 세대가 물을 쓸 때 계단 벽이 젖음", location: "계단 벽체 내부 공용 급수·배수관", check: "세대별 사용 시간과 공용관 압력·배수 반응을 비교", repair: "전용·공용 구간을 구분하고 관리 주체와 보수 범위 결정", slugKey: "gaebong-shared-pipe-stair", keywords: ["공용배관", "벽체", "급수배관", "배수관"] },
+  { district: "서초구", dong: "양재동", building: "사무실", leak: "에어컨 배수 누수", symptom: "냉방할 때만 천장에 물방울이 생김", location: "천장형 에어컨 드레인 호스와 배수관", check: "냉방 운전 시간과 드레인 배수 상태를 확인", repair: "막힘·기울기·이음부 중 확인된 원인에 맞춰 정비", slugKey: "yangjae-aircon-drain", keywords: ["천장", "배수관", "에어컨"] },
+  { district: "인천 계양구", dong: "작전동", building: "아파트", leak: "세탁실 누수", symptom: "세탁하지 않아도 세탁실 벽 아래가 젖음", location: "세탁기 급수밸브와 벽체 매립 급수관", check: "급수밸브 차단 전후 수분과 계량기 변화를 비교", repair: "밸브·호스·매립관 중 확인된 원인 부위 보수", slugKey: "jakjeon-laundry-wall", keywords: ["밸브", "급수배관", "벽체", "수도계량기"] },
+  { district: "인천 중구", dong: "운서동", building: "오피스텔", leak: "천장 배관 누수", symptom: "새벽에만 욕실 천장에서 물이 떨어짐", location: "윗층 욕실 배수관과 공용 수직관", check: "발생 시간과 윗층·공용관 사용 조건을 대조", repair: "전용 배수와 공용 수직관을 구분해 보수 주체 결정", slugKey: "unseo-night-ceiling-drip", keywords: ["천장", "욕실", "배수관", "공용배관"] },
+  { district: "고양시 덕양구", dong: "화정동", building: "아파트", leak: "보일러 분배기 누수", symptom: "분배기함 주변 마루가 검게 변색됨", location: "분배기 밸브와 난방관 연결부", check: "회로별 운전과 압력·수분 반응을 비교", repair: "노후 밸브나 연결부를 확인해 해당 부분만 보수", slugKey: "hwajeong-manifold-floor", keywords: ["분배기", "난방배관", "바닥", "밸브"] },
+  { district: "안양시 동안구", dong: "평촌동", building: "아파트", leak: "주방 온수관 누수", symptom: "싱크대 앞 마루가 따뜻하고 부풀어 오름", location: "주방 바닥 매립 온수관", check: "온수 사용 전후 바닥 온도·수분·압력 변화를 확인", repair: "온수관 손상 위치를 찾은 뒤 최소 범위로 바닥 보수", slugKey: "pyeongchon-kitchen-hot-water", keywords: ["온수배관", "싱크대", "바닥", "탐지장비"] },
+  { district: "의정부시", dong: "민락동", building: "아파트", leak: "화장실 방수 누수", symptom: "샤워를 오래 한 날만 아래층 벽이 젖음", location: "욕실 바닥 방수층과 벽체 모서리", check: "짧은 급수와 장시간 살수 조건을 나눠 확인", repair: "배관 이상 여부를 먼저 제외하고 방수 보수 범위 결정", slugKey: "minrak-shower-waterproof", keywords: ["욕실", "화장실", "벽체", "바닥"] },
+  { district: "남양주시", dong: "다산동", building: "아파트", leak: "실외기실 누수", symptom: "비 온 뒤 실외기실 벽과 바닥이 젖음", location: "외벽 관통부·창호 코킹·바닥 배수구", check: "강우 방향과 관통부·배수 상태를 함께 확인", repair: "외부 유입 지점을 확인해 코킹 또는 방수 구간 보수", slugKey: "dasan-outdoor-unit-rain", keywords: ["외벽", "창틀", "바닥", "배수관"] },
+  { district: "광명시", dong: "철산동", building: "아파트", leak: "수전 누수", symptom: "물을 잠가도 욕실 수전 벽면에서 물이 맺힘", location: "수전 편심과 벽체 내부 급수 연결부", check: "냉수·온수 밸브를 나눠 차단하고 물기 변화를 확인", repair: "수전 연결부와 벽체 배관 중 원인 부위 보수", slugKey: "cheolsan-faucet-wall", keywords: ["수전", "욕실", "벽체", "급수배관"] },
 ];
 
-export const DAILY_PUBLISH_HOURS = [9, 11, 14, 16, 18] as const;
+export const DAILY_PUBLISH_TIMES = [
+  ["08:37", "10:16", "12:48", "15:23", "18:11", "20:42", "22:07"],
+  ["07:54", "09:41", "12:22", "14:57", "17:36", "21:14"],
+  ["08:13", "10:49", "13:06", "15:38", "18:27", "20:03", "21:46", "23:08"],
+  ["09:07", "11:32", "14:18", "17:49", "20:26"],
+  ["08:28", "10:57", "13:43", "16:09", "18:52", "21:31", "22:44"],
+  ["07:46", "09:24", "11:53", "14:36", "17:17", "19:48", "21:22", "22:53"],
+  ["08:09", "10:34", "13:19", "15:54", "18:33", "20:17", "22:29", "23:11"],
+] as const;
+
+export const DAILY_PUBLISH_COUNTS = DAILY_PUBLISH_TIMES.map((times) => times.length);
 
 export function buildGuideContent(guide: ScheduledGuide) {
   const place = `${guide.district} ${guide.dong}`;
