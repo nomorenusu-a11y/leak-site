@@ -5,6 +5,9 @@ import { siteConfig } from "@/lib/env";
 import { ALL_CITY_CODES, cityCodeToSlug } from "@/lib/city";
 import { getAllPublishedSlugs } from "@/lib/posts";
 
+// 예약 발행 시각이 지난 글을 별도 재배포 없이 즉시 사이트맵에 반영한다.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteConfig.url;
 
