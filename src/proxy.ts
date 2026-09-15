@@ -44,7 +44,7 @@ export async function proxy(request: NextRequest) {
   </body>
 </html>`,
       {
-        status: 410,
+        status: 404,
         headers: {
           "Content-Type": "text/html; charset=utf-8",
           "X-Robots-Tag": "noindex, nofollow",
