@@ -4,10 +4,14 @@ import { readAdminSession } from "@/lib/auth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import {
   buildGuideContent,
+  buildGuideExcerpt,
+  buildGuideTitle,
   CAMPAIGN_GUIDES,
   CAMPAIGN_START_DATE,
   getPublishSlot,
+  getScheduledContentType,
   type ScheduledGuide,
+  validateGuideDraft,
 } from "@/lib/weekly-content-plan";
 
 type Asset = { id: string; url: string; file_name: string };
@@ -76,8 +80,10 @@ export async function POST() {
     const date = addDays(CAMPAIGN_START_DATE, dayIndex);
     const publishedAt = new Date(`${date}T${time}:00+09:00`).toISOString();
     const slug = `${date.replaceAll("-", "")}-${guide.slugKey}`;
-    const title = `${guide.dong} ${guide.leak} | ${guide.symptom} 점검 안내`;
-    const excerpt = `${guide.district} ${guide.dong} ${guide.building}에서 ${guide.symptom}이 보일 때 ${guide.leak} 가능성을 구분하는 점검 순서와 상담 준비사항입니다.`;
+    const contentType = getScheduledContentType(index);
+    const title = buildGuideTitle(guide, contentType);
+    const excerpt = buildGuideExcerpt(guide, contentType);
+    const content = buildGuideContent(guide, contentType);
 
     const ranked = media
       .map((asset) => ({
@@ -93,8 +99,31 @@ export async function POST() {
       );
     const selected = ranked.slice(0, 4).map((item) => item.asset);
     selected.forEach((asset) => usedAssetIds.add(asset.id));
-    return { guide, selected, publishedAt, slug, title, excerpt };
+    return { guide, selected, publishedAt, slug, title, excerpt, content, contentType };
   });
+
+  const invalidDrafts = prepared
+    .map((item) => ({
+      title: item.title,
+      errors: validateGuideDraft({
+        guide: item.guide,
+        type: item.contentType,
+        title: item.title,
+        excerpt: item.excerpt,
+        content: item.content,
+      }),
+    }))
+    .filter((item) => item.errors.length > 0);
+  if (invalidDrafts.length > 0) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: `품질 기준을 통과하지 못한 예약 글이 ${invalidDrafts.length}개입니다.`,
+        items: invalidDrafts.slice(0, 10),
+      },
+      { status: 422 },
+    );
+  }
 
   const insufficientImages = prepared.filter(({ selected }) => selected.length < 2);
   if (insufficientImages.length > 0) {
@@ -138,17 +167,19 @@ export async function POST() {
       );
   }
 
-  const baseRows = prepared.map(({ guide, selected, publishedAt, slug, title, excerpt }) => ({
-    title,
-    slug,
-    content: buildGuideContent(guide).replace(/\[\[AUTO_IMAGE_\d+\]\]/g, ""),
-    excerpt,
-    cover_image_url: selected[0]?.url ?? null,
-    category: "leak",
-    region_tags: [guide.district],
-    published: true,
-    published_at: publishedAt,
-  }));
+  const baseRows = prepared.map(
+    ({ guide, selected, publishedAt, slug, title, excerpt, content }) => ({
+      title,
+      slug,
+      content: content.replace(/\[\[AUTO_IMAGE_\d+\]\]/g, ""),
+      excerpt,
+      cover_image_url: selected[0]?.url ?? null,
+      category: "leak",
+      region_tags: [guide.district],
+      published: true,
+      published_at: publishedAt,
+    }),
+  );
   const { data: posts, error: postsError } = await db
     .from("posts")
     .upsert(baseRows, { onConflict: "slug" })
@@ -197,24 +228,26 @@ export async function POST() {
   const imageIdBySlot = new Map(
     (insertedImages ?? []).map((image) => [`${image.post_id}:${image.sort_order}`, image.id]),
   );
-  const finalRows = prepared.map(({ guide, selected, publishedAt, slug, title, excerpt }) => {
-    const post = postBySlug.get(slug)!;
-    const content = buildGuideContent(guide).replace(/\[\[AUTO_IMAGE_(\d+)\]\]/g, (_, raw) => {
-      const id = imageIdBySlot.get(`${post.id}:${Number(raw)}`);
-      return id ? `[[post-image:${id}]]` : "";
-    });
-    return {
-      title,
-      slug,
-      content,
-      excerpt,
-      cover_image_url: selected[0]?.url ?? null,
-      category: "leak",
-      region_tags: [guide.district],
-      published: true,
-      published_at: publishedAt,
-    };
-  });
+  const finalRows = prepared.map(
+    ({ guide, selected, publishedAt, slug, title, excerpt, content }) => {
+      const post = postBySlug.get(slug)!;
+      const contentWithImages = content.replace(/\[\[AUTO_IMAGE_(\d+)\]\]/g, (_, raw) => {
+        const id = imageIdBySlot.get(`${post.id}:${Number(raw)}`);
+        return id ? `[[post-image:${id}]]` : "";
+      });
+      return {
+        title,
+        slug,
+        content: contentWithImages,
+        excerpt,
+        cover_image_url: selected[0]?.url ?? null,
+        category: "leak",
+        region_tags: [guide.district],
+        published: true,
+        published_at: publishedAt,
+      };
+    },
+  );
   const { error: finalError } = await db.from("posts").upsert(finalRows, { onConflict: "slug" });
   if (finalError)
     return NextResponse.json(
@@ -222,11 +255,12 @@ export async function POST() {
       { status: 500 },
     );
 
-  const created = prepared.map(({ slug, title, publishedAt, selected }) => ({
+  const created = prepared.map(({ slug, title, publishedAt, selected, contentType }) => ({
     slug,
     title,
     publishedAt,
     images: selected.length,
+    contentType,
   }));
 
   revalidatePath("/");

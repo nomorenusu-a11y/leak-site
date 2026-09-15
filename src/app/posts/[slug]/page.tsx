@@ -82,7 +82,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
 
   const [images, related, adjacent] = await Promise.all([
     getPostImages(post.id),
-    getRelatedPosts(post, 3),
+    getRelatedPosts(post, 5),
     getAdjacentPosts(post.slug),
   ]);
   const location = await getPostLocation(post.id);

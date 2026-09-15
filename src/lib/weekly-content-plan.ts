@@ -11,6 +11,21 @@ export type ScheduledGuide = {
   keywords: string[];
 };
 
+export type ScheduledContentType =
+  | "region_overview"
+  | "symptom_solution"
+  | "self_check"
+  | "cost_insurance"
+  | "emergency";
+
+export const SCHEDULED_CONTENT_TYPE_LABELS: Record<ScheduledContentType, string> = {
+  region_overview: "지역 종합",
+  symptom_solution: "증상 해결",
+  self_check: "자가 점검",
+  cost_insurance: "비용·보험",
+  emergency: "긴급 대응",
+};
+
 const BASE_GUIDES: ScheduledGuide[] = [
   {
     district: "강남구",
@@ -841,7 +856,135 @@ function evidencePrompt(guide: ScheduledGuide) {
   return "젖은 부위 전체와 가장 심한 부분을 각각 촬영하고, 어떤 물을 사용할 때 증상이 나타나는지도 알려주세요.";
 }
 
-export function buildGuideContent(guide: ScheduledGuide) {
+function buildSymptomGuideContent(guide: ScheduledGuide) {
   const place = `${guide.district} ${guide.dong}`;
   return `## ${guide.symptom}, 먼저 이렇게 확인합니다\n\n${place} ${guide.building}에서 **${guide.symptom}**이 나타나면 보이는 물기만으로 ${guide.leak}로 단정하기 어렵습니다. 물을 사용한 시간, 비가 온 날, 보일러 작동 여부처럼 증상이 달라지는 조건을 먼저 기록해 주세요. 이 정보가 불필요한 철거를 줄이고 점검 순서를 정하는 데 도움이 됩니다.\n\n## 이 증상은 확인을 미루지 마세요\n\n${urgencyAdvice(guide)} 원인을 모른 채 물을 계속 사용하면 젖는 범위가 넓어질 수 있으므로, 안전을 확보한 뒤 현재 상태부터 남겨 주세요.\n\n[[AUTO_IMAGE_0]]\n\n## ${place} ${guide.leak} 점검 순서\n\n현장에서는 ${guide.location}을 중심으로 **${guide.check}**합니다. 급수·온수·난방·배수·방수·외부 유입은 증상이 비슷할 수 있어 한 가지 반응만으로 공사 범위를 정하지 않습니다. 계량기, 압력, 수분 분포와 사용 조건을 서로 비교해 원인 가능성을 좁힙니다.\n\n[[AUTO_IMAGE_1]]\n\n## 지금 바로 할 수 있는 확인\n\n1. 모든 수전과 물 사용 기기를 잠시 멈춥니다.\n2. 계량기 또는 보일러 압력계 변화를 사진으로 남깁니다.\n3. 젖은 범위와 물이 나타난 시간을 기록합니다.\n4. 아래층 피해가 있다면 천장 전체와 가까운 사진을 함께 확보합니다.\n\n물을 억지로 더 사용해 증상을 재현하면 피해가 커질 수 있습니다. 전기 설비 주변까지 젖었다면 해당 공간 사용을 멈추고 먼저 안전을 확보해 주세요.\n\n[[AUTO_IMAGE_2]]\n\n## 확인 뒤 보수 범위를 결정합니다\n\n원인이 확인되면 **${guide.repair}**하는 방향을 설명드립니다. 점검 결과와 건물 구조, 마감재 상태에 따라 작업 범위는 달라질 수 있습니다. 원인을 찾기 전에 넓게 철거하거나 같은 증상만 보고 공사를 확정하지 않습니다.\n\n[[AUTO_IMAGE_3]]\n\n## 전화 전에 30초만 준비해 주세요\n\n${evidencePrompt(guide)} 처음 발견한 시각과 최근 물 사용 여부까지 함께 알려주시면 상담할 때 확인 순서를 더 빠르게 정할 수 있습니다.\n\n## 상담할 때 보내주시면 좋은 사진\n\n- 물자국이나 젖은 부위 전체가 보이는 사진\n- 가장 심한 부분을 가까이 찍은 사진\n- 계량기 또는 보일러 압력계 사진\n- 아래층 피해가 있다면 위·아래층 위치를 비교할 수 있는 사진\n\n사진과 함께 ${place}, 건물 형태, 처음 발견한 시점, 물 사용과의 관계를 알려주시면 현장 도착 전 점검 방향을 안내하기 쉽습니다. **서울·경기·인천 전 지역 출장 상담**이 가능하며 전화 **010-5700-4026** 또는 카카오 상담을 이용할 수 있습니다.\n\n## 자주 묻는 질문\n\n### ${guide.leak}라면 바로 공사를 해야 하나요?\n\n증상만으로 공사를 결정하지 않습니다. 먼저 원인 계통과 위치를 확인하고 필요한 보수 범위를 설명받는 것이 좋습니다.\n\n### 누수보험 서류도 준비할 수 있나요?\n\n보험 적용 여부는 계약마다 다릅니다. 가입 보험사에 보장 항목을 먼저 확인한 뒤, 현장 사진과 작업 내역 등 실제 진행 내용에 맞는 자료를 준비하세요.`;
+}
+
+const CONTENT_TYPE_ROTATION: ScheduledContentType[] = [
+  "symptom_solution",
+  "self_check",
+  "region_overview",
+  "emergency",
+  "cost_insurance",
+];
+
+export function getScheduledContentType(index: number): ScheduledContentType {
+  return CONTENT_TYPE_ROTATION[index % CONTENT_TYPE_ROTATION.length];
+}
+
+export function buildGuideTitle(guide: ScheduledGuide, type: ScheduledContentType) {
+  const titles: Record<ScheduledContentType, string> = {
+    region_overview: `${guide.dong} 누수탐지 | ${guide.building}에서 자주 확인하는 ${guide.leak}`,
+    symptom_solution: `${guide.dong} ${guide.leak} | ${guide.symptom} 원인 구분`,
+    self_check: `${guide.dong} ${guide.leak} 자가점검 | ${guide.symptom} 확인 순서`,
+    cost_insurance: `${guide.dong} ${guide.leak} 비용·보험 | 점검 전 준비사항`,
+    emergency: `${guide.dong} ${guide.leak} 긴급대응 | ${guide.symptom} 때 먼저 할 일`,
+  };
+  return titles[type];
+}
+
+export function buildGuideExcerpt(guide: ScheduledGuide, type: ScheduledContentType) {
+  const place = `${guide.district} ${guide.dong}`;
+  const excerpts: Record<ScheduledContentType, string> = {
+    region_overview: `${place} ${guide.building}에서 ${guide.symptom}이 보일 때 확인할 원인과 ${guide.leak} 점검 범위를 정리했습니다.`,
+    symptom_solution: `${place}에서 ${guide.symptom}이 나타날 때 ${guide.leak} 여부를 구분하는 기준과 점검 순서를 안내합니다.`,
+    self_check: `${place} ${guide.building}에서 안전하게 확인할 수 있는 ${guide.leak} 자가점검 순서와 중단해야 할 행동입니다.`,
+    cost_insurance: `${place} ${guide.leak} 상담 전 비용 범위를 좌우하는 조건과 보험 확인에 필요한 자료를 안내합니다.`,
+    emergency: `${place}에서 ${guide.symptom}이 발생했을 때 피해를 줄이기 위해 먼저 할 일과 전달할 정보를 정리했습니다.`,
+  };
+  return excerpts[type];
+}
+
+function intentOpening(guide: ScheduledGuide, type: ScheduledContentType) {
+  const place = `${guide.district} ${guide.dong}`;
+  const sections: Record<ScheduledContentType, string> = {
+    region_overview: `## ${guide.dong} 누수, 건물 조건부터 봅니다
+
+${place}의 ${guide.building}에서는 전용 배관과 공용 배관의 경계, 위층 물 사용 시간, 보일러 운전 여부를 함께 살펴야 합니다. **${guide.symptom}**이 보여도 ${guide.leak}로 바로 단정하지 않고 건물 구조와 발생 조건을 먼저 나눕니다.
+
+### 비슷한 흔적을 만드는 원인
+
+- 물을 쓰지 않을 때도 변하면 급수·온수·난방 계통
+- 특정 설비를 쓸 때만 젖으면 배수 연결부와 방수 경계
+- 비가 온 뒤에만 나타나면 창호·외벽·옥상 유입
+- 여러 세대에서 동시에 나타나면 공용 배관 가능성`,
+    symptom_solution: `## ${guide.symptom}, 원인을 구분하는 기준
+
+${place} ${guide.building}에서 이 증상이 보이면 물을 사용한 시간, 보일러 작동 여부, 강우와의 관계를 먼저 비교합니다. 물자국의 위치와 실제 손상 지점은 배관 경로를 따라 떨어져 있을 수 있습니다.
+
+### 먼저 기록할 세 가지
+
+1. 물을 전혀 쓰지 않아도 계속되는지
+2. 온수·난방·샤워·배수 중 언제 심해지는지
+3. 젖는 경계가 시간에 따라 어떻게 변하는지`,
+    self_check: `## 도구 없이 하는 5분 자가점검
+
+자가점검의 목적은 직접 수리하는 것이 아니라 전문가가 확인할 순서를 빠르게 정할 자료를 만드는 것입니다.
+
+1. 수도와 물을 사용하는 기기를 모두 멈춥니다.
+2. 계량기 별침 또는 보일러 압력계를 촬영합니다.
+3. 5분 뒤 같은 각도에서 한 번 더 촬영합니다.
+4. ${guide.location}의 젖은 경계를 확인합니다.
+5. 온수·난방·배수를 사용했던 시간을 메모합니다.
+
+매립 배관을 임의로 뜯거나 압력을 반복 보충하지 마세요. 변화가 없어도 배수·방수·외부 유입 문제는 남아 있을 수 있습니다.`,
+    cost_insurance: `## ${guide.leak} 비용이 달라지는 조건
+
+${place} ${guide.building}의 비용은 탐지 검사, 손상 위치, 철거 범위, 배관 자재, 마감 복구 범위에 따라 달라집니다. 사진만 보고 총액을 확정하기보다 아래 항목이 어디까지 포함되는지 확인해야 합니다.
+
+- 점검·탐지 비용과 보수 비용의 구분
+- 바닥·벽·천장 마감 복구 포함 여부
+- 원인을 찾지 못했을 때의 비용 기준
+- 보수 후 재검사와 A/S 조건
+
+보험 적용은 계약과 사고 원인에 따라 다릅니다. 보험사에 보장 항목과 필요한 서류를 먼저 확인하고 실제 작업 전·중·후 사진과 작업 내역을 보관하세요.`,
+    emergency: `## 첫 10분, 피해부터 줄이세요
+
+${place}에서 **${guide.symptom}**이 발생했다면 원인보다 추가 피해와 안전을 먼저 확인합니다.
+
+1. 수도·보일러·세탁기 등 사용 중인 설비를 멈춥니다.
+2. 안전하게 접근할 수 있을 때만 밸브 상태를 확인합니다.
+3. 물이 시작되는 위치와 번지는 방향을 촬영합니다.
+4. 아래층 피해가 있으면 물 사용 중단 사실을 알립니다.
+5. 관리사무소에 공용 배관 가능성도 접수합니다.
+
+천장 조명이나 콘센트 주변이 젖었다면 해당 공간을 사용하지 말고 안전을 먼저 확보하세요.`,
+  };
+  return sections[type];
+}
+
+export function buildGuideContent(
+  guide: ScheduledGuide,
+  type: ScheduledContentType = "symptom_solution",
+) {
+  return `<!-- content-type:${type} -->
+
+${intentOpening(guide, type)}
+
+${buildSymptomGuideContent(guide)}`;
+}
+
+export function validateGuideDraft(args: {
+  guide: ScheduledGuide;
+  type: ScheduledContentType;
+  title: string;
+  excerpt: string;
+  content: string;
+}) {
+  const { guide, type, title, excerpt, content } = args;
+  const errors: string[] = [];
+  if (!title.includes(guide.dong) || !title.includes(guide.leak))
+    errors.push("제목에 지역과 누수 유형이 모두 필요합니다.");
+  if (title.length > 75) errors.push("제목이 75자를 넘습니다.");
+  if (excerpt.length < 40 || excerpt.length > 165) errors.push("설명문 길이가 부적절합니다.");
+  if (content.length < 1800) errors.push("본문이 충분히 구체적이지 않습니다.");
+  if (!content.startsWith(`<!-- content-type:${type} -->`))
+    errors.push("글 유형이 일치하지 않습니다.");
+  if ((content.match(/\[\[AUTO_IMAGE_\d+\]\]/g) ?? []).length < 4)
+    errors.push("사진 위치가 4개 미만입니다.");
+  if (/방문했습니다|해결했습니다|시공 사례|고객님 댁/.test(content))
+    errors.push("확인되지 않은 현장 사례 표현이 포함되어 있습니다.");
+  if (!content.includes("서울·경기·인천 전 지역")) errors.push("출장 가능 지역 안내가 없습니다.");
+  return errors;
 }

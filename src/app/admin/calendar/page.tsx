@@ -4,6 +4,10 @@ import { assertAdmin } from "@/lib/auth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { ScheduleWeekButton } from "@/components/admin/ScheduleWeekButton";
 import { IndexNowSync } from "@/components/admin/IndexNowSync";
+import {
+  SCHEDULED_CONTENT_TYPE_LABELS,
+  type ScheduledContentType,
+} from "@/lib/weekly-content-plan";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +18,7 @@ type CalendarPost = {
   slug: string;
   published: boolean;
   published_at: string;
+  content: string;
 };
 
 function firstString(value: string | string[] | undefined) {
@@ -43,6 +48,14 @@ function dateKey(value: Date | string) {
     day: "2-digit",
   }).format(typeof value === "string" ? new Date(value) : value);
 }
+function contentTypeLabel(content: string) {
+  const value = content.match(/<!-- content-type:([a-z_]+) -->/)?.[1];
+  if (value === "verified_case") return "실제 사례";
+  if (value && value in SCHEDULED_CONTENT_TYPE_LABELS) {
+    return SCHEDULED_CONTENT_TYPE_LABELS[value as ScheduledContentType];
+  }
+  return "기존 글";
+}
 function timeLabel(value: string) {
   return new Intl.DateTimeFormat("ko-KR", {
     timeZone: "Asia/Seoul",
@@ -70,7 +83,7 @@ export default async function AdminCalendarPage({
   const db = createSupabaseAdminClient();
   const { data } = await db
     .from("posts")
-    .select("id, title, slug, published, published_at")
+    .select("id, title, slug, published, published_at, content")
     .gte("published_at", from)
     .lt("published_at", to)
     .order("published_at");
@@ -212,10 +225,13 @@ export default async function AdminCalendarPage({
                         title={post.title}
                         className={`block rounded-md border px-1.5 py-1 text-[9px] leading-3 transition hover:brightness-125 sm:px-2 sm:py-1.5 sm:text-[11px] sm:leading-4 ${scheduled ? "border-blue-400/20 bg-blue-400/10 text-blue-200" : post.published ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-200" : "border-amber-400/20 bg-amber-400/10 text-amber-200"}`}
                       >
-                        <span className="hidden font-bold sm:inline">
-                          {timeLabel(post.published_at)}{" "}
+                        <span className="flex items-center gap-1.5 font-bold">
+                          <span>{timeLabel(post.published_at)}</span>
+                          <span className="rounded bg-white/10 px-1 py-0.5 text-[8px] sm:text-[9px]">
+                            {contentTypeLabel(post.content)}
+                          </span>
                         </span>
-                        <span className="line-clamp-2">{post.title}</span>
+                        <span className="mt-0.5 line-clamp-2">{post.title}</span>
                       </Link>
                     );
                   })}

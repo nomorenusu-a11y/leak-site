@@ -2,10 +2,15 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   buildGuideContent,
+  buildGuideExcerpt,
+  buildGuideTitle,
   CAMPAIGN_GUIDES,
   DAILY_PUBLISH_COUNTS,
   DAILY_PUBLISH_TIMES,
   getPublishSlot,
+  getScheduledContentType,
+  SCHEDULED_CONTENT_TYPE_LABELS,
+  validateGuideDraft,
 } from "../src/lib/weekly-content-plan";
 
 test("September campaign contains five to ten guides at varied times each day", () => {
@@ -28,9 +33,18 @@ test("September campaign contains five to ten guides at varied times each day", 
 });
 
 test("scheduled guides are useful, clearly framed advice rather than invented cases", () => {
-  for (const guide of CAMPAIGN_GUIDES) {
-    const content = buildGuideContent(guide);
-    assert.ok(content.length > 1450, `${guide.slugKey} content is too short`);
+  const seenTypes = new Set<string>();
+  for (const [index, guide] of CAMPAIGN_GUIDES.entries()) {
+    const type = getScheduledContentType(index);
+    const title = buildGuideTitle(guide, type);
+    const excerpt = buildGuideExcerpt(guide, type);
+    const content = buildGuideContent(guide, type);
+    seenTypes.add(type);
+    assert.deepEqual(
+      validateGuideDraft({ guide, type, title, excerpt, content }),
+      [],
+      `${guide.slugKey} failed quality validation`,
+    );
     assert.match(content, /자주 묻는 질문/);
     assert.match(content, /이 증상은 확인을 미루지 마세요/);
     assert.match(content, /전화 전에 30초만 준비해 주세요/);
@@ -40,4 +54,5 @@ test("scheduled guides are useful, clearly framed advice rather than invented ca
     assert.ok(content.includes(guide.repair));
     assert.doesNotMatch(content, /시공 사례|해결했습니다|방문했습니다/);
   }
+  assert.deepEqual([...seenTypes].sort(), Object.keys(SCHEDULED_CONTENT_TYPE_LABELS).sort());
 });

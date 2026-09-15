@@ -131,7 +131,32 @@ export async function getPostsByRegionTag(
   };
 }
 
-export async function getRelatedPosts(post: Post, limit = 3): Promise<Post[]> {
+const RELATED_STOP_WORDS = new Set([
+  "누수",
+  "누수탐지",
+  "점검",
+  "안내",
+  "원인",
+  "확인",
+  "때",
+  "먼저",
+  "할",
+  "일",
+]);
+
+function relatedTerms(title: string) {
+  return title
+    .replace(/[^가-힣a-z0-9]+/gi, " ")
+    .split(" ")
+    .map((term) => term.trim().toLowerCase())
+    .filter((term) => term.length >= 2 && !RELATED_STOP_WORDS.has(term));
+}
+
+function postContentType(content: string) {
+  return content.match(/<!-- content-type:([a-z_]+) -->/)?.[1] ?? "legacy";
+}
+
+export async function getRelatedPosts(post: Post, limit = 5): Promise<Post[]> {
   if (post.region_tags.length === 0) return [];
   const supabase = createSupabaseAnonClient();
   const { data, error } = await supabase
@@ -142,21 +167,40 @@ export async function getRelatedPosts(post: Post, limit = 3): Promise<Post[]> {
     .neq("id", post.id)
     .overlaps("region_tags", post.region_tags)
     .order("published_at", { ascending: false })
-    .limit(limit);
+    .limit(30);
   if (error) {
     console.warn("[posts] getRelatedPosts:", error.message);
     return [];
   }
-  return (data ?? []).map((p) => sanitizePost(p) as Post);
+  const currentTerms = new Set(relatedTerms(post.title));
+  const currentType = postContentType(post.content);
+  return (data ?? [])
+    .map((candidate) => {
+      const candidateTerms = relatedTerms(candidate.title);
+      const overlap = candidateTerms.filter((term) => currentTerms.has(term)).length;
+      const sameDong = candidateTerms.some((term) =>
+        [...currentTerms].some((current) => current.endsWith("동") && current === term),
+      );
+      const differentIntent = postContentType(candidate.content) !== currentType;
+      return {
+        post: sanitizePost(candidate) as Post,
+        score: overlap * 4 + (sameDong ? 10 : 0) + (differentIntent ? 3 : 0),
+      };
+    })
+    .sort(
+      (a, b) =>
+        b.score - a.score ||
+        new Date(b.post.published_at).getTime() - new Date(a.post.published_at).getTime(),
+    )
+    .slice(0, limit)
+    .map((item) => item.post);
 }
 
 /**
  * 발행일 기준 인접한 글 prev/next.
  * published_at desc 순서에서 현재 글 위치 기준.
  */
-export async function getAdjacentPosts(
-  currentSlug: string,
-): Promise<{
+export async function getAdjacentPosts(currentSlug: string): Promise<{
   prev: Pick<Post, "slug" | "title"> | null;
   next: Pick<Post, "slug" | "title"> | null;
 }> {
@@ -245,7 +289,11 @@ export async function getBoardStats(): Promise<BoardStats> {
  */
 export async function getActiveRegionTags(): Promise<string[]> {
   const supabase = createSupabaseAnonClient();
-  const { data, error } = await supabase.from("posts").select("region_tags").eq("published", true).lte("published_at", new Date().toISOString());
+  const { data, error } = await supabase
+    .from("posts")
+    .select("region_tags")
+    .eq("published", true)
+    .lte("published_at", new Date().toISOString());
   if (error || !data) return [];
   const set = new Set<string>();
   for (const row of data) {
