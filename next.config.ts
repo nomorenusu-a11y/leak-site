@@ -8,16 +8,6 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "6mb",
     },
   },
-  async redirects() {
-    return [
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "leak-site.vercel.app" }],
-        destination: "https://nomorenusu.com/:path*",
-        permanent: true,
-      },
-    ];
-  },
   images: {
     // 외부 이미지 호스트는 명시적 allowlist로만 허용.
     remotePatterns: [
