@@ -203,7 +203,7 @@ export default async function AdminCalendarPage({
                   )}
                 </div>
                 <div className="mt-1.5 space-y-1.5">
-                  {dayPosts.slice(0, 4).map((post) => {
+                  {dayPosts.map((post) => {
                     const scheduled = post.published && new Date(post.published_at) > now;
                     return (
                       <Link
@@ -219,11 +219,6 @@ export default async function AdminCalendarPage({
                       </Link>
                     );
                   })}
-                  {dayPosts.length > 4 && (
-                    <p className="px-1 text-[10px] font-semibold text-slate-500">
-                      + {dayPosts.length - 4}개 더 있음
-                    </p>
-                  )}
                 </div>
               </div>
             );
