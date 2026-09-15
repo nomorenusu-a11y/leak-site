@@ -7,6 +7,7 @@ import { attachMediaAssetToPost } from "@/app/admin/media/actions";
 import allRegionData from "@/data/seo/seoul-regions.json";
 import type { Region } from "@/types/seo";
 import type { MediaAsset, MediaAssetAnalysis } from "@/types/database";
+import { auditPostQuality } from "@/lib/post-quality";
 import {
   SCHEDULED_CONTENT_TYPE_LABELS,
   type ScheduledContentType,
@@ -726,7 +727,18 @@ export function AutoPostComposer({ assets, existingTitles }: Props) {
     });
   }
   const duplicateWarning = Boolean(draft && isSimilarTitle(draft.title, existingTitles));
-  const qualityWarning = Boolean(draft && (draft.content.length < 1200 || picked.length < 2));
+  const qualityAudit = draft
+    ? auditPostQuality({
+        title: draft.title,
+        excerpt: draft.excerpt,
+        content: draft.content,
+        cover_image_url: picked[0]?.url ?? null,
+        region_tags: district ? [district.name] : [],
+      })
+    : null;
+  const qualityIssues = [...(qualityAudit?.issues ?? [])];
+  if (picked.length < 2) qualityIssues.push("연결 사진 2장 이상");
+  const qualityWarning = Boolean(draft && qualityIssues.length > 0);
   const selectClass = "rounded-lg border border-slate-300 px-3 py-3 font-normal";
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
@@ -994,8 +1006,8 @@ export function AutoPostComposer({ assets, existingTitles }: Props) {
             )}
             {qualityWarning && (
               <p className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm font-semibold text-red-700">
-                본문 분량 또는 연결할 사진이 부족합니다. 사진 2장 이상을 확보하고 초안을 다시 만들어
-                주세요. 품질 기준을 통과하기 전에는 저장하거나 공개할 수 없습니다.
+                보완 필요: {qualityIssues.join(" · ")}. 품질 기준을 통과하기 전에는 저장하거나
+                공개할 수 없습니다.
               </p>
             )}
             <p className="mt-5 rounded-lg bg-white p-3 text-sm font-semibold text-slate-700">

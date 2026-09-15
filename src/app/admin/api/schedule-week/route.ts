@@ -114,6 +114,21 @@ export async function POST() {
       }),
     }))
     .filter((item) => item.errors.length > 0);
+  const duplicateKeys = prepared
+    .map(
+      (item) =>
+        `${item.guide.district}|${item.guide.dong}|${item.guide.leak}|${item.guide.symptom}`,
+    )
+    .filter((key, index, all) => all.indexOf(key) !== index);
+  const duplicateTitles = prepared
+    .map((item) => item.title.replace(/[^가-힣a-z0-9]/gi, "").toLowerCase())
+    .filter((title, index, all) => all.indexOf(title) !== index);
+  if (duplicateKeys.length || duplicateTitles.length) {
+    return NextResponse.json(
+      { ok: false, error: "같은 지역·증상 조합 또는 같은 제목이 있어 예약 저장을 중단했습니다." },
+      { status: 422 },
+    );
+  }
   if (invalidDrafts.length > 0) {
     return NextResponse.json(
       {

@@ -819,6 +819,14 @@ export const DAILY_PUBLISH_TIMES = [
 
 export const DAILY_PUBLISH_COUNTS = DAILY_PUBLISH_TIMES.map((times) => times.length);
 
+function internalLinkBlock(guide: ScheduledGuide) {
+  return `## 이어서 확인할 노모어누수 안내
+
+- [${guide.district} 누수 관련 글 모아보기](/posts)
+- [증상별 누수 자주 묻는 질문](/faq)
+- [사진과 증상으로 상담 신청하기](/#quote-form)`;
+}
+
 export function getPublishSlot(index: number) {
   let remaining = index;
   for (const [dayIndex, times] of DAILY_PUBLISH_TIMES.entries()) {
@@ -962,7 +970,9 @@ export function buildGuideContent(
 
 ${intentOpening(guide, type)}
 
-${buildSymptomGuideContent(guide)}`;
+${buildSymptomGuideContent(guide)}
+
+${internalLinkBlock(guide)}`;
 }
 
 export function validateGuideDraft(args: {
@@ -986,5 +996,18 @@ export function validateGuideDraft(args: {
   if (/방문했습니다|해결했습니다|시공 사례|고객님 댁/.test(content))
     errors.push("확인되지 않은 현장 사례 표현이 포함되어 있습니다.");
   if (!content.includes("서울·경기·인천 전 지역")) errors.push("출장 가능 지역 안내가 없습니다.");
+  for (const signal of [
+    guide.district,
+    guide.dong,
+    guide.building,
+    guide.symptom,
+    guide.location,
+    guide.check,
+    guide.repair,
+  ]) {
+    if (!content.includes(signal)) errors.push(`문서 고유 정보가 빠졌습니다: ${signal}`);
+  }
+  if ((content.match(/\]\(\/(?!\/)/g) ?? []).length < 2)
+    errors.push("지역·증상·상담을 연결하는 내부 링크가 2개 미만입니다.");
   return errors;
 }
