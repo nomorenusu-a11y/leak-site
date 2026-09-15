@@ -5,6 +5,7 @@ import {
   resolveRegion,
   regionPath,
   regionAncestors,
+  resolvePostBreadcrumbRegion,
   SEOUL_DONGS,
   SEOUL_DISTRICTS,
 } from "../src/lib/regions";
@@ -15,6 +16,7 @@ import { categoryValues } from "../src/lib/post-categories";
 import robots from "../src/app/robots";
 import { localBusinessJsonLd } from "../src/lib/seo/schema";
 import {
+  breadcrumbJsonLd,
   regionFaqs,
   regionMetadataTitle,
   regionPageDescription,
@@ -43,6 +45,34 @@ test("official Seoul hierarchy supports 25 districts and 467 legal dongs while r
   assert.equal(resolveRegion("gangnam-gu")?.name, "강남구");
   assert.equal(resolveRegion("dobong-gu", "ssangmun-dong")?.name, "쌍문동");
   assert.equal(regionAncestors(PILOT_REGIONS[2]).length, 3);
+});
+test("scheduled and guide posts receive Korean search breadcrumbs without claiming a verified job location", () => {
+  const bulgwang = resolvePostBreadcrumbRegion({
+    title: "불광동 단독주택 수도계량기·직수관 누수 | 점검 안내",
+    region_tags: ["은평구"],
+  });
+  assert.equal(bulgwang?.name, "불광동");
+
+  const gangnam = resolvePostBreadcrumbRegion({
+    title: "강남구 누수탐지 점검 안내",
+    region_tags: ["강남구"],
+  });
+  assert.equal(gangnam?.name, "강남구");
+
+  assert.equal(
+    resolvePostBreadcrumbRegion({ title: "창동 누수", region_tags: ["강남구"] })?.name,
+    "강남구",
+  );
+
+  const breadcrumb = breadcrumbJsonLd(bulgwang!, {
+    title: "불광동 수도계량기 누수",
+    slug: "bulgwang-house-water-meter-leak-guide",
+  });
+  assert.deepEqual(
+    breadcrumb.itemListElement.map((item) => item.name),
+    ["서울", "은평구", "불광동", "불광동 수도계량기 누수"],
+  );
+  assert(!breadcrumb.itemListElement.some((item) => item.name === "홈"));
 });
 test("symptom is not a leak cause or detection method", () => {
   assert(validTermIds(["symptom:meter-running"]));

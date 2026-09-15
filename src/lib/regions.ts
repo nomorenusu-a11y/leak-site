@@ -67,6 +67,35 @@ export function regionAncestors(region: Region): Region[] {
   return [...(parent ? regionAncestors(parent) : []), region];
 }
 
+/**
+ * Resolve the editorial region used by a post's navigation and search breadcrumb.
+ *
+ * `post_locations` is reserved for a verified job location. Guide and scheduled
+ * posts instead carry a reviewed district tag and begin their title with the
+ * target legal-dong name, so they must not be written to the verified-location
+ * table just to produce a breadcrumb.
+ */
+export function resolvePostBreadcrumbRegion(post: {
+  title: string;
+  region_tags: readonly string[];
+}): Region | undefined {
+  const district = SEOUL_DISTRICTS.find((candidate) => post.region_tags.includes(candidate.name));
+  if (!district) return undefined;
+
+  const title = post.title.trim();
+  const dong = SEOUL_DONGS.filter((candidate) => candidate.parent_id === district.id)
+    .sort((a, b) => b.name.length - a.name.length)
+    .find(
+      (candidate) =>
+        title === candidate.name ||
+        title.startsWith(`${candidate.name} `) ||
+        title.includes(` ${candidate.name} `) ||
+        title.includes(`| ${candidate.name} `),
+    );
+
+  return dong ?? district;
+}
+
 function genericFaq(region: Region) {
   return [
     {
@@ -99,7 +128,8 @@ export function defaultRegionContent(id: string): RegionPageContent {
   }
   const region = regionById(id);
   if (!region) throw new Error(`Unknown Seoul region: ${id}`);
-  const title = region.level === "city" ? "서울 누수탐지 지역 안내" : `${region.name} 누수탐지 지역 안내`;
+  const title =
+    region.level === "city" ? "서울 누수탐지 지역 안내" : `${region.name} 누수탐지 지역 안내`;
   return {
     region_id: region.id,
     title,

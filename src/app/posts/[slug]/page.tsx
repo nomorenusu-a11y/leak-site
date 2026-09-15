@@ -1,5 +1,5 @@
 import { getPostLocation } from "@/lib/region-posts";
-import { regionById, regionAncestors } from "@/lib/regions";
+import { regionById, regionAncestors, resolvePostBreadcrumbRegion } from "@/lib/regions";
 import { getPublicRegionContent } from "@/lib/region-content";
 import { RegionBreadcrumbs } from "@/components/regions/RegionBreadcrumbs";
 import { breadcrumbJsonLd, safeJsonLd } from "@/lib/seo/regions";
@@ -86,7 +86,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
     getAdjacentPosts(post.slug),
   ]);
   const location = await getPostLocation(post.id);
-  const candidate = location ? regionById(location.region_id) : undefined;
+  const candidate = location ? regionById(location.region_id) : resolvePostBreadcrumbRegion(post);
   const region = candidate && (await getPublicRegionContent(candidate)) ? candidate : undefined;
   const shareUrl = `${siteConfig.url}/posts/${post.slug}`;
   const hasInlineImages = hasInlinePostImages(post.content, images);

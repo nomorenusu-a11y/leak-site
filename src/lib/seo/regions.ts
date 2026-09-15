@@ -72,10 +72,8 @@ export function regionMetadata(region: Region, content: RegionPageContent): Meta
   };
 }
 export function breadcrumbJsonLd(region: Region, post?: { title: string; slug: string }) {
-  const items = [
-    { name: "홈", path: "/" },
-    ...regionAncestors(region).map((r) => ({ name: r.name, path: regionPath(r) })),
-  ];
+  // Naver recommends descriptive hierarchy names instead of a generic "홈" item.
+  const items = regionAncestors(region).map((r) => ({ name: r.name, path: regionPath(r) }));
   if (post) items.push({ name: post.title, path: `/posts/${post.slug}` });
   return {
     "@context": "https://schema.org",
