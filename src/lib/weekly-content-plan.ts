@@ -682,6 +682,51 @@ const EXTRA_LOCATIONS = [
   ["포천시", "소흘읍"],
 ] as const;
 
+const BOOST_LOCATIONS = [
+  ["강남구", "삼성동"],
+  ["강동구", "암사동"],
+  ["강북구", "수유동"],
+  ["강서구", "등촌동"],
+  ["광진구", "군자동"],
+  ["구로구", "고척동"],
+  ["노원구", "공릉동"],
+  ["도봉구", "쌍문동"],
+  ["동대문구", "이문동"],
+  ["동작구", "흑석동"],
+  ["마포구", "성산동"],
+  ["서대문구", "북가좌동"],
+  ["서초구", "잠원동"],
+  ["성동구", "금호동"],
+  ["수원시 영통구", "매탄동"],
+  ["성남시 분당구", "서현동"],
+  ["고양시 일산동구", "마두동"],
+  ["용인시 수지구", "풍덕천동"],
+  ["부천시 원미구", "상동"],
+  ["안산시 단원구", "선부동"],
+  ["안양시 동안구", "비산동"],
+  ["화성시", "동탄동"],
+  ["하남시", "덕풍동"],
+  ["김포시", "구래동"],
+  ["파주시", "야당동"],
+  ["광명시", "하안동"],
+  ["구리시", "갈매동"],
+  ["의정부시", "호원동"],
+  ["인천 미추홀구", "주안동"],
+  ["인천 남동구", "구월동"],
+  ["인천 부평구", "부평동"],
+  ["인천 연수구", "송도동"],
+  ["인천 서구", "청라동"],
+  ["인천 계양구", "임학동"],
+  ["인천 중구", "중산동"],
+  ["인천 동구", "화수동"],
+  ["인천 서구", "가정동"],
+  ["인천 연수구", "연수동"],
+  ["인천 남동구", "만수동"],
+  ["인천 부평구", "갈산동"],
+  ["인천 계양구", "효성동"],
+  ["인천 미추홀구", "도화동"],
+] as const;
+
 const BUILDINGS = ["아파트", "빌라", "오피스텔", "상가", "다가구주택", "단독주택"] as const;
 const EXTRA_PROFILES = [
   {
@@ -783,7 +828,7 @@ const EXTRA_PROFILES = [
 ] as const;
 
 const EXTRA_GUIDES: ScheduledGuide[] = EXTRA_LOCATIONS.map(([district, dong], index) => {
-  const profile = EXTRA_PROFILES[(index * 5 + 2) % EXTRA_PROFILES.length];
+  const profile = EXTRA_PROFILES[(index * 7 + 2) % EXTRA_PROFILES.length];
   return {
     district,
     dong,
@@ -794,8 +839,21 @@ const EXTRA_GUIDES: ScheduledGuide[] = EXTRA_LOCATIONS.map(([district, dong], in
   };
 });
 
+const BOOST_GUIDES: ScheduledGuide[] = BOOST_LOCATIONS.map(([district, dong], index) => {
+  const profile = EXTRA_PROFILES[(index * 7 + 1) % EXTRA_PROFILES.length];
+  return {
+    district,
+    dong,
+    building: BUILDINGS[(index * 5 + 2) % BUILDINGS.length],
+    ...profile,
+    slugKey: `september-boost-${String(index + 1).padStart(3, "0")}`,
+    keywords: [...profile.keywords],
+  };
+});
+
+const BASE_CAMPAIGN_COUNT = BASE_GUIDES.length + EXTRA_GUIDES.length;
 export const CAMPAIGN_START_DATE = "2026-09-14";
-export const CAMPAIGN_GUIDES: ScheduledGuide[] = [...BASE_GUIDES, ...EXTRA_GUIDES];
+export const CAMPAIGN_GUIDES: ScheduledGuide[] = [...BASE_GUIDES, ...EXTRA_GUIDES, ...BOOST_GUIDES];
 
 export const DAILY_PUBLISH_TIMES = [
   ["08:37", "10:16", "12:48", "15:23", "18:11", "20:42", "22:07"],
@@ -817,7 +875,47 @@ export const DAILY_PUBLISH_TIMES = [
   ["07:56", "10:27", "13:11", "16:34", "19:03", "21:26", "22:59"],
 ] as const;
 
-export const DAILY_PUBLISH_COUNTS = DAILY_PUBLISH_TIMES.map((times) => times.length);
+// Keep all existing September 14–30 slots unchanged. Supplemental guides only
+// fill September 19–30 to ten posts per day, preserving published URLs and times.
+const BOOST_START_DAY_INDEX = 5;
+const DAILY_TARGET = 10;
+function timeToMinutes(time: string) {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+}
+function minutesToTime(minutes: number) {
+  return `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
+}
+const BOOST_PUBLISH_SLOTS = DAILY_PUBLISH_TIMES.flatMap((times, dayIndex) => {
+  if (dayIndex < BOOST_START_DAY_INDEX) return [];
+  const occupied = times.map(timeToMinutes);
+  const extra: number[] = [];
+  while (occupied.length < DAILY_TARGET) {
+    let bestMinute = -1;
+    let bestDistance = -1;
+    let bestTieBreak = -1;
+    for (let minute = 8 * 60 + (dayIndex % 7); minute <= 22 * 60 + 45; minute += 7) {
+      if (occupied.includes(minute)) continue;
+      const distance = Math.min(...occupied.map((used) => Math.abs(used - minute)));
+      const tieBreak = (minute * 37 + dayIndex * 101) % 997;
+      if (distance > bestDistance || (distance === bestDistance && tieBreak > bestTieBreak)) {
+        bestMinute = minute;
+        bestDistance = distance;
+        bestTieBreak = tieBreak;
+      }
+    }
+    occupied.push(bestMinute);
+    extra.push(bestMinute);
+  }
+  return extra.sort((left, right) => left - right).map((minute) => ({
+    dayIndex,
+    time: minutesToTime(minute),
+  }));
+});
+
+export const DAILY_PUBLISH_COUNTS = DAILY_PUBLISH_TIMES.map((times, dayIndex) =>
+  dayIndex < BOOST_START_DAY_INDEX ? times.length : DAILY_TARGET,
+);
 
 function internalLinkBlock(guide: ScheduledGuide) {
   return `## 이어서 확인할 노모어누수 안내
@@ -828,6 +926,11 @@ function internalLinkBlock(guide: ScheduledGuide) {
 }
 
 export function getPublishSlot(index: number) {
+  if (index >= BASE_CAMPAIGN_COUNT) {
+    const slot = BOOST_PUBLISH_SLOTS[index - BASE_CAMPAIGN_COUNT];
+    if (!slot) throw new RangeError(`No publishing slot for guide index ${index}`);
+    return slot;
+  }
   let remaining = index;
   for (const [dayIndex, times] of DAILY_PUBLISH_TIMES.entries()) {
     if (remaining < times.length) return { dayIndex, time: times[remaining] };

@@ -155,11 +155,14 @@ export async function POST() {
     );
   }
 
+  // Published posts must never be rewritten when an administrator refills the calendar.
+  const now = Date.now();
+  const remaining = prepared.filter((item) => new Date(item.publishedAt).getTime() > now);
   const desiredSlugs = new Set(prepared.map((item) => item.slug));
   const campaignKeys = new Set(CAMPAIGN_GUIDES.map((guide) => guide.slugKey));
   const { data: existingCampaign, error: existingError } = await db
     .from("posts")
-    .select("id, slug")
+    .select("id, slug, published_at")
     .like("slug", "202609%");
   if (existingError)
     return NextResponse.json(
@@ -169,6 +172,7 @@ export async function POST() {
   const staleIds = (existingCampaign ?? [])
     .filter(
       (post) =>
+        new Date(post.published_at).getTime() > now &&
         !desiredSlugs.has(post.slug) &&
         [...campaignKeys].some((key) => post.slug.endsWith(`-${key}`)),
     )
@@ -182,7 +186,11 @@ export async function POST() {
       );
   }
 
-  const baseRows = prepared.map(
+  if (remaining.length === 0) {
+    return NextResponse.json({ ok: true, startDate: CAMPAIGN_START_DATE, endDate: "2026-09-30", removed: staleIds.length, created: [] });
+  }
+
+  const baseRows = remaining.map(
     ({ guide, selected, publishedAt, slug, title, excerpt, content }) => ({
       title,
       slug,
@@ -199,7 +207,7 @@ export async function POST() {
     .from("posts")
     .upsert(baseRows, { onConflict: "slug" })
     .select("id, slug, title");
-  if (postsError || !posts || posts.length !== prepared.length) {
+  if (postsError || !posts || posts.length !== remaining.length) {
     return NextResponse.json(
       { ok: false, error: "9월 예약 게시물 묶음 저장에 실패했습니다." },
       { status: 500 },
@@ -216,7 +224,7 @@ export async function POST() {
     );
 
   const stages = ["증상 범위 확인", "원인 점검", "누수 탐지", "보수 범위 안내"];
-  const imageRows = prepared.flatMap(({ guide, selected, slug }) => {
+  const imageRows = remaining.flatMap(({ guide, selected, slug }) => {
     const post = postBySlug.get(slug);
     if (!post) return [];
     return selected.map((asset, imageIndex) => {
@@ -243,7 +251,7 @@ export async function POST() {
   const imageIdBySlot = new Map(
     (insertedImages ?? []).map((image) => [`${image.post_id}:${image.sort_order}`, image.id]),
   );
-  const finalRows = prepared.map(
+  const finalRows = remaining.map(
     ({ guide, selected, publishedAt, slug, title, excerpt, content }) => {
       const post = postBySlug.get(slug)!;
       const contentWithImages = content.replace(/\[\[AUTO_IMAGE_(\d+)\]\]/g, (_, raw) => {
@@ -270,7 +278,7 @@ export async function POST() {
       { status: 500 },
     );
 
-  const created = prepared.map(({ slug, title, publishedAt, selected, contentType }) => ({
+  const created = remaining.map(({ slug, title, publishedAt, selected, contentType }) => ({
     slug,
     title,
     publishedAt,

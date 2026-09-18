@@ -13,23 +13,21 @@ import {
   validateGuideDraft,
 } from "../src/lib/weekly-content-plan";
 
-test("September campaign contains five to ten guides at varied times each day", () => {
-  assert.equal(CAMPAIGN_GUIDES.length, 111);
-  assert.equal(new Set(CAMPAIGN_GUIDES.map((guide) => guide.slugKey)).size, 111);
-  assert.equal(
-    DAILY_PUBLISH_COUNTS.reduce((sum, count) => sum + count, 0),
-    111,
-  );
-  assert.ok(DAILY_PUBLISH_COUNTS.every((count) => count >= 5 && count <= 10));
-  assert.ok(new Set(DAILY_PUBLISH_COUNTS).size > 1);
+test("September campaign preserves existing slots and fills September 19–30 to ten daily", () => {
+  assert.equal(CAMPAIGN_GUIDES.length, 153);
+  assert.equal(new Set(CAMPAIGN_GUIDES.map((guide) => guide.slugKey)).size, 153);
+  assert.equal(DAILY_PUBLISH_COUNTS.reduce((sum, count) => sum + count, 0), 153);
+  assert.deepEqual(DAILY_PUBLISH_COUNTS.slice(0, 5), [7, 6, 8, 5, 7]);
+  assert.ok(DAILY_PUBLISH_COUNTS.slice(5).every((count) => count === 10));
   assert.ok(DAILY_PUBLISH_TIMES.every((times) => new Set(times).size === times.length));
   const slots = CAMPAIGN_GUIDES.map((_, index) => getPublishSlot(index));
-  assert.deepEqual(
-    slots.map((slot) => slot.dayIndex),
-    DAILY_PUBLISH_COUNTS.flatMap((count, day) => Array.from({ length: count }, () => day)),
-  );
-  assert.equal(slots[0].time, "08:37");
-  assert.equal(slots.at(-1)?.time, "22:59");
+  assert.deepEqual(getPublishSlot(0), { dayIndex: 0, time: "08:37" });
+  assert.deepEqual(getPublishSlot(110), { dayIndex: 16, time: "22:59" });
+  for (const [dayIndex, count] of DAILY_PUBLISH_COUNTS.entries()) {
+    const times = slots.filter((slot) => slot.dayIndex === dayIndex).map((slot) => slot.time);
+    assert.equal(times.length, count);
+    assert.equal(new Set(times).size, count);
+  }
 });
 
 test("scheduled guides are useful, clearly framed advice rather than invented cases", () => {
