@@ -1,5 +1,5 @@
-import { regionPath, SEOUL_REGIONS } from "@/lib/regions";
-import { getPublicRegionContent } from "@/lib/region-content";
+import { isPilotRegion, regionAncestors, regionPath, SEOUL_REGIONS } from "@/lib/regions";
+import { createSupabaseAnonClient } from "@/lib/supabase/anon";
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/env";
 import { ALL_CITY_CODES, cityCodeToSlug } from "@/lib/city";
@@ -29,21 +29,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ];
 
-  const regionContents = await Promise.all(
-    SEOUL_REGIONS.map(async (region) => ({
-      region,
-      content: await getPublicRegionContent(region),
-    })),
-  );
-
-  for (const { region, content } of regionContents) {
-    if (content?.indexable)
+  // A single public query avoids hundreds of concurrent region lookups. If this
+  // optional section fails, keep the post sitemap available to crawlers.
+  const { data: regionPages, error: regionError } = await createSupabaseAnonClient()
+    .from("region_pages")
+    .select("region_id,indexable,updated_at")
+    .limit(1000);
+  if (regionError) {
+    console.warn("[sitemap] region pages skipped:", regionError.code ?? regionError.message);
+  } else {
+    const byId = new Map((regionPages ?? []).map((page) => [page.region_id, page]));
+    for (const region of SEOUL_REGIONS) {
+      const page = byId.get(region.id);
+      if (!page?.indexable) continue;
+      // RLS hides unpublished ancestors. Non-pilot ancestors without a row use
+      // the published fallback copy, while a missing pilot ancestor is hidden.
+      if (regionAncestors(region).some((ancestor) =>
+        isPilotRegion(ancestor.id) && !byId.has(ancestor.id),
+      )) continue;
       entries.push({
         url: `${base}${regionPath(region)}`,
-        lastModified: new Date(content.updated_at),
+        lastModified: new Date(page.updated_at),
         changeFrequency: "weekly",
         priority: 0.7,
       });
+    }
   }
   // Fail instead of silently returning a truncated list on a DB error.
   const slugs = await getAllPublishedSlugs();
