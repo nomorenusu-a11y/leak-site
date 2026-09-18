@@ -66,9 +66,9 @@ export default function PrivacyPage() {
             </ul>
 
             <h2>7. 문의처</h2>
-            {BUSINESS.email || BUSINESS.contact.phone || BUSINESS.ownerName ? (
+            {BUSINESS.email || BUSINESS.contact.phone ? (
               <ul>
-                {BUSINESS.ownerName && <li>책임자: {BUSINESS.ownerName}</li>}
+                <li>개인정보 문의 담당: {BUSINESS.name}</li>
                 {BUSINESS.email && (
                   <li>
                     이메일: <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
