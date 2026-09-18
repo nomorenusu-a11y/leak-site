@@ -3,6 +3,17 @@ import { getContactInfo } from "@/lib/contact";
 import { ALL_CITY_CODES, CITY_REGION_TAGS } from "@/lib/city";
 import type { Post } from "@/types/database";
 
+/** The current brand on the canonical homepage, for Google site-name selection. */
+export function websiteJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteConfig.url}/#website`,
+    name: siteConfig.name,
+    url: `${siteConfig.url}/`,
+  };
+}
+
 /**
  * Schema.org LocalBusiness JSON-LD.
  *

@@ -14,7 +14,7 @@ import { MobileBottomBar } from "@/components/landing/v2/MobileBottomBar";
 import { FloatingDesktop } from "@/components/landing/v2/FloatingDesktop";
 import { resolveCity } from "@/lib/city";
 import { landingMetadata } from "@/lib/seo/meta";
-import { localBusinessJsonLd } from "@/lib/seo/schema";
+import { localBusinessJsonLd, websiteJsonLd } from "@/lib/seo/schema";
 import { faqPageJsonLd, loadFaqItems } from "@/lib/seo/faq";
 
 export const revalidate = 60;
@@ -49,6 +49,13 @@ export default async function HomePage({
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(websiteJsonLd()),
+        }}
+      />
       <script
         type="application/ld+json"
         suppressHydrationWarning
