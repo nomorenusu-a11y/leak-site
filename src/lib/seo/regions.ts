@@ -86,6 +86,49 @@ export function breadcrumbJsonLd(region: Region, post?: { title: string; slug: s
     })),
   };
 }
+
+/** Posts outside the Seoul legal-dong taxonomy still need a Korean search breadcrumb. */
+export function postCollectionBreadcrumbJsonLd(post: { title: string; slug: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "누수 작업사례",
+        item: new URL("/posts", siteConfig.url).href,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: post.title,
+        item: new URL(`/posts/${post.slug}`, siteConfig.url).href,
+      },
+    ],
+  };
+}
+
+export function regionCollectionBreadcrumbJsonLd(regionTag: string, slug: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "누수 작업사례",
+        item: new URL("/posts", siteConfig.url).href,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: `${regionTag} 누수 작업사례`,
+        item: new URL(`/posts/region/${slug}`, siteConfig.url).href,
+      },
+    ],
+  };
+}
 export function regionFaqJsonLd(region: Region, content: RegionPageContent) {
   return {
     "@context": "https://schema.org",

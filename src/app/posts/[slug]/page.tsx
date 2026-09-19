@@ -2,7 +2,11 @@ import { getPostLocation } from "@/lib/region-posts";
 import { regionById, regionAncestors, resolvePostBreadcrumbRegion } from "@/lib/regions";
 import { getPublicRegionContent } from "@/lib/region-content";
 import { RegionBreadcrumbs } from "@/components/regions/RegionBreadcrumbs";
-import { breadcrumbJsonLd, safeJsonLd } from "@/lib/seo/regions";
+import {
+  breadcrumbJsonLd,
+  postCollectionBreadcrumbJsonLd,
+  safeJsonLd,
+} from "@/lib/seo/regions";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
@@ -115,12 +119,14 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
           ),
         }}
       />
-      {region && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbJsonLd(region, post)) }}
-        />
-      )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: safeJsonLd(
+            region ? breadcrumbJsonLd(region, post) : postCollectionBreadcrumbJsonLd(post),
+          ),
+        }}
+      />
       <PostViewTracker slug={post.slug} regionTags={post.region_tags} />
       <Header showBack />
       <main className="flex-1 pb-20">

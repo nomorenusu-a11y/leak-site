@@ -17,6 +17,8 @@ import robots from "../src/app/robots";
 import { localBusinessJsonLd } from "../src/lib/seo/schema";
 import {
   breadcrumbJsonLd,
+  postCollectionBreadcrumbJsonLd,
+  regionCollectionBreadcrumbJsonLd,
   regionFaqs,
   regionMetadataTitle,
   regionPageDescription,
@@ -73,6 +75,22 @@ test("scheduled and guide posts receive Korean search breadcrumbs without claimi
     ["서울", "은평구", "불광동", "불광동 수도계량기 누수"],
   );
   assert(!breadcrumb.itemListElement.some((item) => item.name === "홈"));
+});
+test("every non-Seoul post and region collection receives a Korean search breadcrumb", () => {
+  const postBreadcrumb = postCollectionBreadcrumbJsonLd({
+    title: "부평동 욕실 누수 점검 안내",
+    slug: "bupyeong-bathroom-leak-guide",
+  });
+  assert.deepEqual(
+    postBreadcrumb.itemListElement.map((item) => item.name),
+    ["누수 작업사례", "부평동 욕실 누수 점검 안내"],
+  );
+
+  const collectionBreadcrumb = regionCollectionBreadcrumbJsonLd("강남구", "gangnam");
+  assert.deepEqual(
+    collectionBreadcrumb.itemListElement.map((item) => item.name),
+    ["누수 작업사례", "강남구 누수 작업사례"],
+  );
 });
 test("symptom is not a leak cause or detection method", () => {
   assert(validTermIds(["symptom:meter-running"]));

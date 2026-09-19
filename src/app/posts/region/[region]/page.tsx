@@ -10,6 +10,7 @@ import { RegionChips } from "@/components/posts/RegionChips";
 import { ALL_CITY_CODES, CITY_REGION_TAGS, cityCodeToSlug, parseCitySlug } from "@/lib/city";
 import { getPostsByRegionTag, POSTS_PER_PAGE } from "@/lib/posts";
 import { regionCollectionJsonLd } from "@/lib/seo/schema";
+import { regionCollectionBreadcrumbJsonLd, safeJsonLd } from "@/lib/seo/regions";
 import { siteConfig } from "@/lib/env";
 
 export const revalidate = 3600;
@@ -85,6 +86,13 @@ export default async function PostsRegionPage({
         suppressHydrationWarning
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(regionCollectionJsonLd({ regionTag: tag, slug: region, posts })),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: safeJsonLd(regionCollectionBreadcrumbJsonLd(tag, region)),
         }}
       />
       <Header showBack />
