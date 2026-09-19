@@ -139,6 +139,7 @@ export function postImageCarouselJsonLd(
   for (const related of relatedPosts) {
     if (items.length >= 8) break;
     const imageUrl = related.cover_image_url;
+    if (!/누수|배관|탐지|점검/.test(related.title)) continue;
     if (!imageUrl || /placehold\.co/i.test(imageUrl) || usedUrls.has(imageUrl)) continue;
     usedUrls.add(imageUrl);
     items.push({
