@@ -97,7 +97,7 @@ export async function POST() {
           b.score - a.score ||
           a.asset.file_name.localeCompare(b.asset.file_name),
       );
-    const selected = ranked.slice(0, 4).map((item) => item.asset);
+    const selected = ranked.slice(0, 5).map((item) => item.asset);
     selected.forEach((asset) => usedAssetIds.add(asset.id));
     return { guide, selected, publishedAt, slug, title, excerpt, content, contentType };
   });
@@ -140,12 +140,12 @@ export async function POST() {
     );
   }
 
-  const insufficientImages = prepared.filter(({ selected }) => selected.length < 2);
+  const insufficientImages = prepared.filter(({ selected }) => selected.length < 5);
   if (insufficientImages.length > 0) {
     return NextResponse.json(
       {
         ok: false,
-        error: `관련 사진이 2장 미만인 글이 ${insufficientImages.length}개라 예약 저장을 중단했습니다. 사진 분석 결과를 보완한 뒤 다시 실행해 주세요.`,
+        error: `검색 사진 묶음에 필요한 관련 사진 5장이 확보되지 않은 글이 ${insufficientImages.length}개라 예약 저장을 중단했습니다. 사진 분석 결과를 보완한 뒤 다시 실행해 주세요.`,
         items: insufficientImages.slice(0, 10).map(({ guide, selected }) => ({
           title: `${guide.dong} ${guide.leak}`,
           images: selected.length,
@@ -187,7 +187,13 @@ export async function POST() {
   }
 
   if (remaining.length === 0) {
-    return NextResponse.json({ ok: true, startDate: CAMPAIGN_START_DATE, endDate: "2026-09-30", removed: staleIds.length, created: [] });
+    return NextResponse.json({
+      ok: true,
+      startDate: CAMPAIGN_START_DATE,
+      endDate: "2026-09-30",
+      removed: staleIds.length,
+      created: [],
+    });
   }
 
   const baseRows = remaining.map(
@@ -223,7 +229,7 @@ export async function POST() {
       { status: 500 },
     );
 
-  const stages = ["증상 범위 확인", "원인 점검", "누수 탐지", "보수 범위 안내"];
+  const stages = ["증상 범위 확인", "원인 점검", "누수 탐지", "보수 범위 안내", "작업 후 확인"];
   const imageRows = remaining.flatMap(({ guide, selected, slug }) => {
     const post = postBySlug.get(slug);
     if (!post) return [];

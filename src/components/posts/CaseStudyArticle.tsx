@@ -29,7 +29,11 @@ export function CaseStudyArticle({
         const image = imageById.get(step.imageId);
         if (!image) return null;
         return (
-          <section key={step.imageId} className="mt-10">
+          <section
+            key={step.imageId}
+            id={`field-photo-${index + 1}`}
+            className="mt-10 scroll-mt-24"
+          >
             <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">{step.title}</h2>
             <div className="mt-4 space-y-4">
               {step.beforePhoto.map((paragraph) => (
@@ -37,8 +41,17 @@ export function CaseStudyArticle({
               ))}
             </div>
             <figure className="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-              <Image src={image.url} alt={image.alt_text?.trim() || "누수 점검 현장 사진"} width={1600} height={1200} sizes="(max-width: 768px) 100vw, 768px" className="h-auto w-full object-contain" />
-              <figcaption className="border-t border-slate-100 px-4 py-3.5 text-sm leading-6 text-slate-700">{step.caption}</figcaption>
+              <Image
+                src={image.url}
+                alt={image.alt_text?.trim() || "누수 점검 현장 사진"}
+                width={1600}
+                height={1200}
+                sizes="(max-width: 768px) 100vw, 768px"
+                className="h-auto w-full object-contain"
+              />
+              <figcaption className="border-t border-slate-100 px-4 py-3.5 text-sm leading-6 text-slate-700">
+                {step.caption}
+              </figcaption>
             </figure>
             {step.afterPhoto && (
               <div className="space-y-4">
@@ -53,8 +66,10 @@ export function CaseStudyArticle({
       })}
 
       <section className="mt-10">
-        <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">{draft.symptomsHeading}</h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 marker:text-brand-700">
+        <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
+          {draft.symptomsHeading}
+        </h2>
+        <ul className="marker:text-brand-700 mt-4 list-disc space-y-2 pl-5">
           {draft.symptoms.map((symptom) => (
             <li key={symptom}>{symptom}</li>
           ))}

@@ -90,12 +90,12 @@ export async function POST() {
       .map((asset) => ({ asset, score: scoreAsset(asset, analysisByAsset.get(asset.id), guide) }))
       .filter((entry) => entry.score >= 4)
       .sort((a, b) => b.score - a.score || a.asset.file_name.localeCompare(b.asset.file_name))
-      .slice(0, 3)
+      .slice(0, 5)
       .map((entry) => entry.asset);
 
     const imageIds: string[] = [];
     for (const [index, asset] of matched.entries()) {
-      const stage = ["증상 위치 확인", "점검 과정", "보수 방향 상담"][index] ?? "점검 안내";
+      const stage = ["증상 위치 확인", "압력·계통 점검", "정밀 누수 탐지", "원인 구간 확인", "보수 방향 상담"][index] ?? "점검 안내";
       const { data: image } = await db.from("post_images").insert({
         post_id: post.id,
         url: asset.url,

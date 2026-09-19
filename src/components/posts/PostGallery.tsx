@@ -1,16 +1,23 @@
 import Image from "next/image";
 import type { PostImage } from "@/types/database";
 
-export function PostGallery({ images }: { images: PostImage[] }) {
+export function PostGallery({
+  images,
+  startIndex = 0,
+}: {
+  images: PostImage[];
+  startIndex?: number;
+}) {
   if (images.length === 0) return null;
   return (
     <section className="mt-10">
       <h2 className="text-lg font-extrabold text-slate-900">현장 사진</h2>
       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {images.map((img) => (
+        {images.map((img, index) => (
           <figure
             key={img.id}
-            className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50"
+            id={`field-photo-${startIndex + index + 1}`}
+            className="scroll-mt-24 overflow-hidden rounded-xl border border-slate-200 bg-slate-50"
           >
             <div className="relative aspect-[4/3] w-full">
               <Image

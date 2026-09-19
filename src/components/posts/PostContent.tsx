@@ -21,7 +21,8 @@ export function PostContent({
   let imageIndex = 0;
 
   return parts.map((part, index) => {
-    if (part.type === "markdown") return part.value.trim() ? <PostBody key={index} content={part.value} /> : null;
+    if (part.type === "markdown")
+      return part.value.trim() ? <PostBody key={index} content={part.value} /> : null;
     const image = part.image;
     imageIndex += 1;
     const stage = image.work_stage?.trim() || "현장 확인";
@@ -29,15 +30,20 @@ export function PostContent({
     const showCta = Boolean(inlineCta && !ctaInserted && imageIndex >= ctaAfterImage);
     ctaInserted ||= showCta;
     return (
-      <section key={image.id} className="my-9" aria-label={`현장 진행 ${imageIndex}: ${stage}`}>
+      <section
+        key={image.id}
+        id={`field-photo-${imageIndex}`}
+        className="my-9 scroll-mt-24"
+        aria-label={`현장 진행 ${imageIndex}: ${stage}`}
+      >
         <figure className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-3">
             <div className="flex items-center gap-2.5">
-              <span className="flex size-7 items-center justify-center rounded-full bg-brand-700 text-xs font-extrabold text-white">
+              <span className="bg-brand-700 flex size-7 items-center justify-center rounded-full text-xs font-extrabold text-white">
                 {imageIndex}
               </span>
               <div>
-                <p className="text-[11px] font-bold tracking-[0.08em] text-brand-700">현장 진행</p>
+                <p className="text-brand-700 text-[11px] font-bold tracking-[0.08em]">현장 진행</p>
                 <p className="text-sm font-extrabold text-slate-900">{stage}</p>
               </div>
             </div>

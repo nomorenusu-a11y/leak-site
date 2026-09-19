@@ -2,11 +2,7 @@ import { getPostLocation } from "@/lib/region-posts";
 import { regionById, regionAncestors, resolvePostBreadcrumbRegion } from "@/lib/regions";
 import { getPublicRegionContent } from "@/lib/region-content";
 import { RegionBreadcrumbs } from "@/components/regions/RegionBreadcrumbs";
-import {
-  breadcrumbJsonLd,
-  postCollectionBreadcrumbJsonLd,
-  safeJsonLd,
-} from "@/lib/seo/regions";
+import { breadcrumbJsonLd, postCollectionBreadcrumbJsonLd, safeJsonLd } from "@/lib/seo/regions";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
@@ -28,10 +24,10 @@ import {
   getRelatedPosts,
 } from "@/lib/posts";
 import { markdownToPlainText } from "@/lib/markdown";
-import { articleJsonLd } from "@/lib/seo/schema";
+import { articleJsonLd, postImageCarouselJsonLd } from "@/lib/seo/schema";
 import { siteConfig } from "@/lib/env";
 import { formatDateYMD } from "@/lib/time";
-import { hasInlinePostImages } from "@/lib/post-inline-images";
+import { splitPostContentByImages } from "@/lib/post-inline-images";
 import { getCaseStudyDraft } from "@/data/case-drafts";
 
 export const revalidate = 3600;
@@ -50,12 +46,24 @@ export async function generateMetadata({
   const post = await getPostBySlug(slug);
   if (!post) return { title: "찾을 수 없음" };
   const caseDraft = getCaseStudyDraft(slug);
+  const postImages = await getPostImages(post.id);
   const title = caseDraft?.title ?? post.title;
   const description = caseDraft?.excerpt ?? post.excerpt ?? markdownToPlainText(post.content, 160);
   const url = `${siteConfig.url}/posts/${post.slug}`;
   // broken placeholder URL 방어 — placehold.co는 OG/twitter image에서 제외
   const isValidCover = post.cover_image_url && !/placehold\.co/i.test(post.cover_image_url);
-  const images = isValidCover ? [post.cover_image_url as string] : undefined;
+  const imageUrls = [
+    ...(isValidCover ? [post.cover_image_url as string] : []),
+    ...postImages.filter((image) => image.image_variant !== "annotated").map((image) => image.url),
+  ].filter((value, index, all) => all.indexOf(value) === index);
+  const images = imageUrls.length
+    ? imageUrls.slice(0, 5).map((imageUrl, index) => ({
+        url: imageUrl,
+        alt:
+          postImages.find((image) => image.url === imageUrl)?.alt_text ??
+          `${title} 현장 사진 ${index + 1}`,
+      }))
+    : undefined;
   return {
     title,
     description,
@@ -93,13 +101,23 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
   const candidate = location ? regionById(location.region_id) : resolvePostBreadcrumbRegion(post);
   const region = candidate && (await getPublicRegionContent(candidate)) ? candidate : undefined;
   const shareUrl = `${siteConfig.url}/posts/${post.slug}`;
-  const hasInlineImages = hasInlinePostImages(post.content, images);
+  const inlineImages = splitPostContentByImages(post.content, images)
+    .filter((part) => part.type === "image")
+    .map((part) => part.image);
+  const hasInlineImages = inlineImages.length > 0;
   const isStructuredCaseStudy = Boolean(
     caseDraft && caseDraft.steps.every((step) => images.some((image) => image.id === step.imageId)),
   );
+  const embeddedImageIds = new Set(
+    isStructuredCaseStudy && caseDraft
+      ? caseDraft.steps.map((step) => step.imageId)
+      : inlineImages.map((image) => image.id),
+  );
+  const supplementalImages = images.filter((image) => !embeddedImageIds.has(image.id));
   const displayPost = caseDraft
     ? { ...post, title: caseDraft.title, excerpt: caseDraft.excerpt }
     : post;
+  const imageCarousel = postImageCarouselJsonLd(displayPost, images, related);
 
   return (
     <>
@@ -115,6 +133,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
                     .map((r) => r.name)
                     .join(" ")
                 : undefined,
+              images,
             ),
           ),
         }}
@@ -127,6 +146,13 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
           ),
         }}
       />
+      {imageCarousel && (
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(imageCarousel) }}
+        />
+      )}
       <PostViewTracker slug={post.slug} regionTags={post.region_tags} />
       <Header showBack />
       <main className="flex-1 pb-20">
@@ -163,12 +189,15 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
           </header>
           <Container className="max-w-3xl py-10">
             {caseDraft && isStructuredCaseStudy ? (
-              <CaseStudyArticle
-                draft={caseDraft}
-                images={images}
-                inlineCta={<PostCTABlock slug={post.slug} region={region?.name} />}
-                endCta={<PostCTABlock slug={post.slug} region={region?.name} />}
-              />
+              <>
+                <CaseStudyArticle
+                  draft={caseDraft}
+                  images={images}
+                  inlineCta={<PostCTABlock slug={post.slug} region={region?.name} />}
+                  endCta={<PostCTABlock slug={post.slug} region={region?.name} />}
+                />
+                <PostGallery images={supplementalImages} startIndex={embeddedImageIds.size} />
+              </>
             ) : (
               <>
                 <PostContent
@@ -180,7 +209,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
                     ) : undefined
                   }
                 />
-                {!hasInlineImages && <PostGallery images={images} />}
+                <PostGallery images={supplementalImages} startIndex={embeddedImageIds.size} />
                 {!hasInlineImages && <PostCTABlock slug={post.slug} region={region?.name} />}
               </>
             )}

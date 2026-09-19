@@ -14,7 +14,7 @@ import { collectPages } from "../src/lib/collect-pages";
 import { parseListSearch, listPath } from "../src/lib/post-list-search";
 import { categoryValues } from "../src/lib/post-categories";
 import robots from "../src/app/robots";
-import { localBusinessJsonLd } from "../src/lib/seo/schema";
+import { localBusinessJsonLd, postImageCarouselJsonLd } from "../src/lib/seo/schema";
 import {
   breadcrumbJsonLd,
   postCollectionBreadcrumbJsonLd,
@@ -156,4 +156,50 @@ test("preview is blocked even under NODE_ENV production; placeholder rating remo
   const schema = localBusinessJsonLd();
   assert(!("aggregateRating" in schema));
   assert(schema.image.endsWith("/og-image.png"));
+});
+
+test("post image carousel requires five distinct original photos", () => {
+  const post = {
+    id: "post-1",
+    created_at: "2026-09-19T00:00:00.000Z",
+    updated_at: "2026-09-19T00:00:00.000Z",
+    title: "문정동 온수배관 누수 점검",
+    slug: "munjeong-hot-water",
+    content: "본문",
+    excerpt: "요약",
+    cover_image_url: "https://example.com/1.jpg",
+    region_tags: ["송파구"],
+    category: "leak",
+    view_count: 0,
+    published: true,
+    published_at: "2026-09-19T00:00:00.000Z",
+  };
+  const image = (index: number, variant: "original" | "annotated" = "original") => ({
+    id: `image-${index}`,
+    post_id: post.id,
+    url: `https://example.com/${index}.jpg`,
+    alt_text: `문정동 온수배관 현장 ${index}`,
+    caption: `점검 단계 ${index}`,
+    work_stage: `현장 단계 ${index}`,
+    image_variant: variant,
+    original_image_id: null,
+    overlay_text: null,
+    sort_order: index,
+    created_at: "2026-09-19T00:00:00.000Z",
+  });
+
+  assert.equal(
+    postImageCarouselJsonLd(
+      post,
+      [1, 2, 3, 4].map((i) => image(i)),
+    ),
+    null,
+  );
+  const carousel = postImageCarouselJsonLd(
+    post,
+    [1, 2, 3, 4, 5, 6].map((i) => image(i)),
+  );
+  assert.equal(carousel?.itemListElement.length, 6);
+  assert.equal(carousel?.itemListElement[0].name, "현장 단계 1");
+  assert.equal(carousel?.itemListElement[4].url.endsWith("?photo=5"), true);
 });

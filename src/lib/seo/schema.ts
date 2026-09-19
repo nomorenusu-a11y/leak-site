@@ -1,7 +1,16 @@
 import { siteConfig } from "@/lib/env";
 import { getContactInfo } from "@/lib/contact";
 import { ALL_CITY_CODES, CITY_REGION_TAGS } from "@/lib/city";
-import type { Post } from "@/types/database";
+import type { Post, PostImage } from "@/types/database";
+
+function distinctOriginalImages(images: PostImage[]) {
+  const seen = new Set<string>();
+  return images.filter((image) => {
+    if (image.image_variant === "annotated" || seen.has(image.url)) return false;
+    seen.add(image.url);
+    return true;
+  });
+}
 
 /** The current brand on the canonical homepage, for Google site-name selection. */
 export function websiteJsonLd() {
@@ -72,12 +81,16 @@ export function localBusinessJsonLd() {
  * Schema.org Article JSON-LD — 게시글 상세 페이지용.
  * contentLocation: post.region_tags 첫 번째 값을 Place로 표현.
  */
-export function articleJsonLd(post: Post, verifiedLocation?: string) {
+export function articleJsonLd(post: Post, verifiedLocation?: string, postImages: PostImage[] = []) {
   const url = `${siteConfig.url}/posts/${post.slug}`;
   const businessRef = { "@type": "Organization", name: siteConfig.name } as const;
   // broken placeholder URL 방어 — 외부 placehold.co는 OG·schema에서 제외
   const isValidCover = post.cover_image_url && !/placehold\.co/i.test(post.cover_image_url);
-  const image = isValidCover ? [post.cover_image_url as string] : undefined;
+  const imageUrls = distinctOriginalImages(postImages).map((item) => item.url);
+  if (isValidCover && !imageUrls.includes(post.cover_image_url as string)) {
+    imageUrls.unshift(post.cover_image_url as string);
+  }
+  const image = imageUrls.length ? imageUrls.slice(0, 8) : undefined;
   const placeName = verifiedLocation ?? post.region_tags[0];
   const place = placeName ? { "@type": "Place", name: placeName } : undefined;
   return {
@@ -95,6 +108,66 @@ export function articleJsonLd(post: Post, verifiedLocation?: string) {
       logo: { "@type": "ImageObject", url: `${siteConfig.url}/og-image.png` },
     },
     contentLocation: place,
+  };
+}
+
+/**
+ * Naver image carousel hint for posts with enough distinct field photos.
+ * Naver recommends one ItemList per page, original non-duplicate images, and
+ * descriptive names. Search engines still decide whether to render a carousel.
+ */
+export function postImageCarouselJsonLd(
+  post: Post,
+  postImages: PostImage[],
+  relatedPosts: Post[] = [],
+) {
+  const url = `${siteConfig.url}/posts/${post.slug}`;
+  const items: Array<{ name: string; imageUrl: string; caption?: string; url: string }> =
+    distinctOriginalImages(postImages)
+      .slice(0, 8)
+      .map((image, index) => ({
+        name:
+          image.work_stage?.trim() ||
+          image.alt_text?.trim() ||
+          `${post.region_tags[0] ?? "누수"} 현장 사진 ${index + 1}`,
+        imageUrl: image.url,
+        caption: image.caption?.trim() || image.alt_text?.trim() || undefined,
+        url: `${url}?photo=${index + 1}`,
+      }));
+
+  const usedUrls = new Set(items.map((item) => item.imageUrl));
+  for (const related of relatedPosts) {
+    if (items.length >= 8) break;
+    const imageUrl = related.cover_image_url;
+    if (!imageUrl || /placehold\.co/i.test(imageUrl) || usedUrls.has(imageUrl)) continue;
+    usedUrls.add(imageUrl);
+    items.push({
+      name: related.title,
+      imageUrl,
+      caption: related.excerpt ?? undefined,
+      url: `${siteConfig.url}/posts/${related.slug}`,
+    });
+  }
+
+  if (items.length < 5) return null;
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": `${url}#field-photo-list`,
+    name: `${post.title} 현장 사진과 관련 사례`,
+    numberOfItems: items.length,
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      image: {
+        "@type": "ImageObject",
+        url: item.imageUrl,
+        contentUrl: item.imageUrl,
+        caption: item.caption,
+      },
+      url: item.url,
+    })),
   };
 }
 
