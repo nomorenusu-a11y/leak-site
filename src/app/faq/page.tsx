@@ -15,6 +15,13 @@ export const metadata: Metadata = {
     title: `자주 묻는 질문 | ${BUSINESS.name}`,
     description: "누수 탐지·시공 관련 자주 묻는 질문 모음",
     url: `${BUSINESS.url}/faq`,
+    images: ["/og-image.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `자주 묻는 질문 | ${BUSINESS.name}`,
+    description: "누수 탐지·시공 관련 자주 묻는 질문 모음",
+    images: ["/og-image.png"],
   },
 };
 
@@ -36,7 +43,8 @@ export default async function FaqPage() {
               자주 묻는 질문
             </h1>
             <p className="mt-2 max-w-2xl text-slate-600">
-              상담 전 미리 확인하시면 좋은 내용을 모았습니다. 더 궁금한 점은 전화·카톡으로 문의 주세요.
+              상담 전 미리 확인하시면 좋은 내용을 모았습니다. 더 궁금한 점은 전화·카톡으로 문의
+              주세요.
             </p>
           </Container>
         </section>
@@ -55,7 +63,7 @@ export default async function FaqPage() {
             ))}
           </ul>
 
-          <div className="mt-12 rounded-2xl bg-gradient-to-br from-brand-600 to-brand-700 p-6 text-white shadow-md sm:p-8">
+          <div className="from-brand-600 to-brand-700 mt-12 rounded-2xl bg-gradient-to-br p-6 text-white shadow-md sm:p-8">
             <h2 className="text-xl font-extrabold sm:text-2xl">더 궁금한 점이 있으세요?</h2>
             <p className="mt-2 text-sm text-white/90 sm:text-base">
               상황을 알려주시면 빠르게 답변드릴게요.

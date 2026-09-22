@@ -12,39 +12,14 @@ import { MasterSection } from "@/components/landing/v2/MasterSection";
 import { FaqSection } from "@/components/landing/v2/FaqSection";
 import { MobileBottomBar } from "@/components/landing/v2/MobileBottomBar";
 import { FloatingDesktop } from "@/components/landing/v2/FloatingDesktop";
-import { resolveCity } from "@/lib/city";
 import { landingMetadata } from "@/lib/seo/meta";
 import { localBusinessJsonLd, websiteJsonLd } from "@/lib/seo/schema";
 import { faqPageJsonLd, loadFaqItems } from "@/lib/seo/faq";
 
-export const revalidate = 60;
+export const revalidate = 300;
+export const metadata: Metadata = landingMetadata("");
 
-type Search = { [key: string]: string | string[] | undefined };
-
-function firstString(v: string | string[] | undefined): string | undefined {
-  if (Array.isArray(v)) return v[0];
-  return v;
-}
-
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Promise<Search>;
-}): Promise<Metadata> {
-  const sp = await searchParams;
-  const { label } = resolveCity(sp.city);
-  return landingMetadata(label);
-}
-
-export default async function HomePage({
-  searchParams,
-}: {
-  searchParams: Promise<Search>;
-}) {
-  const sp = await searchParams;
-  const { code, label } = resolveCity(sp.city);
-  const utmSource = firstString(sp.utm_source);
-  const utmCampaign = firstString(sp.utm_campaign);
+export default async function HomePage() {
   const faqItems = await loadFaqItems();
 
   return (
@@ -72,19 +47,15 @@ export default async function HomePage({
       />
       <Header />
       <main className="theme-shell flex-1 pb-24">
-        <HeroV2 cityLabel={label} />
+        <HeroV2 cityLabel="" />
         <AboutCards />
         <MasterSection />
         <TimeEmphasis />
         <ServicesList />
         <WorksCardsSection />
         <TestimonialsSection />
-        <QuoteFormSectionV2
-          utmSource={utmSource}
-          utmCampaign={utmCampaign}
-          cityCode={code ?? undefined}
-        />
-        <FaqSection />
+        <QuoteFormSectionV2 />
+        <FaqSection items={faqItems} />
       </main>
       <Footer />
       <MobileBottomBar />

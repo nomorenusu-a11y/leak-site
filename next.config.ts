@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
+    // 공개 화면의 최대 콘텐츠 폭은 1600px 이하다. 기본 3840px 후보를 만들지 않아
+    // 크롤러와 브라우저가 불필요하게 큰 이미지를 선택하는 일을 막는다.
+    deviceSizes: [640, 750, 828, 1080, 1200, 1600, 1920],
     // 외부 이미지 호스트는 명시적 allowlist로만 허용.
     remotePatterns: [
       // 모든 Supabase Storage public 객체 URL

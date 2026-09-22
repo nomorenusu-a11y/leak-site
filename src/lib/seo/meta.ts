@@ -15,7 +15,10 @@ export const baseMetadata: Metadata = {
   },
   description: DEFAULT_DESCRIPTION,
   applicationName: siteConfig.name,
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+    types: { "application/rss+xml": `${siteConfig.url}/feed.xml` },
+  },
   icons: {
     icon: [
       { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
@@ -58,8 +61,7 @@ export const baseMetadata: Metadata = {
       undefined,
     other: (() => {
       const naver =
-        process.env.NAVER_SITE_VERIFICATION ||
-        process.env.NEXT_PUBLIC_NAVER_VERIFICATION;
+        process.env.NAVER_SITE_VERIFICATION || process.env.NEXT_PUBLIC_NAVER_VERIFICATION;
       return naver ? { "naver-site-verification": naver } : undefined;
     })(),
   },

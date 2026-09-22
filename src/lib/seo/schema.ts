@@ -186,11 +186,39 @@ export function regionCollectionJsonLd(args: { regionTag: string; slug: string; 
     about: { "@type": "Place", name: args.regionTag },
     mainEntity: {
       "@type": "ItemList",
-      itemListElement: args.posts.slice(0, 12).map((p, i) => ({
+      itemListElement: args.posts.slice(0, 12).map((post, index) => ({
         "@type": "ListItem",
-        position: i + 1,
-        url: `${siteConfig.url}/posts/${p.slug}`,
-        name: p.title,
+        position: index + 1,
+        url: `${siteConfig.url}/posts/${post.slug}`,
+        name: post.title,
+      })),
+    },
+  };
+}
+
+/** Schema.org CollectionPage JSON-LD — 전체·분류별 사례 목록. */
+export function postsCollectionJsonLd(args: {
+  title: string;
+  description: string;
+  path: string;
+  posts: Post[];
+}) {
+  const url = new URL(args.path, siteConfig.url).href;
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": url,
+    name: args.title,
+    description: args.description,
+    isPartOf: { "@type": "WebSite", name: siteConfig.name, url: siteConfig.url },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: args.posts.length,
+      itemListElement: args.posts.map((post, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        url: `${siteConfig.url}/posts/${post.slug}`,
+        name: post.title,
       })),
     },
   };

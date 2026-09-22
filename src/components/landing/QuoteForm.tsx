@@ -1,25 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import {
-  useActionState,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ChangeEvent,
-} from "react";
-import {
-  submitQuote,
-  type SubmitQuoteState,
-} from "@/app/actions/submit-quote";
+import { useActionState, useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import { submitQuote, type SubmitQuoteState } from "@/app/actions/submit-quote";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Field } from "@/components/ui/Field";
 import { Camera, Upload, X, Check } from "@/components/icons";
 import { EVENTS, trackEvent } from "@/lib/analytics";
-import { readStoredUtm } from "@/lib/utm";
+import { captureUtmFromUrl, readStoredUtm } from "@/lib/utm";
 import { RegionStepPicker } from "@/components/landing/RegionStepPicker";
 
 const MAX_IMAGES = 3;
@@ -50,10 +40,7 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
     campaign: utmCampaign ?? "",
     city: cityCode ?? "",
   });
-  const [state, action, pending] = useActionState<SubmitQuoteState, FormData>(
-    submitQuote,
-    INITIAL,
-  );
+  const [state, action, pending] = useActionState<SubmitQuoteState, FormData>(submitQuote, INITIAL);
 
   const [phoneValue, setPhoneValue] = useState("");
   const [symptom, setSymptom] = useState("");
@@ -83,6 +70,7 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
   // mount 후 1회 utm storage fallback
   useEffect(() => {
     if (utmSource || utmCampaign || cityCode) return;
+    captureUtmFromUrl();
     const stored = readStoredUtm();
     if (!stored) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -122,8 +110,7 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
     }
   }, [state]);
 
-  const fieldErrors =
-    state.status === "error" ? state.fieldErrors : undefined;
+  const fieldErrors = state.status === "error" ? state.fieldErrors : undefined;
 
   function addFiles(picked: File[]) {
     setFileError(null);
@@ -186,11 +173,7 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
         className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 sm:p-8"
       >
         <div className="flex items-start gap-3">
-          <Check
-            aria-hidden
-            className="size-7 shrink-0 text-emerald-600"
-            strokeWidth={2.5}
-          />
+          <Check aria-hidden className="size-7 shrink-0 text-emerald-600" strokeWidth={2.5} />
           <div>
             <h3 className="text-lg font-extrabold text-emerald-900">신청 완료!</h3>
             <p className="mt-1 text-sm text-emerald-800">
@@ -337,12 +320,8 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
             } ${files.length >= MAX_IMAGES ? "pointer-events-none opacity-60" : ""}`}
           >
             <Upload aria-hidden className="size-5 text-slate-500" />
-            <span className="text-sm font-semibold text-slate-700">
-              파일 선택 또는 끌어 놓기
-            </span>
-            <span className="text-xs text-slate-500">
-              모바일은 카메라로 바로 촬영 가능
-            </span>
+            <span className="text-sm font-semibold text-slate-700">파일 선택 또는 끌어 놓기</span>
+            <span className="text-xs text-slate-500">모바일은 카메라로 바로 촬영 가능</span>
           </label>
           <input
             id="images"
@@ -355,9 +334,7 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
             disabled={files.length >= MAX_IMAGES}
             className="sr-only"
           />
-          {fileError && (
-            <p className="mt-1.5 text-xs font-semibold text-danger">{fileError}</p>
-          )}
+          {fileError && <p className="text-danger mt-1.5 text-xs font-semibold">{fileError}</p>}
           {previews.length > 0 && (
             <ul className="mt-3 grid grid-cols-3 gap-2">
               {previews.map((src, i) => (
@@ -374,7 +351,7 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
                   <button
                     type="button"
                     onClick={() => removeFile(i)}
-                    className="absolute right-1 top-1 inline-flex size-6 items-center justify-center rounded-full bg-black/70 text-white hover:bg-black"
+                    className="absolute top-1 right-1 inline-flex size-6 items-center justify-center rounded-full bg-black/70 text-white hover:bg-black"
                     aria-label={`사진 ${i + 1} 삭제`}
                   >
                     <X aria-hidden className="size-3.5" />
@@ -386,7 +363,7 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
           {/* 시각적 hint icon — 카메라 직촬영 (스크린리더에는 위 라벨 텍스트로 충분) */}
           {previews.length === 0 && (
             <p className="mt-2 hidden text-xs text-slate-500 sm:block">
-              <Camera aria-hidden className="mb-0.5 mr-1 inline size-3.5" />
+              <Camera aria-hidden className="mr-1 mb-0.5 inline size-3.5" />
               증상 부위가 잘 보이도록 가까이에서 촬영해 주세요.
             </p>
           )}
@@ -400,13 +377,13 @@ export function QuoteForm({ utmSource, utmCampaign, cityCode }: Props) {
             required
             checked={agreed}
             onChange={(e) => setAgreed(e.target.checked)}
-            className="mt-0.5 size-4 rounded border-slate-400 accent-brand-600"
+            className="accent-brand-600 mt-0.5 size-4 rounded border-slate-400"
           />
           <span>
             <Link
               href="/privacy"
               target="_blank"
-              className="font-semibold text-brand-700 hover:underline"
+              className="text-brand-700 font-semibold hover:underline"
             >
               개인정보 수집·이용
             </Link>

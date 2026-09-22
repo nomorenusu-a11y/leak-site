@@ -1,0 +1,170 @@
+{
+  "view": "actions",
+  "report": {
+    "id": "report",
+    "workflow": "report",
+    "site": "https://nomorenusu.com",
+    "generatedAt": "2026-09-22T04:13:17.618Z",
+    "summary": "Found 0 high, 89 medium, and 2 low technical issues across 250 crawled pages. Search Console and Google Analytics are not connected; provider-backed sections were skipped."
+  },
+  "findings": {
+    "schemaVersion": 1,
+    "scope": "returned-report",
+    "coverage": {
+      "state": "complete",
+      "detail": "Every finding in the declared report scope is represented."
+    },
+    "counts": {
+      "total": 2,
+      "returned": 2,
+      "fixes": 0,
+      "reviews": 2,
+      "open": 2
+    },
+    "completion": {
+      "state": "pending",
+      "instruction": "Before finishing, return one allowed outcome and reason for every open item; the outcome count must equal counts.returned. A review is a decision task, not an instruction to change the site. Do not silently drop findings."
+    },
+    "verification": {
+      "requiredAfterChanges": true,
+      "instruction": "After edits, run each changed item's verification and rerun the originating report. A code change alone does not close a finding.",
+      "reportCheck": "Rerun seo report with the same inputs and confirm the finding is absent or its evidence now matches the intended state."
+    },
+    "sourcePaths": [
+      "actions"
+    ],
+    "items": [
+      {
+        "id": "crawl:noindex",
+        "status": "open",
+        "title": "noindex: Noindex found (89 URLs)",
+        "confidence": "medium",
+        "severity": "medium",
+        "affectedCount": 89,
+        "affectedUrls": {
+          "total": 89,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "https://nomorenusu.com/posts?cat=frozen",
+            "https://nomorenusu.com/posts?cat=heating",
+            "https://nomorenusu.com/posts?cat=leak",
+            "https://nomorenusu.com/posts?cat=leak&page=2",
+            "https://nomorenusu.com/posts?cat=sink",
+            "https://nomorenusu.com/posts?cat=toilet",
+            "https://nomorenusu.com/seoul/dongdaemun-gu",
+            "https://nomorenusu.com/seoul/dongdaemun-gu/cheongryangri-dong",
+            "https://nomorenusu.com/seoul/dongdaemun-gu/dapsimni-dong",
+            "https://nomorenusu.com/seoul/dongdaemun-gu/hoegi-dong"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_a618aa779f154e7f8c85be7f6b017479",
+              "ruleId": "noindex"
+            }
+          }
+        },
+        "sourcePath": "actions[0]",
+        "evidence": {
+          "ruleId": "noindex",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://nomorenusu.com/posts?cat=frozen",
+            "https://nomorenusu.com/posts?cat=heating",
+            "https://nomorenusu.com/posts?cat=leak",
+            "https://nomorenusu.com/posts?cat=leak&page=2",
+            "https://nomorenusu.com/posts?cat=sink",
+            "https://nomorenusu.com/posts?cat=toilet",
+            "https://nomorenusu.com/seoul/dongdaemun-gu",
+            "https://nomorenusu.com/seoul/dongdaemun-gu/cheongryangri-dong",
+            "https://nomorenusu.com/seoul/dongdaemun-gu/dapsimni-dong",
+            "https://nomorenusu.com/seoul/dongdaemun-gu/hoegi-dong"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity medium --max-pages 100",
+          "expected": "Re-run the crawl or URL Inspection and confirm no effective meta robots or X-Robots-Tag noindex remains, including the equivalent none directive."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"noindex: Noindex found (89 URLs)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Remove the noindex directive if the page should rank. Leave it in place only for intentionally private or low-value pages.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:structured_data_missing",
+        "status": "open",
+        "title": "structured_data_missing: No structured data detected (2 URLs)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 2,
+        "affectedUrls": {
+          "total": 2,
+          "returned": 2,
+          "complete": true,
+          "items": [
+            "https://nomorenusu.com/privacy",
+            "https://nomorenusu.com/terms"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_a618aa779f154e7f8c85be7f6b017479",
+              "ruleId": "structured_data_missing"
+            }
+          }
+        },
+        "sourcePath": "actions[1]",
+        "evidence": {
+          "ruleId": "structured_data_missing",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://nomorenusu.com/privacy",
+            "https://nomorenusu.com/terms"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and confirm structuredDataFormats lists the added format, then validate the page with a structured data tester."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does a specific structured data type accurately describe the visible content on this page?",
+          "changeOnlyIf": "Add markup only when a specific schema type fits the page and every claimed property is supported by its visible content.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Add structured data only where a schema type genuinely describes the page, for example an article page describing its article. Validate the markup after adding it, and leave pages without a fitting schema type unmarked.",
+          "ifNotNeeded": "Leave the page unmarked and record that no suitable schema type was confirmed.",
+          "doNot": [
+            "Do not add Organization or another generic schema type only to clear this finding.",
+            "Do not copy site-wide markup onto unrelated page types."
+          ]
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      }
+    ]
+  },
+  "outputBudget": {
+    "schemaVersion": 1,
+    "maxBytes": 98304,
+    "originalBytes": 5568,
+    "returnedBytes": 5801,
+    "truncated": false,
+    "omissions": [],
+    "omissionsTruncated": false,
+    "detail": "The complete structured report fits within the agent output budget."
+  }
+}

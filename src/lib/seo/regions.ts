@@ -17,7 +17,7 @@ export function regionPageDescription(region: Region, content: RegionPageContent
 
 export function regionMetadataTitle(region: Region, content: RegionPageContent) {
   const pageTitle = regionPageTitle(region, content);
-  return region.level === "dong" ? `${pageTitle} | 아파트·화장실·천장·배관 누수 상담` : pageTitle;
+  return region.level === "dong" ? `${pageTitle} | 아파트·배관 누수 상담` : pageTitle;
 }
 
 export function regionHeroDescription(region: Region, content: RegionPageContent) {
@@ -74,6 +74,9 @@ export function regionMetadata(region: Region, content: RegionPageContent): Meta
 export function breadcrumbJsonLd(region: Region, post?: { title: string; slug: string }) {
   // Naver recommends descriptive hierarchy names instead of a generic "홈" item.
   const items = regionAncestors(region).map((r) => ({ name: r.name, path: regionPath(r) }));
+  if (items.length === 1) {
+    items.unshift({ name: siteConfig.name, path: "/" });
+  }
   if (post) items.push({ name: post.title, path: `/posts/${post.slug}` });
   return {
     "@context": "https://schema.org",

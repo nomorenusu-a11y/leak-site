@@ -102,10 +102,7 @@ test("a legal-dong page covers related leak intents without creating combination
   const ssangmun = PILOT_REGIONS.find((region) => region.slug === "ssangmun-dong")!;
   const content = defaultRegionContent(ssangmun.id);
   assert.equal(regionPageTitle(ssangmun, content), "쌍문동 누수탐지");
-  assert.equal(
-    regionMetadataTitle(ssangmun, content),
-    "쌍문동 누수탐지 | 아파트·화장실·천장·배관 누수 상담",
-  );
+  assert.equal(regionMetadataTitle(ssangmun, content), "쌍문동 누수탐지 | 아파트·배관 누수 상담");
   for (const keyword of [
     "쌍문동 아파트 누수",
     "화장실·욕실 누수",

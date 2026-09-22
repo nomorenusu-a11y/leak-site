@@ -1,0 +1,790 @@
+{
+  "view": "actions",
+  "report": {
+    "id": "report",
+    "workflow": "report",
+    "site": "https://nomorenusu.com",
+    "generatedAt": "2026-09-22T03:09:18.074Z",
+    "summary": "Found 0 high, 106 medium, and 375 low technical issues across 250 crawled pages. Search Console and Google Analytics are not connected; provider-backed sections were skipped."
+  },
+  "findings": {
+    "schemaVersion": 1,
+    "scope": "returned-report",
+    "coverage": {
+      "state": "complete",
+      "detail": "Every finding in the declared report scope is represented."
+    },
+    "counts": {
+      "total": 12,
+      "returned": 12,
+      "fixes": 5,
+      "reviews": 7,
+      "open": 12
+    },
+    "completion": {
+      "state": "pending",
+      "instruction": "Before finishing, return one allowed outcome and reason for every open item; the outcome count must equal counts.returned. A review is a decision task, not an instruction to change the site. Do not silently drop findings."
+    },
+    "verification": {
+      "requiredAfterChanges": true,
+      "instruction": "After edits, run each changed item's verification and rerun the originating report. A code change alone does not close a finding.",
+      "reportCheck": "Rerun seo report with the same inputs and confirm the finding is absent or its evidence now matches the intended state."
+    },
+    "sourcePaths": [
+      "actions"
+    ],
+    "items": [
+      {
+        "id": "crawl:duplicate_content",
+        "status": "open",
+        "title": "duplicate_content: Duplicate content (10 URLs)",
+        "confidence": "high",
+        "severity": "medium",
+        "affectedCount": 10,
+        "affectedUrls": {
+          "total": 10,
+          "returned": 10,
+          "complete": true,
+          "items": [
+            "https://nomorenusu.com/",
+            "https://nomorenusu.com/?city=Dobong",
+            "https://nomorenusu.com/?city=Dongdaemun",
+            "https://nomorenusu.com/?city=Dongjak",
+            "https://nomorenusu.com/?city=Eunpyeong",
+            "https://nomorenusu.com/?city=Gangbuk",
+            "https://nomorenusu.com/?city=Gangdong",
+            "https://nomorenusu.com/?city=Gangnam",
+            "https://nomorenusu.com/?city=Gangseo",
+            "https://nomorenusu.com/?city=Geumcheon"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_aff7f47f03b345e59fee41b7f3d78f69",
+              "ruleId": "duplicate_content"
+            }
+          }
+        },
+        "sourcePath": "actions[0]",
+        "evidence": {
+          "ruleId": "duplicate_content",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 1200; 10 URLs are affected; estimated effort is high.",
+          "sampleUrls": [
+            "https://nomorenusu.com/",
+            "https://nomorenusu.com/?city=Dobong",
+            "https://nomorenusu.com/?city=Dongdaemun",
+            "https://nomorenusu.com/?city=Dongjak",
+            "https://nomorenusu.com/?city=Eunpyeong",
+            "https://nomorenusu.com/?city=Gangbuk",
+            "https://nomorenusu.com/?city=Gangdong",
+            "https://nomorenusu.com/?city=Gangnam",
+            "https://nomorenusu.com/?city=Gangseo",
+            "https://nomorenusu.com/?city=Geumcheon"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity medium --max-pages 100",
+          "expected": "Re-run the crawl and confirm the duplicate mainContentHash appears on only one URL."
+        },
+        "type": "fix",
+        "fix": {
+          "instruction": "Consolidate duplicate pages with redirects or canonicals, or make each page meaningfully different for its own intent."
+        },
+        "allowedOutcomes": [
+          "fixed",
+          "deferred",
+          "not-needed"
+        ]
+      },
+      {
+        "id": "crawl:meta_description_duplicate",
+        "status": "open",
+        "title": "meta_description_duplicate: Duplicate meta description (7 URLs)",
+        "confidence": "high",
+        "severity": "medium",
+        "affectedCount": 7,
+        "affectedUrls": {
+          "total": 7,
+          "returned": 7,
+          "complete": true,
+          "items": [
+            "https://nomorenusu.com/posts",
+            "https://nomorenusu.com/posts?cat=frozen",
+            "https://nomorenusu.com/posts?cat=heating",
+            "https://nomorenusu.com/posts?cat=leak",
+            "https://nomorenusu.com/posts?cat=sink",
+            "https://nomorenusu.com/posts?cat=toilet",
+            "https://nomorenusu.com/posts?page=2"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_aff7f47f03b345e59fee41b7f3d78f69",
+              "ruleId": "meta_description_duplicate"
+            }
+          }
+        },
+        "sourcePath": "actions[1]",
+        "evidence": {
+          "ruleId": "meta_description_duplicate",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 1200; 7 URLs are affected; estimated effort is low.",
+          "sampleUrls": [
+            "https://nomorenusu.com/posts",
+            "https://nomorenusu.com/posts?cat=frozen",
+            "https://nomorenusu.com/posts?cat=heating",
+            "https://nomorenusu.com/posts?cat=leak",
+            "https://nomorenusu.com/posts?cat=sink",
+            "https://nomorenusu.com/posts?cat=toilet",
+            "https://nomorenusu.com/posts?page=2"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity medium --max-pages 100",
+          "expected": "Re-run the crawl and confirm this description appears on only one URL."
+        },
+        "type": "fix",
+        "fix": {
+          "instruction": "Write a distinct description for each page that explains what is unique about that URL."
+        },
+        "allowedOutcomes": [
+          "fixed",
+          "deferred",
+          "not-needed"
+        ]
+      },
+      {
+        "id": "crawl:title_duplicate",
+        "status": "open",
+        "title": "title_duplicate: Duplicate title (6 URLs)",
+        "confidence": "high",
+        "severity": "medium",
+        "affectedCount": 6,
+        "affectedUrls": {
+          "total": 6,
+          "returned": 6,
+          "complete": true,
+          "items": [
+            "https://nomorenusu.com/posts",
+            "https://nomorenusu.com/posts?cat=frozen",
+            "https://nomorenusu.com/posts?cat=heating",
+            "https://nomorenusu.com/posts?cat=leak",
+            "https://nomorenusu.com/posts?cat=sink",
+            "https://nomorenusu.com/posts?cat=toilet"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_aff7f47f03b345e59fee41b7f3d78f69",
+              "ruleId": "title_duplicate"
+            }
+          }
+        },
+        "sourcePath": "actions[2]",
+        "evidence": {
+          "ruleId": "title_duplicate",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 1200; 6 URLs are affected; estimated effort is low.",
+          "sampleUrls": [
+            "https://nomorenusu.com/posts",
+            "https://nomorenusu.com/posts?cat=frozen",
+            "https://nomorenusu.com/posts?cat=heating",
+            "https://nomorenusu.com/posts?cat=leak",
+            "https://nomorenusu.com/posts?cat=sink",
+            "https://nomorenusu.com/posts?cat=toilet"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity medium --max-pages 100",
+          "expected": "Re-run the crawl and confirm this title appears on only one indexable URL."
+        },
+        "type": "fix",
+        "fix": {
+          "instruction": "Rewrite each title so it reflects the specific page, including the unique entity, intent, location, product, or angle."
+        },
+        "allowedOutcomes": [
+          "fixed",
+          "deferred",
+          "not-needed"
+        ]
+      },
+      {
+        "id": "crawl:rich_result_required_fields_missing",
+        "status": "open",
+        "title": "rich_result_required_fields_missing: Required rich-result properties are missing (1 URL)",
+        "confidence": "high",
+        "severity": "medium",
+        "affectedCount": 1,
+        "affectedUrls": {
+          "total": 1,
+          "returned": 1,
+          "complete": true,
+          "items": [
+            "https://nomorenusu.com/seoul"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_aff7f47f03b345e59fee41b7f3d78f69",
+              "ruleId": "rich_result_required_fields_missing"
+            }
+          }
+        },
+        "sourcePath": "actions[3]",
+        "evidence": {
+          "ruleId": "rich_result_required_fields_missing",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 1200; 1 URL is affected; estimated effort is medium.",
+          "sampleUrls": [
+            "https://nomorenusu.com/seoul"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity medium --max-pages 100",
+          "expected": "Re-run the crawl, review googleRichResults, and confirm no supported item reports missing-required-properties. Then use Google’s Rich Results Test."
+        },
+        "type": "fix",
+        "fix": {
+          "instruction": "Add the missing properties only when they accurately represent visible page content. Follow the linked Google feature documentation and validate the result."
+        },
+        "allowedOutcomes": [
+          "fixed",
+          "deferred",
+          "not-needed"
+        ]
+      },
+      {
+        "id": "crawl:h1_missing",
+        "status": "open",
+        "title": "h1_missing: Missing H1 (10 URLs)",
+        "confidence": "high",
+        "severity": "low",
+        "affectedCount": 10,
+        "affectedUrls": {
+          "total": 10,
+          "returned": 10,
+          "complete": true,
+          "items": [
+            "https://nomorenusu.com/",
+            "https://nomorenusu.com/?city=Dobong",
+            "https://nomorenusu.com/?city=Dongdaemun",
+            "https://nomorenusu.com/?city=Dongjak",
+            "https://nomorenusu.com/?city=Eunpyeong",
+            "https://nomorenusu.com/?city=Gangbuk",
+            "https://nomorenusu.com/?city=Gangdong",
+            "https://nomorenusu.com/?city=Gangnam",
+            "https://nomorenusu.com/?city=Gangseo",
+            "https://nomorenusu.com/?city=Geumcheon"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_aff7f47f03b345e59fee41b7f3d78f69",
+              "ruleId": "h1_missing"
+            }
+          }
+        },
+        "sourcePath": "actions[4]",
+        "evidence": {
+          "ruleId": "h1_missing",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 100; 10 URLs are affected; estimated effort is low.",
+          "sampleUrls": [
+            "https://nomorenusu.com/",
+            "https://nomorenusu.com/?city=Dobong",
+            "https://nomorenusu.com/?city=Dongdaemun",
+            "https://nomorenusu.com/?city=Dongjak",
+            "https://nomorenusu.com/?city=Eunpyeong",
+            "https://nomorenusu.com/?city=Gangbuk",
+            "https://nomorenusu.com/?city=Gangdong",
+            "https://nomorenusu.com/?city=Gangnam",
+            "https://nomorenusu.com/?city=Gangseo",
+            "https://nomorenusu.com/?city=Geumcheon"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and confirm an H1 describes the page’s main visible topic."
+        },
+        "type": "fix",
+        "fix": {
+          "instruction": "Add one clear H1 near the top of the main content. Make it describe the specific page, not just a generic section label."
+        },
+        "allowedOutcomes": [
+          "fixed",
+          "deferred",
+          "not-needed"
+        ]
+      },
+      {
+        "id": "crawl:noindex",
+        "status": "open",
+        "title": "noindex: Noindex found (82 URLs)",
+        "confidence": "medium",
+        "severity": "medium",
+        "affectedCount": 82,
+        "affectedUrls": {
+          "total": 82,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "https://nomorenusu.com/posts?cat=frozen",
+            "https://nomorenusu.com/posts?cat=heating",
+            "https://nomorenusu.com/posts?cat=leak",
+            "https://nomorenusu.com/posts?cat=sink",
+            "https://nomorenusu.com/posts?cat=toilet",
+            "https://nomorenusu.com/seoul/dongdaemun-gu",
+            "https://nomorenusu.com/seoul/dongdaemun-gu/imun-dong",
+            "https://nomorenusu.com/seoul/dongdaemun-gu/jangan-dong",
+            "https://nomorenusu.com/seoul/dongdaemun-gu/jeonnong-dong",
+            "https://nomorenusu.com/seoul/dongjak-gu"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_aff7f47f03b345e59fee41b7f3d78f69",
+              "ruleId": "noindex"
+            }
+          }
+        },
+        "sourcePath": "actions[5]",
+        "evidence": {
+          "ruleId": "noindex",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://nomorenusu.com/posts?cat=frozen",
+            "https://nomorenusu.com/posts?cat=heating",
+            "https://nomorenusu.com/posts?cat=leak",
+            "https://nomorenusu.com/posts?cat=sink",
+            "https://nomorenusu.com/posts?cat=toilet",
+            "https://nomorenusu.com/seoul/dongdaemun-gu",
+            "https://nomorenusu.com/seoul/dongdaemun-gu/imun-dong",
+            "https://nomorenusu.com/seoul/dongdaemun-gu/jangan-dong",
+            "https://nomorenusu.com/seoul/dongdaemun-gu/jeonnong-dong",
+            "https://nomorenusu.com/seoul/dongjak-gu"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity medium --max-pages 100",
+          "expected": "Re-run the crawl or URL Inspection and confirm no effective meta robots or X-Robots-Tag noindex remains, including the equivalent none directive."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"noindex: Noindex found (82 URLs)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Remove the noindex directive if the page should rank. Leave it in place only for intentionally private or low-value pages.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:image_oversized_candidate",
+        "status": "open",
+        "title": "image_oversized_candidate: Oversized image candidates (182 URLs)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 182,
+        "affectedUrls": {
+          "total": 182,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "https://nomorenusu.com/",
+            "https://nomorenusu.com/?city=Dobong",
+            "https://nomorenusu.com/?city=Dongdaemun",
+            "https://nomorenusu.com/?city=Dongjak",
+            "https://nomorenusu.com/?city=Eunpyeong",
+            "https://nomorenusu.com/?city=Gangbuk",
+            "https://nomorenusu.com/?city=Gangdong",
+            "https://nomorenusu.com/?city=Gangnam",
+            "https://nomorenusu.com/?city=Gangseo",
+            "https://nomorenusu.com/?city=Geumcheon"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_aff7f47f03b345e59fee41b7f3d78f69",
+              "ruleId": "image_oversized_candidate"
+            }
+          }
+        },
+        "sourcePath": "actions[6]",
+        "evidence": {
+          "ruleId": "image_oversized_candidate",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://nomorenusu.com/",
+            "https://nomorenusu.com/?city=Dobong",
+            "https://nomorenusu.com/?city=Dongdaemun",
+            "https://nomorenusu.com/?city=Dongjak",
+            "https://nomorenusu.com/?city=Eunpyeong",
+            "https://nomorenusu.com/?city=Gangbuk",
+            "https://nomorenusu.com/?city=Gangdong",
+            "https://nomorenusu.com/?city=Gangnam",
+            "https://nomorenusu.com/?city=Gangseo",
+            "https://nomorenusu.com/?city=Geumcheon"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and confirm oversizedImageCandidates is empty, then spot-check the page in a browser performance trace if the image is important."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"image_oversized_candidate: Oversized image candidates (182 URLs)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Resize the source image, add responsive srcset sizes, and serve modern compressed formats such as WebP or AVIF where supported.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:title_too_wide",
+        "status": "open",
+        "title": "title_too_wide: Title may truncate on some devices (125 URLs)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 125,
+        "affectedUrls": {
+          "total": 125,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "https://nomorenusu.com/posts/20260914-bulgwang-water-bill",
+            "https://nomorenusu.com/posts/20260914-daechi-heating-pressure",
+            "https://nomorenusu.com/posts/20260914-gireum-ceiling-stain",
+            "https://nomorenusu.com/posts/20260914-munjeong-manifold-water",
+            "https://nomorenusu.com/posts/20260914-sanggye-water-meter",
+            "https://nomorenusu.com/posts/20260914-yeonnam-kitchen-cabinet",
+            "https://nomorenusu.com/posts/20260915-banpo-shower-threshold",
+            "https://nomorenusu.com/posts/20260915-bongcheon-lifted-floor",
+            "https://nomorenusu.com/posts/20260915-jayang-toilet-floor",
+            "https://nomorenusu.com/posts/20260915-sadang-shower-downstairs"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_aff7f47f03b345e59fee41b7f3d78f69",
+              "ruleId": "title_too_wide"
+            }
+          }
+        },
+        "sourcePath": "actions[7]",
+        "evidence": {
+          "ruleId": "title_too_wide",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://nomorenusu.com/posts/20260914-bulgwang-water-bill",
+            "https://nomorenusu.com/posts/20260914-daechi-heating-pressure",
+            "https://nomorenusu.com/posts/20260914-gireum-ceiling-stain",
+            "https://nomorenusu.com/posts/20260914-munjeong-manifold-water",
+            "https://nomorenusu.com/posts/20260914-sanggye-water-meter",
+            "https://nomorenusu.com/posts/20260914-yeonnam-kitchen-cabinet",
+            "https://nomorenusu.com/posts/20260915-banpo-shower-threshold",
+            "https://nomorenusu.com/posts/20260915-bongcheon-lifted-floor",
+            "https://nomorenusu.com/posts/20260915-jayang-toilet-floor",
+            "https://nomorenusu.com/posts/20260915-sadang-shower-downstairs"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity low --max-pages 100",
+          "expected": "Re-run the audit and review estimatedPixels, referencePixels, confidence, and profile. Confirm the important wording appears early."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"title_too_wide: Title may truncate on some devices (125 URLs)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Review the title rather than shortening it blindly. Put the clearest page-specific wording first and remove filler only when meaning is preserved.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:og_image_missing",
+        "status": "open",
+        "title": "og_image_missing: Open Graph image missing (34 URLs)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 34,
+        "affectedUrls": {
+          "total": 34,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "https://nomorenusu.com/faq",
+            "https://nomorenusu.com/posts",
+            "https://nomorenusu.com/posts/region/bundang",
+            "https://nomorenusu.com/posts/region/dobong",
+            "https://nomorenusu.com/posts/region/dongdaemun",
+            "https://nomorenusu.com/posts/region/dongjak",
+            "https://nomorenusu.com/posts/region/eunpyeong",
+            "https://nomorenusu.com/posts/region/gangbuk",
+            "https://nomorenusu.com/posts/region/gangdong",
+            "https://nomorenusu.com/posts/region/gangnam"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_aff7f47f03b345e59fee41b7f3d78f69",
+              "ruleId": "og_image_missing"
+            }
+          }
+        },
+        "sourcePath": "actions[8]",
+        "evidence": {
+          "ruleId": "og_image_missing",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://nomorenusu.com/faq",
+            "https://nomorenusu.com/posts",
+            "https://nomorenusu.com/posts/region/bundang",
+            "https://nomorenusu.com/posts/region/dobong",
+            "https://nomorenusu.com/posts/region/dongdaemun",
+            "https://nomorenusu.com/posts/region/dongjak",
+            "https://nomorenusu.com/posts/region/eunpyeong",
+            "https://nomorenusu.com/posts/region/gangbuk",
+            "https://nomorenusu.com/posts/region/gangdong",
+            "https://nomorenusu.com/posts/region/gangnam"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and confirm openGraphImage is present."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"og_image_missing: Open Graph image missing (34 URLs)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Add an og:image URL with a representative image that crawlers can fetch over HTTPS.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:slow_response",
+        "status": "open",
+        "title": "slow_response: Slow response in this crawl (11 URLs)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 11,
+        "affectedUrls": {
+          "total": 11,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "https://nomorenusu.com/",
+            "https://nomorenusu.com/?city=Dobong",
+            "https://nomorenusu.com/?city=Dongdaemun",
+            "https://nomorenusu.com/?city=Dongjak",
+            "https://nomorenusu.com/?city=Eunpyeong",
+            "https://nomorenusu.com/?city=Gangbuk",
+            "https://nomorenusu.com/?city=Gangdong",
+            "https://nomorenusu.com/?city=Gangnam",
+            "https://nomorenusu.com/?city=Gangseo",
+            "https://nomorenusu.com/?city=Geumcheon"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_aff7f47f03b345e59fee41b7f3d78f69",
+              "ruleId": "slow_response"
+            }
+          }
+        },
+        "sourcePath": "actions[9]",
+        "evidence": {
+          "ruleId": "slow_response",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://nomorenusu.com/",
+            "https://nomorenusu.com/?city=Dobong",
+            "https://nomorenusu.com/?city=Dongdaemun",
+            "https://nomorenusu.com/?city=Dongjak",
+            "https://nomorenusu.com/?city=Eunpyeong",
+            "https://nomorenusu.com/?city=Gangbuk",
+            "https://nomorenusu.com/?city=Gangdong",
+            "https://nomorenusu.com/?city=Gangnam",
+            "https://nomorenusu.com/?city=Gangseo",
+            "https://nomorenusu.com/?city=Geumcheon"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and compare repeated response times. Use field data where available for a user-experience decision."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"slow_response: Slow response in this crawl (11 URLs)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Repeat the check and use the performance report before changing anything. If the delay persists, check server timing, cache headers, database queries, CDN caching, and origin health.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:canonicalized_page",
+        "status": "open",
+        "title": "canonicalized_page: Canonicalized page (9 URLs)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 9,
+        "affectedUrls": {
+          "total": 9,
+          "returned": 9,
+          "complete": true,
+          "items": [
+            "https://nomorenusu.com/?city=Dobong",
+            "https://nomorenusu.com/?city=Dongdaemun",
+            "https://nomorenusu.com/?city=Dongjak",
+            "https://nomorenusu.com/?city=Eunpyeong",
+            "https://nomorenusu.com/?city=Gangbuk",
+            "https://nomorenusu.com/?city=Gangdong",
+            "https://nomorenusu.com/?city=Gangnam",
+            "https://nomorenusu.com/?city=Gangseo",
+            "https://nomorenusu.com/?city=Geumcheon"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_aff7f47f03b345e59fee41b7f3d78f69",
+              "ruleId": "canonicalized_page"
+            }
+          }
+        },
+        "sourcePath": "actions[10]",
+        "evidence": {
+          "ruleId": "canonicalized_page",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://nomorenusu.com/?city=Dobong",
+            "https://nomorenusu.com/?city=Dongdaemun",
+            "https://nomorenusu.com/?city=Dongjak",
+            "https://nomorenusu.com/?city=Eunpyeong",
+            "https://nomorenusu.com/?city=Gangbuk",
+            "https://nomorenusu.com/?city=Gangdong",
+            "https://nomorenusu.com/?city=Gangnam",
+            "https://nomorenusu.com/?city=Gangseo",
+            "https://nomorenusu.com/?city=Geumcheon"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and confirm the canonical target matches the intended indexable URL."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"canonicalized_page: Canonicalized page (9 URLs)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. If this URL should rank, make the canonical self-referencing. If another URL is preferred, make internal links and sitemap entries point to that preferred URL.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:structured_data_missing",
+        "status": "open",
+        "title": "structured_data_missing: No structured data detected (4 URLs)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 4,
+        "affectedUrls": {
+          "total": 4,
+          "returned": 4,
+          "complete": true,
+          "items": [
+            "https://nomorenusu.com/posts",
+            "https://nomorenusu.com/posts?page=2",
+            "https://nomorenusu.com/privacy",
+            "https://nomorenusu.com/terms"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_aff7f47f03b345e59fee41b7f3d78f69",
+              "ruleId": "structured_data_missing"
+            }
+          }
+        },
+        "sourcePath": "actions[11]",
+        "evidence": {
+          "ruleId": "structured_data_missing",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://nomorenusu.com/posts",
+            "https://nomorenusu.com/posts?page=2",
+            "https://nomorenusu.com/privacy",
+            "https://nomorenusu.com/terms"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and confirm structuredDataFormats lists the added format, then validate the page with a structured data tester."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does a specific structured data type accurately describe the visible content on this page?",
+          "changeOnlyIf": "Add markup only when a specific schema type fits the page and every claimed property is supported by its visible content.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Add structured data only where a schema type genuinely describes the page, for example an article page describing its article. Validate the markup after adding it, and leave pages without a fitting schema type unmarked.",
+          "ifNotNeeded": "Leave the page unmarked and record that no suitable schema type was confirmed.",
+          "doNot": [
+            "Do not add Organization or another generic schema type only to clear this finding.",
+            "Do not copy site-wide markup onto unrelated page types."
+          ]
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      }
+    ]
+  },
+  "outputBudget": {
+    "schemaVersion": 1,
+    "maxBytes": 98304,
+    "originalBytes": 25874,
+    "returnedBytes": 26109,
+    "truncated": false,
+    "omissions": [],
+    "omissionsTruncated": false,
+    "detail": "The complete structured report fits within the agent output budget."
+  }
+}

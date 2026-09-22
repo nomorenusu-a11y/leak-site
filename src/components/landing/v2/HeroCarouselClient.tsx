@@ -80,11 +80,19 @@ export function HeroCarouselClient({ slides, intervalMs = 2800 }: Props) {
               >
                 {s.tag}
               </span>
-              <h2 className="mt-2 text-[2rem] font-black leading-[1.1] tracking-tight drop-shadow-[0_3px_10px_rgba(0,0,0,0.7)] sm:mt-3 sm:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl">
-                <span className="text-white">{s.line1}</span>
-                <br />
-                <span className={s.line2Color}>{s.line2}</span>
-              </h2>
+              {i === 0 ? (
+                <h1 className="mt-2 text-[2rem] leading-[1.1] font-black tracking-tight drop-shadow-[0_3px_10px_rgba(0,0,0,0.7)] sm:mt-3 sm:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl">
+                  <span className="text-white">{s.line1}</span>
+                  <br />
+                  <span className={s.line2Color}>{s.line2}</span>
+                </h1>
+              ) : (
+                <h2 className="mt-2 text-[2rem] leading-[1.1] font-black tracking-tight drop-shadow-[0_3px_10px_rgba(0,0,0,0.7)] sm:mt-3 sm:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl">
+                  <span className="text-white">{s.line1}</span>
+                  <br />
+                  <span className={s.line2Color}>{s.line2}</span>
+                </h2>
+              )}
               <p className="mt-2 max-w-xl text-sm font-semibold text-white/90 drop-shadow sm:mt-3 sm:text-lg lg:text-xl">
                 {s.sub}
               </p>
@@ -108,19 +116,15 @@ export function HeroCarouselClient({ slides, intervalMs = 2800 }: Props) {
         type="button"
         aria-label="이전 이미지"
         onClick={prev}
-        className="absolute left-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-black/45 p-2.5 text-white backdrop-blur-sm transition hover:bg-black/65 sm:block"
+        className="absolute top-1/2 left-3 hidden -translate-y-1/2 rounded-full bg-black/45 p-2.5 text-white backdrop-blur-sm transition hover:bg-black/65 sm:block"
       >
-        <ChevronUp
-          aria-hidden
-          className="size-6 -rotate-90"
-          strokeWidth={2.5}
-        />
+        <ChevronUp aria-hidden className="size-6 -rotate-90" strokeWidth={2.5} />
       </button>
       <button
         type="button"
         aria-label="다음 이미지"
         onClick={next}
-        className="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-black/45 p-2.5 text-white backdrop-blur-sm transition hover:bg-black/65 sm:block"
+        className="absolute top-1/2 right-3 hidden -translate-y-1/2 rounded-full bg-black/45 p-2.5 text-white backdrop-blur-sm transition hover:bg-black/65 sm:block"
       >
         <ChevronRight aria-hidden className="size-6" strokeWidth={2.5} />
       </button>
@@ -134,9 +138,7 @@ export function HeroCarouselClient({ slides, intervalMs = 2800 }: Props) {
             onClick={() => goTo(i)}
             aria-label={`${i + 1}번 이미지로`}
             className={`h-2 rounded-full transition-all ${
-              i === idx
-                ? "w-8 bg-white"
-                : "w-2 bg-white/50 hover:bg-white/80"
+              i === idx ? "w-8 bg-white" : "w-2 bg-white/50 hover:bg-white/80"
             }`}
           />
         ))}

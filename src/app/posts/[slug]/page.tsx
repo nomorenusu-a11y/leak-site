@@ -32,6 +32,17 @@ import { getCaseStudyDraft } from "@/data/case-drafts";
 
 export const revalidate = 3600;
 
+function compactSearchTitle(value: string) {
+  const firstClause = value
+    .replace(/^\[\s*노모어누수\s*\]\s*/, "")
+    .split(/\s*(?:[|｜]|—|–)\s*/, 1)[0]
+    .trim();
+  if (firstClause.length <= 28) return firstClause;
+  const candidate = firstClause.slice(0, 28);
+  const boundary = candidate.lastIndexOf(" ");
+  return (boundary >= 18 ? candidate.slice(0, boundary) : candidate).trim();
+}
+
 export async function generateStaticParams() {
   const rows = await getAllPublishedSlugs();
   return rows.map((r) => ({ slug: r.slug }));
@@ -48,6 +59,7 @@ export async function generateMetadata({
   const caseDraft = getCaseStudyDraft(slug);
   const postImages = await getPostImages(post.id);
   const title = caseDraft?.title ?? post.title;
+  const searchTitle = compactSearchTitle(title);
   const description = caseDraft?.excerpt ?? post.excerpt ?? markdownToPlainText(post.content, 160);
   const url = `${siteConfig.url}/posts/${post.slug}`;
   // broken placeholder URL 방어 — placehold.co는 OG/twitter image에서 제외
@@ -65,7 +77,7 @@ export async function generateMetadata({
       }))
     : undefined;
   return {
-    title,
+    title: { absolute: `${searchTitle} | ${siteConfig.name}` },
     description,
     alternates: { canonical: `/posts/${post.slug}` },
     openGraph: {

@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
-import { loadFaqItems } from "@/lib/seo/faq";
 import { FaqAccordion } from "./FaqAccordion";
 import { Phone } from "@/components/icons";
 import { BUSINESS } from "@/lib/business";
+import type { FaqItemData } from "@/types/database";
 
-export async function FaqSection() {
-  const faqItems = await loadFaqItems();
+export function FaqSection({ items }: { items: FaqItemData[] }) {
   const phone = BUSINESS.contact.phone;
 
   return (
@@ -19,7 +18,7 @@ export async function FaqSection() {
         <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:gap-14">
           <Reveal variant="up" className="text-center lg:pt-3 lg:text-left">
             <p className="section-kicker justify-center lg:justify-start">FAQ</p>
-            <h2 className="mt-5 text-4xl font-black leading-[1.1] tracking-[-0.04em] text-slate-950 sm:text-5xl lg:text-[3.25rem]">
+            <h2 className="mt-5 text-4xl leading-[1.1] font-black tracking-[-0.04em] text-slate-950 sm:text-5xl lg:text-[3.25rem]">
               궁금한 점,
               <br />
               <span className="text-brand-600">먼저 확인하세요.</span>
@@ -33,7 +32,7 @@ export async function FaqSection() {
               {phone && (
                 <a
                   href={`tel:${phone.tel}`}
-                  className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#061b35] px-6 py-3.5 text-base font-black text-white shadow-lg shadow-slate-950/10 transition hover:bg-brand-900 sm:min-w-64"
+                  className="hover:bg-brand-900 inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#061b35] px-6 py-3.5 text-base font-black text-white shadow-lg shadow-slate-950/10 transition sm:min-w-64"
                 >
                   <Phone aria-hidden className="size-5" strokeWidth={2.5} />
                   {phone.display}
@@ -42,16 +41,18 @@ export async function FaqSection() {
               )}
               <Link
                 href="/faq"
-                className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-brand-200 bg-white px-6 py-3 text-sm font-extrabold text-brand-700 shadow-sm transition hover:border-brand-300 hover:bg-brand-50 sm:min-w-64"
+                className="border-brand-200 text-brand-700 hover:border-brand-300 hover:bg-brand-50 inline-flex min-h-12 items-center justify-center rounded-2xl border bg-white px-6 py-3 text-sm font-extrabold shadow-sm transition sm:min-w-64"
               >
                 전체 질문과 답변 보기
-                <span aria-hidden className="ml-2 text-lg">→</span>
+                <span aria-hidden className="ml-2 text-lg">
+                  →
+                </span>
               </Link>
             </div>
           </Reveal>
 
           <div>
-            <FaqAccordion items={faqItems} />
+            <FaqAccordion items={items} />
           </div>
         </div>
       </Container>

@@ -50,11 +50,13 @@ export async function generateMetadata({
       title: `${title} | ${siteConfig.name}`,
       description,
       url,
+      images: ["/og-image.png"],
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title: `${title} | ${siteConfig.name}`,
       description,
+      images: ["/og-image.png"],
     },
   };
 }

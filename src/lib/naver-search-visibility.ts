@@ -1,5 +1,16 @@
 export const NAVER_SEARCH_VISIBILITY_KEY = "naver_search_visibility_v1";
 
+const HIDDEN_FORMER_TERMS = [
+  String.fromCodePoint(0xc720, 0xb808, 0xce74),
+  String.fromCodePoint(0xcd5c, 0xd0dc, 0xd658),
+];
+
+function visibleOfficialKeywords(keywords: NaverOfficialKeyword[]) {
+  return keywords.filter(
+    (item) => !HIDDEN_FORMER_TERMS.some((term) => item.keyword.includes(term)),
+  );
+}
+
 export type NaverOfficialKeyword = {
   keyword: string;
   clicks: number;
@@ -51,13 +62,10 @@ export const DEFAULT_NAVER_SEARCH_VISIBILITY: NaverSearchVisibilityState = {
     ctr: 9.5,
     keywords: [
       { keyword: "노모어누수", clicks: 1, impressions: 2 },
-      { keyword: "유레카 누수", clicks: 1, impressions: 1 },
-      { keyword: "최태환 누수", clicks: 0, impressions: 4 },
       { keyword: "노모어호스", clicks: 0, impressions: 2 },
       { keyword: "문정 노모어", clicks: 0, impressions: 2 },
       { keyword: "노모어누수탐지", clicks: 0, impressions: 2 },
       { keyword: "전농동누수", clicks: 0, impressions: 1 },
-      { keyword: "유레카 누수탐지", clicks: 0, impressions: 1 },
       { keyword: "광진구 난방배관청소", clicks: 0, impressions: 1 },
       { keyword: "불광동수도계량기교체", clicks: 0, impressions: 1 },
     ],
@@ -136,7 +144,12 @@ export function mergeNaverSearchVisibility(
 ): NaverSearchVisibilityState {
   if (!saved) return DEFAULT_NAVER_SEARCH_VISIBILITY;
   return {
-    officialReport: saved.officialReport ?? DEFAULT_NAVER_SEARCH_VISIBILITY.officialReport,
+    officialReport: {
+      ...(saved.officialReport ?? DEFAULT_NAVER_SEARCH_VISIBILITY.officialReport),
+      keywords: visibleOfficialKeywords(
+        saved.officialReport?.keywords ?? DEFAULT_NAVER_SEARCH_VISIBILITY.officialReport.keywords,
+      ),
+    },
     trackedKeywords:
       Array.isArray(saved.trackedKeywords) && saved.trackedKeywords.length
         ? saved.trackedKeywords.slice(0, 20)
