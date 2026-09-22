@@ -234,6 +234,12 @@ export default async function AdminDashboardPage() {
             >
               네이버 실제 노출 확인
             </a>
+            <Link
+              href="/admin/search-visibility"
+              className="rounded-xl bg-blue-500 px-4 py-2.5 text-sm font-bold text-white"
+            >
+              검색 노출 분석
+            </Link>
             <a
               href="https://searchadvisor.naver.com/"
               target="_blank"

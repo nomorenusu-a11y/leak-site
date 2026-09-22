@@ -15,6 +15,7 @@ import {
   MessageSquareText,
   MonitorCog,
   PhoneCall,
+  SearchCheck,
   Sparkles,
   X,
 } from "lucide-react";
@@ -28,6 +29,7 @@ const NAV: NavItem[] = [
   { href: "/admin/posts?status=draft", label: "발행 대기함", group: "콘텐츠 운영", icon: <ClipboardCheck size={17} /> },
   { href: "/admin/posts", label: "게시글 관리", group: "콘텐츠 운영", icon: <FileText size={17} /> },
   { href: "/admin/media", label: "사진 라이브러리", group: "콘텐츠 운영", icon: <Images size={17} /> },
+  { href: "/admin/search-visibility", label: "네이버 검색 노출", group: "검색 성과", icon: <SearchCheck size={17} /> },
   { href: "/admin/requests", label: "견적 신청", group: "고객 관리", icon: <PhoneCall size={17} /> },
   { href: "/admin/integrations/kakao", label: "카카오 접수 알림", group: "고객 관리", icon: <BellRing size={17} /> },
   { href: "/admin/live-board", label: "실시간 현황판", group: "고객 관리", icon: <BarChart3 size={17} /> },
