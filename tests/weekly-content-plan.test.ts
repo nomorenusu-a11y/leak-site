@@ -8,7 +8,10 @@ import {
   DAILY_PUBLISH_COUNTS,
   DAILY_PUBLISH_TIMES,
   getPublishSlot,
+  getOctoberPilotPublishSlot,
   getScheduledContentType,
+  OCTOBER_PILOT_DAILY_TIMES,
+  OCTOBER_PILOT_GUIDES,
   SCHEDULED_CONTENT_TYPE_LABELS,
   validateGuideDraft,
 } from "../src/lib/weekly-content-plan";
@@ -16,7 +19,10 @@ import {
 test("September campaign preserves existing slots and fills September 19–30 to ten daily", () => {
   assert.equal(CAMPAIGN_GUIDES.length, 153);
   assert.equal(new Set(CAMPAIGN_GUIDES.map((guide) => guide.slugKey)).size, 153);
-  assert.equal(DAILY_PUBLISH_COUNTS.reduce((sum, count) => sum + count, 0), 153);
+  assert.equal(
+    DAILY_PUBLISH_COUNTS.reduce((sum, count) => sum + count, 0),
+    153,
+  );
   assert.deepEqual(DAILY_PUBLISH_COUNTS.slice(0, 5), [7, 6, 8, 5, 7]);
   assert.ok(DAILY_PUBLISH_COUNTS.slice(5).every((count) => count === 10));
   assert.ok(DAILY_PUBLISH_TIMES.every((times) => new Set(times).size === times.length));
@@ -53,4 +59,41 @@ test("scheduled guides are useful, clearly framed advice rather than invented ca
     assert.doesNotMatch(content, /시공 사례|해결했습니다|방문했습니다/);
   }
   assert.deepEqual([...seenTypes].sort(), Object.keys(SCHEDULED_CONTENT_TYPE_LABELS).sort());
+});
+
+test("October 1–5 pilot schedules 10–12 distinct guides per day", () => {
+  assert.equal(OCTOBER_PILOT_GUIDES.length, 54);
+  assert.deepEqual(
+    OCTOBER_PILOT_DAILY_TIMES.map((times) => times.length),
+    [10, 11, 12, 10, 11],
+  );
+  assert.equal(new Set(OCTOBER_PILOT_GUIDES.map((guide) => guide.slugKey)).size, 54);
+  assert.equal(
+    new Set(
+      OCTOBER_PILOT_GUIDES.map(
+        (guide) => `${guide.district}|${guide.dong}|${guide.leak}|${guide.symptom}`,
+      ),
+    ).size,
+    54,
+  );
+
+  const slots = OCTOBER_PILOT_GUIDES.map((guide, index) => {
+    const slot = getOctoberPilotPublishSlot(index);
+    const type = getScheduledContentType(index + CAMPAIGN_GUIDES.length);
+    const title = buildGuideTitle(guide, type);
+    const excerpt = buildGuideExcerpt(guide, type);
+    const content = buildGuideContent(guide, type);
+    assert.deepEqual(
+      validateGuideDraft({ guide, type, title, excerpt, content }),
+      [],
+      `${guide.slugKey} failed quality validation`,
+    );
+    return slot;
+  });
+
+  for (const [dayIndex, times] of OCTOBER_PILOT_DAILY_TIMES.entries()) {
+    const scheduled = slots.filter((slot) => slot.dayIndex === dayIndex).map((slot) => slot.time);
+    assert.equal(scheduled.length, times.length);
+    assert.equal(new Set(scheduled).size, times.length);
+  }
 });

@@ -907,10 +907,12 @@ const BOOST_PUBLISH_SLOTS = DAILY_PUBLISH_TIMES.flatMap((times, dayIndex) => {
     occupied.push(bestMinute);
     extra.push(bestMinute);
   }
-  return extra.sort((left, right) => left - right).map((minute) => ({
-    dayIndex,
-    time: minutesToTime(minute),
-  }));
+  return extra
+    .sort((left, right) => left - right)
+    .map((minute) => ({
+      dayIndex,
+      time: minutesToTime(minute),
+    }));
 });
 
 export const DAILY_PUBLISH_COUNTS = DAILY_PUBLISH_TIMES.map((times, dayIndex) =>
@@ -1113,4 +1115,84 @@ export function validateGuideDraft(args: {
   if ((content.match(/\]\(\/(?!\/)/g) ?? []).length < 2)
     errors.push("지역·증상·상담을 연결하는 내부 링크가 2개 미만입니다.");
   return errors;
+}
+
+// October 1–5 pilot: enough volume to measure discovery without committing the
+// entire month before Naver has returned useful query and document signals.
+export const OCTOBER_PILOT_START_DATE = "2026-10-01";
+export const OCTOBER_PILOT_END_DATE = "2026-10-05";
+export const OCTOBER_PILOT_DAILY_TIMES = [
+  ["07:48", "09:12", "10:37", "12:05", "13:44", "15:19", "16:53", "18:31", "20:08", "22:17"],
+  [
+    "08:06",
+    "09:29",
+    "10:51",
+    "12:26",
+    "13:58",
+    "15:34",
+    "17:02",
+    "18:47",
+    "20:21",
+    "21:36",
+    "22:49",
+  ],
+  [
+    "07:41",
+    "08:58",
+    "10:14",
+    "11:33",
+    "12:52",
+    "14:09",
+    "15:28",
+    "16:47",
+    "18:06",
+    "19:24",
+    "20:43",
+    "22:11",
+  ],
+  ["08:19", "09:46", "11:17", "12:43", "14:16", "15:51", "17:23", "18:59", "20:34", "22:26"],
+  [
+    "07:53",
+    "09:21",
+    "10:48",
+    "12:18",
+    "13:49",
+    "15:22",
+    "16:56",
+    "18:27",
+    "20:02",
+    "21:31",
+    "22:54",
+  ],
+] as const;
+
+const OCTOBER_PILOT_COUNT = OCTOBER_PILOT_DAILY_TIMES.reduce((sum, times) => sum + times.length, 0);
+
+export const OCTOBER_PILOT_GUIDES: ScheduledGuide[] = EXTRA_LOCATIONS.slice(
+  0,
+  OCTOBER_PILOT_COUNT,
+).map(([district, dong], index) => {
+  const septemberProfileIndex = (index * 7 + 2) % EXTRA_PROFILES.length;
+  let profileIndex = (index * 5 + 6) % EXTRA_PROFILES.length;
+  if (profileIndex === septemberProfileIndex) {
+    profileIndex = (profileIndex + 1) % EXTRA_PROFILES.length;
+  }
+  const profile = EXTRA_PROFILES[profileIndex];
+  return {
+    district,
+    dong,
+    building: BUILDINGS[(index * 5 + 3) % BUILDINGS.length],
+    ...profile,
+    slugKey: `october-pilot-${String(index + 1).padStart(3, "0")}`,
+    keywords: [...profile.keywords],
+  };
+});
+
+export function getOctoberPilotPublishSlot(index: number) {
+  let remaining = index;
+  for (const [dayIndex, times] of OCTOBER_PILOT_DAILY_TIMES.entries()) {
+    if (remaining < times.length) return { dayIndex, time: times[remaining] };
+    remaining -= times.length;
+  }
+  throw new RangeError(`No October pilot publishing slot for guide index ${index}`);
 }

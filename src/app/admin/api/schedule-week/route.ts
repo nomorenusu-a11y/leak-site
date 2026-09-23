@@ -9,7 +9,11 @@ import {
   CAMPAIGN_GUIDES,
   CAMPAIGN_START_DATE,
   getPublishSlot,
+  getOctoberPilotPublishSlot,
   getScheduledContentType,
+  OCTOBER_PILOT_END_DATE,
+  OCTOBER_PILOT_GUIDES,
+  OCTOBER_PILOT_START_DATE,
   type ScheduledGuide,
   validateGuideDraft,
 } from "@/lib/weekly-content-plan";
@@ -56,10 +60,25 @@ function scoreAsset(
   return matches + stageBonus + (analysis.confidence ?? 0) / 25 + rotation;
 }
 
-export async function POST() {
+export async function POST(request: Request) {
   const session = await readAdminSession();
   if (!session.ok)
     return NextResponse.json({ ok: false, error: "관리자 로그인이 필요합니다." }, { status: 401 });
+
+  let requestedCampaign = "september";
+  try {
+    const body = (await request.json()) as { campaign?: string };
+    if (body.campaign === "october-pilot") requestedCampaign = body.campaign;
+  } catch {
+    // Existing September button sends no body.
+  }
+  const isOctoberPilot = requestedCampaign === "october-pilot";
+  const guides = isOctoberPilot ? OCTOBER_PILOT_GUIDES : CAMPAIGN_GUIDES;
+  const campaignStartDate = isOctoberPilot ? OCTOBER_PILOT_START_DATE : CAMPAIGN_START_DATE;
+  const campaignEndDate = isOctoberPilot ? OCTOBER_PILOT_END_DATE : "2026-09-30";
+  const campaignPrefix = isOctoberPilot ? "202610%" : "202609%";
+  const contentTypeOffset = isOctoberPilot ? CAMPAIGN_GUIDES.length : 0;
+  const publishSlot = isOctoberPilot ? getOctoberPilotPublishSlot : getPublishSlot;
 
   const db = createSupabaseAdminClient();
   const [{ data: assets }, { data: analyses }] = await Promise.all([
@@ -75,12 +94,12 @@ export async function POST() {
   const analysisByAsset = new Map((analyses ?? []).map((row) => [row.asset_id, row as Analysis]));
   const media = (assets ?? []) as Asset[];
   const usedAssetIds = new Set<string>();
-  const prepared = CAMPAIGN_GUIDES.map((guide, index) => {
-    const { dayIndex, time } = getPublishSlot(index);
-    const date = addDays(CAMPAIGN_START_DATE, dayIndex);
+  const prepared = guides.map((guide, index) => {
+    const { dayIndex, time } = publishSlot(index);
+    const date = addDays(campaignStartDate, dayIndex);
     const publishedAt = new Date(`${date}T${time}:00+09:00`).toISOString();
     const slug = `${date.replaceAll("-", "")}-${guide.slugKey}`;
-    const contentType = getScheduledContentType(index);
+    const contentType = getScheduledContentType(index + contentTypeOffset);
     const title = buildGuideTitle(guide, contentType);
     const excerpt = buildGuideExcerpt(guide, contentType);
     const content = buildGuideContent(guide, contentType);
@@ -159,14 +178,14 @@ export async function POST() {
   const now = Date.now();
   const remaining = prepared.filter((item) => new Date(item.publishedAt).getTime() > now);
   const desiredSlugs = new Set(prepared.map((item) => item.slug));
-  const campaignKeys = new Set(CAMPAIGN_GUIDES.map((guide) => guide.slugKey));
+  const campaignKeys = new Set(guides.map((guide) => guide.slugKey));
   const { data: existingCampaign, error: existingError } = await db
     .from("posts")
     .select("id, slug, published_at")
-    .like("slug", "202609%");
+    .like("slug", campaignPrefix);
   if (existingError)
     return NextResponse.json(
-      { ok: false, error: "기존 9월 예약 확인에 실패했습니다." },
+      { ok: false, error: "기존 예약 확인에 실패했습니다." },
       { status: 500 },
     );
   const staleIds = (existingCampaign ?? [])
@@ -189,8 +208,8 @@ export async function POST() {
   if (remaining.length === 0) {
     return NextResponse.json({
       ok: true,
-      startDate: CAMPAIGN_START_DATE,
-      endDate: "2026-09-30",
+      startDate: campaignStartDate,
+      endDate: campaignEndDate,
       removed: staleIds.length,
       created: [],
     });
@@ -215,7 +234,7 @@ export async function POST() {
     .select("id, slug, title");
   if (postsError || !posts || posts.length !== remaining.length) {
     return NextResponse.json(
-      { ok: false, error: "9월 예약 게시물 묶음 저장에 실패했습니다." },
+      { ok: false, error: "예약 게시물 묶음 저장에 실패했습니다." },
       { status: 500 },
     );
   }
@@ -302,8 +321,8 @@ export async function POST() {
   revalidatePath("/sitemap.xml");
   return NextResponse.json({
     ok: true,
-    startDate: CAMPAIGN_START_DATE,
-    endDate: "2026-09-30",
+    startDate: campaignStartDate,
+    endDate: campaignEndDate,
     removed: staleIds.length,
     created,
   });
