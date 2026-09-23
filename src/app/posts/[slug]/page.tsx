@@ -30,7 +30,8 @@ import { formatDateYMD } from "@/lib/time";
 import { splitPostContentByImages } from "@/lib/post-inline-images";
 import { getCaseStudyDraft } from "@/data/case-drafts";
 
-export const revalidate = 3600;
+// 예약 발행 전에 만들어진 404 캐시가 발행 후 오래 남지 않도록 짧게 재검증한다.
+export const revalidate = 60;
 
 function compactSearchTitle(value: string) {
   const firstClause = value
