@@ -64,8 +64,8 @@ export function ScheduleWeekButton() {
         >
           <CalendarPlus size={17} />
           {pendingCampaign === "october-pilot"
-            ? "10월 1~5일 예약 생성 중..."
-            : "10월 1~5일 하루 10~12개 예약"}
+            ? "10월 1~15일 예약 생성 중..."
+            : "10월 1~15일 하루 10~12개 예약"}
         </button>
       </div>
       {message && (

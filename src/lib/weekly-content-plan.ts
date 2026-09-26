@@ -1117,10 +1117,10 @@ export function validateGuideDraft(args: {
   return errors;
 }
 
-// October 1–5 pilot: enough volume to measure discovery without committing the
-// entire month before Naver has returned useful query and document signals.
+// October 1–15 campaign: keep daily volume between 10 and 12 while rotating
+// each location through distinct leak profiles so adjacent documents remain useful.
 export const OCTOBER_PILOT_START_DATE = "2026-10-01";
-export const OCTOBER_PILOT_END_DATE = "2026-10-05";
+export const OCTOBER_PILOT_END_DATE = "2026-10-15";
 export const OCTOBER_PILOT_DAILY_TIMES = [
   ["07:48", "09:12", "10:37", "12:05", "13:44", "15:19", "16:53", "18:31", "20:08", "22:17"],
   [
@@ -1164,29 +1164,141 @@ export const OCTOBER_PILOT_DAILY_TIMES = [
     "21:31",
     "22:54",
   ],
+  [
+    "07:46",
+    "08:59",
+    "10:18",
+    "11:37",
+    "12:56",
+    "14:14",
+    "15:33",
+    "16:51",
+    "18:12",
+    "19:31",
+    "20:49",
+    "22:08",
+  ],
+  ["08:11", "09:38", "11:04", "12:39", "14:07", "15:42", "17:18", "18:54", "20:27", "22:19"],
+  [
+    "07:57",
+    "09:24",
+    "10:46",
+    "12:16",
+    "13:47",
+    "15:20",
+    "16:48",
+    "18:23",
+    "19:58",
+    "21:29",
+    "22:47",
+  ],
+  [
+    "07:43",
+    "08:52",
+    "10:09",
+    "11:28",
+    "12:47",
+    "14:05",
+    "15:24",
+    "16:43",
+    "18:02",
+    "19:21",
+    "20:39",
+    "22:03",
+  ],
+  ["08:23", "09:51", "11:19", "12:51", "14:22", "15:58", "17:31", "19:07", "20:41", "22:32"],
+  [
+    "07:51",
+    "09:17",
+    "10:42",
+    "12:11",
+    "13:39",
+    "15:12",
+    "16:44",
+    "18:19",
+    "19:53",
+    "21:26",
+    "22:51",
+  ],
+  [
+    "07:39",
+    "08:49",
+    "10:03",
+    "11:21",
+    "12:41",
+    "13:59",
+    "15:18",
+    "16:37",
+    "17:56",
+    "19:15",
+    "20:34",
+    "22:01",
+  ],
+  ["08:16", "09:44", "11:12", "12:44", "14:19", "15:47", "17:22", "18:58", "20:32", "22:24"],
+  [
+    "07:55",
+    "09:22",
+    "10:49",
+    "12:20",
+    "13:52",
+    "15:26",
+    "16:59",
+    "18:34",
+    "20:06",
+    "21:38",
+    "22:56",
+  ],
+  [
+    "07:42",
+    "08:54",
+    "10:11",
+    "11:29",
+    "12:48",
+    "14:06",
+    "15:25",
+    "16:45",
+    "18:04",
+    "19:23",
+    "20:42",
+    "22:12",
+  ],
 ] as const;
 
 const OCTOBER_PILOT_COUNT = OCTOBER_PILOT_DAILY_TIMES.reduce((sum, times) => sum + times.length, 0);
+const octoberUsedProfilesByLocation = new Map<number, Set<number>>();
 
-export const OCTOBER_PILOT_GUIDES: ScheduledGuide[] = EXTRA_LOCATIONS.slice(
-  0,
-  OCTOBER_PILOT_COUNT,
-).map(([district, dong], index) => {
-  const septemberProfileIndex = (index * 7 + 2) % EXTRA_PROFILES.length;
-  let profileIndex = (index * 5 + 6) % EXTRA_PROFILES.length;
-  if (profileIndex === septemberProfileIndex) {
-    profileIndex = (profileIndex + 1) % EXTRA_PROFILES.length;
-  }
-  const profile = EXTRA_PROFILES[profileIndex];
-  return {
-    district,
-    dong,
-    building: BUILDINGS[(index * 5 + 3) % BUILDINGS.length],
-    ...profile,
-    slugKey: `october-pilot-${String(index + 1).padStart(3, "0")}`,
-    keywords: [...profile.keywords],
-  };
-});
+export const OCTOBER_PILOT_GUIDES: ScheduledGuide[] = Array.from(
+  { length: OCTOBER_PILOT_COUNT },
+  (_, index) => {
+    const locationIndex = index % EXTRA_LOCATIONS.length;
+    const [district, dong] = EXTRA_LOCATIONS[locationIndex];
+    const septemberProfileIndex = (locationIndex * 7 + 2) % EXTRA_PROFILES.length;
+    const usedProfiles = octoberUsedProfilesByLocation.get(locationIndex) ?? new Set<number>();
+    let profileIndex = (index * 5 + 6) % EXTRA_PROFILES.length;
+    let attempts = 0;
+    while (
+      (profileIndex === septemberProfileIndex || usedProfiles.has(profileIndex)) &&
+      attempts < EXTRA_PROFILES.length
+    ) {
+      profileIndex = (profileIndex + 1) % EXTRA_PROFILES.length;
+      attempts += 1;
+    }
+    if (attempts === EXTRA_PROFILES.length) {
+      throw new RangeError(`No unused October profile for location ${district} ${dong}`);
+    }
+    usedProfiles.add(profileIndex);
+    octoberUsedProfilesByLocation.set(locationIndex, usedProfiles);
+    const profile = EXTRA_PROFILES[profileIndex];
+    return {
+      district,
+      dong,
+      building: BUILDINGS[(index * 5 + 3) % BUILDINGS.length],
+      ...profile,
+      slugKey: `october-pilot-${String(index + 1).padStart(3, "0")}`,
+      keywords: [...profile.keywords],
+    };
+  },
+);
 
 export function getOctoberPilotPublishSlot(index: number) {
   let remaining = index;
@@ -1194,5 +1306,5 @@ export function getOctoberPilotPublishSlot(index: number) {
     if (remaining < times.length) return { dayIndex, time: times[remaining] };
     remaining -= times.length;
   }
-  throw new RangeError(`No October pilot publishing slot for guide index ${index}`);
+  throw new RangeError(`No October publishing slot for guide index ${index}`);
 }

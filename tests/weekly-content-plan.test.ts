@@ -61,21 +61,34 @@ test("scheduled guides are useful, clearly framed advice rather than invented ca
   assert.deepEqual([...seenTypes].sort(), Object.keys(SCHEDULED_CONTENT_TYPE_LABELS).sort());
 });
 
-test("October 1–5 pilot schedules 10–12 distinct guides per day", () => {
-  assert.equal(OCTOBER_PILOT_GUIDES.length, 54);
+test("October 1–15 campaign schedules 10–12 distinct guides per day", () => {
+  assert.equal(OCTOBER_PILOT_GUIDES.length, 165);
   assert.deepEqual(
     OCTOBER_PILOT_DAILY_TIMES.map((times) => times.length),
-    [10, 11, 12, 10, 11],
+    [10, 11, 12, 10, 11, 12, 10, 11, 12, 10, 11, 12, 10, 11, 12],
   );
-  assert.equal(new Set(OCTOBER_PILOT_GUIDES.map((guide) => guide.slugKey)).size, 54);
+  assert.equal(new Set(OCTOBER_PILOT_GUIDES.map((guide) => guide.slugKey)).size, 165);
   assert.equal(
     new Set(
       OCTOBER_PILOT_GUIDES.map(
         (guide) => `${guide.district}|${guide.dong}|${guide.leak}|${guide.symptom}`,
       ),
     ).size,
-    54,
+    165,
   );
+
+  const septemberKeys = new Set(
+    CAMPAIGN_GUIDES.map(
+      (guide) => `${guide.district}|${guide.dong}|${guide.leak}|${guide.symptom}`,
+    ),
+  );
+  for (const guide of OCTOBER_PILOT_GUIDES) {
+    assert.equal(
+      septemberKeys.has(`${guide.district}|${guide.dong}|${guide.leak}|${guide.symptom}`),
+      false,
+      `${guide.slugKey} duplicates a September region and symptom combination`,
+    );
+  }
 
   const slots = OCTOBER_PILOT_GUIDES.map((guide, index) => {
     const slot = getOctoberPilotPublishSlot(index);
