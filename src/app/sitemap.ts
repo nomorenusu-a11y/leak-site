@@ -4,6 +4,7 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/env";
 import { ALL_CITY_CODES, cityCodeToSlug } from "@/lib/city";
 import { getAllPublishedSlugs } from "@/lib/posts";
+import { postSitemapLastModified } from "@/lib/seo/sitemap";
 
 // 예약 발행 시각이 지난 글을 별도 재배포 없이 즉시 사이트맵에 반영한다.
 export const dynamic = "force-dynamic";
@@ -44,9 +45,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       if (!page?.indexable) continue;
       // RLS hides unpublished ancestors. Non-pilot ancestors without a row use
       // the published fallback copy, while a missing pilot ancestor is hidden.
-      if (regionAncestors(region).some((ancestor) =>
-        isPilotRegion(ancestor.id) && !byId.has(ancestor.id),
-      )) continue;
+      if (
+        regionAncestors(region).some(
+          (ancestor) => isPilotRegion(ancestor.id) && !byId.has(ancestor.id),
+        )
+      )
+        continue;
       entries.push({
         url: `${base}${regionPath(region)}`,
         lastModified: new Date(page.updated_at),
@@ -60,7 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const row of slugs) {
     entries.push({
       url: `${base}/posts/${row.slug}`,
-      lastModified: new Date(row.updated_at),
+      lastModified: postSitemapLastModified(row.updated_at),
       changeFrequency: "weekly",
       priority: 0.8,
     });
