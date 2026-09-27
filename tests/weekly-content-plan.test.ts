@@ -15,6 +15,28 @@ import {
   SCHEDULED_CONTENT_TYPE_LABELS,
   validateGuideDraft,
 } from "../src/lib/weekly-content-plan";
+import { postBreadcrumbItems } from "../src/lib/seo/regions";
+import { resolvePostBreadcrumbRegion } from "../src/lib/regions";
+
+function assertKoreanSearchBreadcrumb(guide: (typeof CAMPAIGN_GUIDES)[number], title: string) {
+  const post = {
+    title,
+    slug: guide.slugKey,
+    region_tags: [guide.district],
+  };
+  const region = resolvePostBreadcrumbRegion(post);
+  const names = postBreadcrumbItems(post, region).map((item) => item.name);
+  assert.equal(names[0], "노모어누수");
+  assert.equal(names.includes("누수 작업사례"), false);
+  assert.ok(
+    names.slice(1).some((name) => name.includes(guide.dong)),
+    `${guide.slugKey}: ${names}`,
+  );
+  assert.ok(
+    names.every((name) => /[가-힣]/.test(name)),
+    `${guide.slugKey}: ${names}`,
+  );
+}
 
 test("September campaign preserves existing slots and fills September 19–30 to ten daily", () => {
   assert.equal(CAMPAIGN_GUIDES.length, 153);
@@ -43,6 +65,7 @@ test("scheduled guides are useful, clearly framed advice rather than invented ca
     const title = buildGuideTitle(guide, type);
     const excerpt = buildGuideExcerpt(guide, type);
     const content = buildGuideContent(guide, type);
+    assertKoreanSearchBreadcrumb(guide, title);
     seenTypes.add(type);
     assert.deepEqual(
       validateGuideDraft({ guide, type, title, excerpt, content }),
@@ -96,6 +119,7 @@ test("October 1–15 campaign schedules 10–12 distinct guides per day", () => 
     const title = buildGuideTitle(guide, type);
     const excerpt = buildGuideExcerpt(guide, type);
     const content = buildGuideContent(guide, type);
+    assertKoreanSearchBreadcrumb(guide, title);
     assert.deepEqual(
       validateGuideDraft({ guide, type, title, excerpt, content }),
       [],

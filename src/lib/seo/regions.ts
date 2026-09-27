@@ -118,13 +118,22 @@ export function postBreadcrumbItems(
   const currentPath = `/posts/${post.slug}`;
   if (region) {
     const ancestors = regionAncestors(region);
-    return [
+    const locality = postLocality(post.title);
+    const hasDistinctLocality = Boolean(
+      locality && !ancestors.some((ancestor) => ancestor.name.includes(locality)),
+    );
+    const items: SearchBreadcrumbItem[] = [
       { name: siteConfig.name, path: "/" },
       ...ancestors.map((ancestor, index) => ({
         name: ancestor.name,
-        path: index === ancestors.length - 1 ? currentPath : regionPath(ancestor),
+        path:
+          !hasDistinctLocality && index === ancestors.length - 1
+            ? currentPath
+            : regionPath(ancestor),
       })),
     ];
+    if (hasDistinctLocality && locality) items.push({ name: locality, path: currentPath });
+    return items;
   }
   return [
     { name: siteConfig.name, path: "/" },
