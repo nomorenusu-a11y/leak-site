@@ -1,8 +1,8 @@
 import { getPostLocation } from "@/lib/region-posts";
 import { regionById, regionAncestors, resolvePostBreadcrumbRegion } from "@/lib/regions";
 import { getPublicRegionContent } from "@/lib/region-content";
-import { RegionBreadcrumbs } from "@/components/regions/RegionBreadcrumbs";
-import { breadcrumbJsonLd, postCollectionBreadcrumbJsonLd, safeJsonLd } from "@/lib/seo/regions";
+import { PostBreadcrumbs } from "@/components/posts/PostBreadcrumbs";
+import { postBreadcrumbItems, postBreadcrumbJsonLd, safeJsonLd } from "@/lib/seo/regions";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
@@ -83,6 +83,8 @@ export async function generateMetadata({
     alternates: { canonical: `/posts/${post.slug}` },
     openGraph: {
       type: "article",
+      locale: "ko_KR",
+      siteName: siteConfig.name,
       title,
       description,
       url,
@@ -131,6 +133,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
     ? { ...post, title: caseDraft.title, excerpt: caseDraft.excerpt }
     : post;
   const imageCarousel = postImageCarouselJsonLd(displayPost, images, related);
+  const breadcrumbItems = postBreadcrumbItems(displayPost, region);
 
   return (
     <>
@@ -154,9 +157,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: safeJsonLd(
-            region ? breadcrumbJsonLd(region, post) : postCollectionBreadcrumbJsonLd(post),
-          ),
+          __html: safeJsonLd(postBreadcrumbJsonLd(displayPost, region)),
         }}
       />
       {imageCarousel && (
@@ -172,11 +173,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
         <article>
           <header className="border-b border-slate-200 bg-slate-50 py-10 sm:py-14">
             <Container>
-              {region && (
-                <div className="mb-5">
-                  <RegionBreadcrumbs region={region} postTitle={displayPost.title} />
-                </div>
-              )}
+              <div className="mb-5">
+                <PostBreadcrumbs items={breadcrumbItems} />
+              </div>
               <div className="flex flex-wrap items-center gap-1.5 text-sm">
                 {post.region_tags.map((tag) => (
                   <span

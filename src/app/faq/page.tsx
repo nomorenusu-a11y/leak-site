@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/faq" },
   openGraph: {
     type: "website",
+    locale: "ko_KR",
+    siteName: BUSINESS.name,
     title: `자주 묻는 질문 | ${BUSINESS.name}`,
     description: "누수 탐지·시공 관련 자주 묻는 질문 모음",
     url: `${BUSINESS.url}/faq`,

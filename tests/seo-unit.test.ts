@@ -17,7 +17,8 @@ import robots from "../src/app/robots";
 import { articleJsonLd, localBusinessJsonLd, postImageCarouselJsonLd } from "../src/lib/seo/schema";
 import {
   breadcrumbJsonLd,
-  postCollectionBreadcrumbJsonLd,
+  postBreadcrumbItems,
+  postBreadcrumbJsonLd,
   regionCollectionBreadcrumbJsonLd,
   regionFaqs,
   regionMetadataTitle,
@@ -71,25 +72,36 @@ test("scheduled and guide posts receive Korean search breadcrumbs without claimi
     slug: "bulgwang-house-water-meter-leak-guide",
   });
   assert.deepEqual(
-    breadcrumb.itemListElement.map((item) => item.name),
-    ["서울", "은평구", "불광동", "불광동 수도계량기 누수"],
+    breadcrumb.itemListElement.map((item) => item.item.name),
+    ["노모어누수", "서울", "은평구", "불광동"],
   );
-  assert(!breadcrumb.itemListElement.some((item) => item.name === "홈"));
+  assert(!breadcrumb.itemListElement.some((item) => item.item.name === "홈"));
 });
-test("every non-Seoul post and region collection receives a Korean search breadcrumb", () => {
-  const postBreadcrumb = postCollectionBreadcrumbJsonLd({
-    title: "부평동 욕실 누수 점검 안내",
-    slug: "bupyeong-bathroom-leak-guide",
-  });
+test("every post and region collection receives a Korean brand and location breadcrumb", () => {
+  const post = {
+    title: "정자동 옥상 누수 | 비가 온 다음 날 최상층 천장 얼룩",
+    slug: "20260921-september-051",
+    region_tags: ["수원시 장안구"],
+  };
+  const items = postBreadcrumbItems(post);
   assert.deepEqual(
-    postBreadcrumb.itemListElement.map((item) => item.name),
-    ["누수 작업사례", "부평동 욕실 누수 점검 안내"],
+    items.map((item) => item.name),
+    ["노모어누수", "수원시 장안구 정자동"],
+  );
+  const postBreadcrumb = postBreadcrumbJsonLd(post);
+  assert.deepEqual(
+    postBreadcrumb.itemListElement.map((item) => item.item.name),
+    ["노모어누수", "수원시 장안구 정자동"],
+  );
+  assert.equal(
+    postBreadcrumb.itemListElement.at(-1)?.item["@id"].endsWith("/posts/20260921-september-051"),
+    true,
   );
 
   const collectionBreadcrumb = regionCollectionBreadcrumbJsonLd("강남구", "gangnam");
   assert.deepEqual(
-    collectionBreadcrumb.itemListElement.map((item) => item.name),
-    ["누수 작업사례", "강남구 누수 작업사례"],
+    collectionBreadcrumb.itemListElement.map((item) => item.item.name),
+    ["노모어누수", "강남구 누수 작업사례"],
   );
 });
 test("symptom is not a leak cause or detection method", () => {

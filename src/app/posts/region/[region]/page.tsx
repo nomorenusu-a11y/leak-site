@@ -47,6 +47,8 @@ export async function generateMetadata({
     robots: { index: !filters.category, follow: true },
     openGraph: {
       type: "website",
+      locale: "ko_KR",
+      siteName: siteConfig.name,
       title: `${title} | ${siteConfig.name}`,
       description,
       url,

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/lib/env";
 import { regionAncestors, regionPath } from "@/lib/regions";
+import type { Post } from "@/types/database";
 import type { Region, RegionPageContent } from "@/types/seo";
 
 /** 법정동 상세 페이지는 하나의 강한 지역 페이지에서 검색 의도를 함께 안내한다. */
@@ -58,6 +59,8 @@ export function regionMetadata(region: Region, content: RegionPageContent): Meta
     robots: { index: content.indexable, follow: true },
     openGraph: {
       type: "website",
+      locale: "ko_KR",
+      siteName: siteConfig.name,
       title,
       description,
       url: path,
@@ -71,66 +74,88 @@ export function regionMetadata(region: Region, content: RegionPageContent): Meta
     },
   };
 }
-export function breadcrumbJsonLd(region: Region, post?: { title: string; slug: string }) {
-  // Naver recommends descriptive hierarchy names instead of a generic "홈" item.
-  const items = regionAncestors(region).map((r) => ({ name: r.name, path: regionPath(r) }));
-  if (items.length === 1) {
-    items.unshift({ name: siteConfig.name, path: "/" });
-  }
-  if (post) items.push({ name: post.title, path: `/posts/${post.slug}` });
+export type SearchBreadcrumbItem = { name: string; path: string };
+
+function searchBreadcrumbJsonLd(items: SearchBreadcrumbItem[]) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: items.map((it, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      name: it.name,
-      item: new URL(it.path, siteConfig.url).href,
+      // Naver's documented breadcrumb format nests both the Korean name and URL in item.
+      item: {
+        "@id": new URL(it.path, siteConfig.url).href,
+        name: it.name,
+      },
     })),
   };
 }
 
-/** Posts outside the Seoul legal-dong taxonomy still need a Korean search breadcrumb. */
-export function postCollectionBreadcrumbJsonLd(post: { title: string; slug: string }) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "누수 작업사례",
-        item: new URL("/posts", siteConfig.url).href,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: post.title,
-        item: new URL(`/posts/${post.slug}`, siteConfig.url).href,
-      },
-    ],
-  };
+function postLocality(title: string) {
+  const normalized = title.replace(/^\[[^\]]+\]\s*/, "").trim();
+  return normalized.match(/^([가-힣0-9]+(?:동|가|읍|면|리))(?=\s|$)/)?.[1];
+}
+
+function postLocationLabel(post: Pick<Post, "title" | "region_tags">) {
+  const tags = post.region_tags.map((tag) => tag.trim()).filter(Boolean);
+  const broad =
+    tags.find((tag) => /\s/.test(tag)) ?? tags.find((tag) => /(?:시|군|구)$/.test(tag)) ?? tags[0];
+  const locality = postLocality(post.title);
+  if (broad && locality) {
+    if (broad.includes(locality)) return broad;
+    if (locality.includes(broad)) return locality;
+    return `${broad} ${locality}`;
+  }
+  return broad ?? locality ?? "누수 작업사례";
+}
+
+/** Search-result breadcrumb labels shared by visible navigation and JSON-LD. */
+export function postBreadcrumbItems(
+  post: Pick<Post, "title" | "slug" | "region_tags">,
+  region?: Region,
+): SearchBreadcrumbItem[] {
+  const currentPath = `/posts/${post.slug}`;
+  if (region) {
+    const ancestors = regionAncestors(region);
+    return [
+      { name: siteConfig.name, path: "/" },
+      ...ancestors.map((ancestor, index) => ({
+        name: ancestor.name,
+        path: index === ancestors.length - 1 ? currentPath : regionPath(ancestor),
+      })),
+    ];
+  }
+  return [
+    { name: siteConfig.name, path: "/" },
+    { name: postLocationLabel(post), path: currentPath },
+  ];
+}
+
+export function postBreadcrumbJsonLd(
+  post: Pick<Post, "title" | "slug" | "region_tags">,
+  region?: Region,
+) {
+  return searchBreadcrumbJsonLd(postBreadcrumbItems(post, region));
+}
+
+export function breadcrumbJsonLd(region: Region, post?: { title: string; slug: string }) {
+  const ancestors = regionAncestors(region);
+  const items: SearchBreadcrumbItem[] = [
+    { name: siteConfig.name, path: "/" },
+    ...ancestors.map((ancestor, index) => ({
+      name: ancestor.name,
+      path: post && index === ancestors.length - 1 ? `/posts/${post.slug}` : regionPath(ancestor),
+    })),
+  ];
+  return searchBreadcrumbJsonLd(items);
 }
 
 export function regionCollectionBreadcrumbJsonLd(regionTag: string, slug: string) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "누수 작업사례",
-        item: new URL("/posts", siteConfig.url).href,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: `${regionTag} 누수 작업사례`,
-        item: new URL(`/posts/region/${slug}`, siteConfig.url).href,
-      },
-    ],
-  };
+  return searchBreadcrumbJsonLd([
+    { name: siteConfig.name, path: "/" },
+    { name: `${regionTag} 누수 작업사례`, path: `/posts/region/${slug}` },
+  ]);
 }
 export function regionFaqJsonLd(region: Region, content: RegionPageContent) {
   return {

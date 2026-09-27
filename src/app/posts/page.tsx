@@ -37,6 +37,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     alternates: { canonical },
     openGraph: {
       type: "website",
+      locale: "ko_KR",
+      siteName: siteConfig.name,
       title: `${title} | ${siteConfig.name}`,
       description,
       url: canonical,
