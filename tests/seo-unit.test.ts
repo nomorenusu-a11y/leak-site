@@ -15,6 +15,7 @@ import { parseListSearch, listPath } from "../src/lib/post-list-search";
 import { categoryValues } from "../src/lib/post-categories";
 import robots from "../src/app/robots";
 import { articleJsonLd, localBusinessJsonLd, postImageCarouselJsonLd } from "../src/lib/seo/schema";
+import { POST_SEARCH_METADATA_REVISED_AT, postSitemapLastModified } from "../src/lib/seo/sitemap";
 import {
   breadcrumbJsonLd,
   postBreadcrumbItems,
@@ -102,6 +103,16 @@ test("every post and region collection receives a Korean brand and location brea
   assert.deepEqual(
     collectionBreadcrumb.itemListElement.map((item) => item.item.name),
     ["노모어누수", "강남구 누수 작업사례"],
+  );
+});
+test("post sitemap timestamps announce the latest real search metadata revision", () => {
+  assert.equal(
+    postSitemapLastModified("2026-09-15T12:25:10.929Z").toISOString(),
+    POST_SEARCH_METADATA_REVISED_AT.toISOString(),
+  );
+  assert.equal(
+    postSitemapLastModified("2026-10-01T01:00:00.000Z").toISOString(),
+    "2026-10-01T01:00:00.000Z",
   );
 });
 test("symptom is not a leak cause or detection method", () => {
