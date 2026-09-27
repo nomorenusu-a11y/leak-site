@@ -2,6 +2,11 @@ import { siteConfig } from "@/lib/env";
 import { getContactInfo } from "@/lib/contact";
 import { ALL_CITY_CODES, CITY_REGION_TAGS } from "@/lib/city";
 import type { Post, PostImage } from "@/types/database";
+import {
+  POST_SOCIAL_IMAGE_HEIGHT,
+  POST_SOCIAL_IMAGE_WIDTH,
+  postSocialImageUrl,
+} from "@/lib/seo/post-image";
 
 function distinctOriginalImages(images: PostImage[]) {
   const seen = new Set<string>();
@@ -83,6 +88,7 @@ export function localBusinessJsonLd() {
  */
 export function articleJsonLd(post: Post, verifiedLocation?: string, postImages: PostImage[] = []) {
   const url = `${siteConfig.url}/posts/${post.slug}`;
+  const socialImageUrl = postSocialImageUrl(post.slug);
   const businessRef = { "@type": "Organization", name: siteConfig.name } as const;
   // broken placeholder URL 방어 — 외부 placehold.co는 OG·schema에서 제외
   const isValidCover = post.cover_image_url && !/placehold\.co/i.test(post.cover_image_url);
@@ -90,7 +96,21 @@ export function articleJsonLd(post: Post, verifiedLocation?: string, postImages:
   if (isValidCover && !imageUrls.includes(post.cover_image_url as string)) {
     imageUrls.unshift(post.cover_image_url as string);
   }
-  const image = imageUrls.length ? imageUrls.slice(0, 8) : undefined;
+  const image = [
+    {
+      "@type": "ImageObject",
+      url: socialImageUrl,
+      contentUrl: socialImageUrl,
+      width: POST_SOCIAL_IMAGE_WIDTH,
+      height: POST_SOCIAL_IMAGE_HEIGHT,
+      caption: `${post.title} 현장 사진`,
+    },
+    ...imageUrls.slice(0, 7).map((imageUrl) => ({
+      "@type": "ImageObject",
+      url: imageUrl,
+      contentUrl: imageUrl,
+    })),
+  ];
   const placeName = verifiedLocation ?? post.region_tags[0];
   const place = placeName ? { "@type": "Place", name: placeName } : undefined;
   return {

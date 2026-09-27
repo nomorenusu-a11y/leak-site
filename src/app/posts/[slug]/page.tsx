@@ -25,6 +25,11 @@ import {
 } from "@/lib/posts";
 import { markdownToPlainText } from "@/lib/markdown";
 import { articleJsonLd, postImageCarouselJsonLd } from "@/lib/seo/schema";
+import {
+  POST_SOCIAL_IMAGE_HEIGHT,
+  POST_SOCIAL_IMAGE_WIDTH,
+  postSocialImageUrl,
+} from "@/lib/seo/post-image";
 import { siteConfig } from "@/lib/env";
 import { formatDateYMD } from "@/lib/time";
 import { splitPostContentByImages } from "@/lib/post-inline-images";
@@ -58,25 +63,20 @@ export async function generateMetadata({
   const post = await getPostBySlug(slug);
   if (!post) return { title: "찾을 수 없음" };
   const caseDraft = getCaseStudyDraft(slug);
-  const postImages = await getPostImages(post.id);
   const title = caseDraft?.title ?? post.title;
   const searchTitle = compactSearchTitle(title);
   const description = caseDraft?.excerpt ?? post.excerpt ?? markdownToPlainText(post.content, 160);
   const url = `${siteConfig.url}/posts/${post.slug}`;
-  // broken placeholder URL 방어 — placehold.co는 OG/twitter image에서 제외
-  const isValidCover = post.cover_image_url && !/placehold\.co/i.test(post.cover_image_url);
-  const imageUrls = [
-    ...(isValidCover ? [post.cover_image_url as string] : []),
-    ...postImages.filter((image) => image.image_variant !== "annotated").map((image) => image.url),
-  ].filter((value, index, all) => all.indexOf(value) === index);
-  const images = imageUrls.length
-    ? imageUrls.slice(0, 5).map((imageUrl, index) => ({
-        url: imageUrl,
-        alt:
-          postImages.find((image) => image.url === imageUrl)?.alt_text ??
-          `${title} 현장 사진 ${index + 1}`,
-      }))
-    : undefined;
+  const socialImageUrl = postSocialImageUrl(post.slug);
+  const images = [
+    {
+      url: socialImageUrl,
+      width: POST_SOCIAL_IMAGE_WIDTH,
+      height: POST_SOCIAL_IMAGE_HEIGHT,
+      type: "image/png",
+      alt: `${title} 현장 사진`,
+    },
+  ];
   return {
     title: { absolute: `${searchTitle} | ${siteConfig.name}` },
     description,

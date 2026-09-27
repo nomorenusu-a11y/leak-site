@@ -14,7 +14,7 @@ import { collectPages } from "../src/lib/collect-pages";
 import { parseListSearch, listPath } from "../src/lib/post-list-search";
 import { categoryValues } from "../src/lib/post-categories";
 import robots from "../src/app/robots";
-import { localBusinessJsonLd, postImageCarouselJsonLd } from "../src/lib/seo/schema";
+import { articleJsonLd, localBusinessJsonLd, postImageCarouselJsonLd } from "../src/lib/seo/schema";
 import {
   breadcrumbJsonLd,
   postCollectionBreadcrumbJsonLd,
@@ -199,4 +199,29 @@ test("post image carousel requires five distinct original photos", () => {
   assert.equal(carousel?.itemListElement.length, 6);
   assert.equal(carousel?.itemListElement[0].name, "현장 단계 1");
   assert.equal(carousel?.itemListElement[4].url.endsWith("?photo=5"), true);
+});
+
+test("article metadata leads with one first-party PNG image with explicit dimensions", () => {
+  const post = {
+    id: "post-1",
+    created_at: "2026-09-19T00:00:00.000Z",
+    updated_at: "2026-09-19T00:00:00.000Z",
+    title: "정자동 옥상 누수 점검",
+    slug: "20260921-september-051",
+    content: "본문",
+    excerpt: "요약",
+    cover_image_url: "https://images.example.com/roof.webp",
+    region_tags: ["정자동"],
+    category: "leak",
+    view_count: 0,
+    published: true,
+    published_at: "2026-09-21T00:00:00.000Z",
+  };
+
+  const schema = articleJsonLd(post);
+  const primary = schema.image[0];
+  assert.equal(primary["@type"], "ImageObject");
+  assert.equal(primary.url.endsWith("/posts/20260921-september-051/social-image"), true);
+  assert.equal("width" in primary && primary.width, 1200);
+  assert.equal("height" in primary && primary.height, 630);
 });

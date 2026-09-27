@@ -51,6 +51,11 @@ export const baseMetadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+    },
   },
   verification: {
     // 신/구 변수 이름 모두 fallback. NEXT_PUBLIC_은 1단계부터 사용 중,
