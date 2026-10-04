@@ -14,7 +14,9 @@ function todayKey() {
 
 export function IndexNowSync() {
   const [pending, startTransition] = useTransition();
-  const [message, setMessage] = useState("최근 공개 글을 네이버에 자동으로 알립니다.");
+  const [message, setMessage] = useState(
+    "예약 글은 2시간마다 자동 통지되며, 이 버튼으로 최근 공개 글을 즉시 다시 알립니다.",
+  );
 
   const sync = useCallback((automatic = false) => {
     startTransition(async () => {

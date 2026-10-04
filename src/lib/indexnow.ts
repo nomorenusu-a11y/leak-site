@@ -24,7 +24,9 @@ export async function submitIndexNow(urls: string[]): Promise<IndexNowResult> {
   if (urlList.length === 0) return { ok: true, submitted: 0, status: 200 };
 
   try {
-    const response = await fetch("https://api.indexnow.org/indexnow", {
+    // 네이버는 공식 IndexNow 엔드포인트를 별도로 제공한다. 예약 글의
+    // 수집 신호가 다른 검색엔진의 공유 처리에 의존하지 않도록 직접 보낸다.
+    const response = await fetch("https://searchadvisor.naver.com/indexnow", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
