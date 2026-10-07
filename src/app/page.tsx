@@ -16,7 +16,7 @@ import { landingMetadata } from "@/lib/seo/meta";
 import { localBusinessJsonLd } from "@/lib/seo/schema";
 import { faqPageJsonLd, loadFaqItems } from "@/lib/seo/faq";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 export const metadata: Metadata = landingMetadata("");
 
 export default async function HomePage() {

@@ -99,8 +99,13 @@ export async function attachMediaAssetToPost(input: {
     .update({ cover_image_url: asset.url })
     .eq("id", input.postId)
     .is("cover_image_url", null);
+  const { data: post } = await db
+    .from("posts")
+    .select("slug")
+    .eq("id", input.postId)
+    .maybeSingle();
   revalidatePath(`/admin/posts/${input.postId}/edit`);
   revalidatePath("/posts");
-  revalidatePath(`/posts/[slug]`, "page");
+  if (post?.slug) revalidatePath(`/posts/${post.slug}`);
   return { ok: true, imageId: image.id };
 }

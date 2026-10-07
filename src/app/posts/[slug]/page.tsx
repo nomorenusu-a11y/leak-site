@@ -35,8 +35,9 @@ import { formatDateYMD } from "@/lib/time";
 import { splitPostContentByImages } from "@/lib/post-inline-images";
 import { getCaseStudyDraft } from "@/data/case-drafts";
 
-// 예약 발행 전에 만들어진 404 캐시가 발행 후 오래 남지 않도록 짧게 재검증한다.
-export const revalidate = 60;
+// 예약 발행은 관리자 작업에서 해당 글 경로를 직접 무효화한다.
+// 공개 글 전체를 60초마다 재생성하면 Vercel Data Cache 쓰기가 급증하므로 하루 단위로 유지한다.
+export const revalidate = 86400;
 
 function compactSearchTitle(value: string) {
   const firstClause = value

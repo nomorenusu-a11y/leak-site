@@ -52,7 +52,8 @@ export async function savePostSeo(
     if (indexError) console.warn("[post-seo:indexable]", indexError.code);
     revalidateRegionTree(region);
   }
-  revalidatePath("/posts/[slug]", "page");
+  const { data: post } = await db.from("posts").select("slug").eq("id", postId).maybeSingle();
+  if (post?.slug) revalidatePath(`/posts/${post.slug}`);
   revalidatePath(`/admin/posts/${postId}/seo`);
   revalidatePath("/admin/posts");
   return { ok: true };

@@ -313,8 +313,7 @@ export async function POST(request: Request) {
 
   revalidatePath("/");
   revalidatePath("/posts");
-  revalidatePath("/posts/[slug]", "page");
-  revalidatePath("/posts/region/[region]", "page");
+  for (const item of created) revalidatePath(`/posts/${item.slug}`);
   revalidatePath("/admin");
   revalidatePath("/admin/calendar");
   revalidatePath("/admin/posts");

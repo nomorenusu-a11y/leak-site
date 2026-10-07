@@ -4,7 +4,7 @@ import { siteConfig } from "@/lib/env";
 import { POST_SOCIAL_IMAGE_HEIGHT, POST_SOCIAL_IMAGE_WIDTH } from "@/lib/seo/post-image";
 
 export const runtime = "nodejs";
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 async function fetchImage(url: string) {
   const response = await fetch(url, { next: { revalidate: 86400 } });

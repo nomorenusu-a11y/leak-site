@@ -70,10 +70,8 @@ function sanitizeRegionTags(tags: string[]): string[] {
 
 function revalidatePosts(slug?: string) {
   revalidatePath("/");
-  revalidatePath("/posts/[slug]", "page");
   revalidatePath("/admin/posts");
   revalidatePath("/posts");
-  revalidatePath("/posts/region/[region]", "page");
   revalidatePath("/sitemap.xml");
   if (slug) revalidatePath(`/posts/${slug}`);
 }
