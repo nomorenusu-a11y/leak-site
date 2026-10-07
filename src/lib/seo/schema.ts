@@ -2,11 +2,7 @@ import { siteConfig } from "@/lib/env";
 import { getContactInfo } from "@/lib/contact";
 import { ALL_CITY_CODES, CITY_REGION_TAGS } from "@/lib/city";
 import type { Post, PostImage } from "@/types/database";
-import {
-  POST_SOCIAL_IMAGE_HEIGHT,
-  POST_SOCIAL_IMAGE_WIDTH,
-  postSocialImageUrl,
-} from "@/lib/seo/post-image";
+import { postSocialImageUrl } from "@/lib/seo/post-image";
 
 function distinctOriginalImages(images: PostImage[]) {
   const seen = new Set<string>();
@@ -101,8 +97,6 @@ export function articleJsonLd(post: Post, verifiedLocation?: string, postImages:
       "@type": "ImageObject",
       url: socialImageUrl,
       contentUrl: socialImageUrl,
-      width: POST_SOCIAL_IMAGE_WIDTH,
-      height: POST_SOCIAL_IMAGE_HEIGHT,
       caption: `${post.title} 현장 사진`,
     },
     ...imageUrls.slice(0, 7).map((imageUrl) => ({

@@ -25,11 +25,7 @@ import {
 } from "@/lib/posts";
 import { markdownToPlainText } from "@/lib/markdown";
 import { articleJsonLd, postImageCarouselJsonLd } from "@/lib/seo/schema";
-import {
-  POST_SOCIAL_IMAGE_HEIGHT,
-  POST_SOCIAL_IMAGE_WIDTH,
-  postSocialImageUrl,
-} from "@/lib/seo/post-image";
+import { postSocialImageUrl } from "@/lib/seo/post-image";
 import { siteConfig } from "@/lib/env";
 import { formatDateYMD } from "@/lib/time";
 import { splitPostContentByImages } from "@/lib/post-inline-images";
@@ -72,9 +68,6 @@ export async function generateMetadata({
   const images = [
     {
       url: socialImageUrl,
-      width: POST_SOCIAL_IMAGE_WIDTH,
-      height: POST_SOCIAL_IMAGE_HEIGHT,
-      type: "image/png",
       alt: `${title} 현장 사진`,
     },
   ];

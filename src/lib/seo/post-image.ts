@@ -5,7 +5,7 @@ export const POST_SOCIAL_IMAGE_HEIGHT = 630;
 
 /**
  * Search engines receive one deterministic, first-party image URL per post.
- * The route converts the post's field photo to PNG and supplies fixed dimensions.
+ * The route serves the post's field photo through a stable first-party URL.
  */
 export function postSocialImageUrl(slug: string) {
   return `${siteConfig.url}/posts/${encodeURIComponent(slug)}/social-image`;

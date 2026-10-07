@@ -224,7 +224,7 @@ test("post image carousel requires five distinct original photos", () => {
   assert.equal(carousel?.itemListElement[4].url.endsWith("?photo=5"), true);
 });
 
-test("article metadata leads with one first-party PNG image with explicit dimensions", () => {
+test("article metadata leads with one stable first-party field image", () => {
   const post = {
     id: "post-1",
     created_at: "2026-09-19T00:00:00.000Z",
@@ -245,6 +245,5 @@ test("article metadata leads with one first-party PNG image with explicit dimens
   const primary = schema.image[0];
   assert.equal(primary["@type"], "ImageObject");
   assert.equal(primary.url.endsWith("/posts/20260921-september-051/social-image"), true);
-  assert.equal("width" in primary && primary.width, 1200);
-  assert.equal("height" in primary && primary.height, 630);
+  assert.equal(primary.contentUrl, primary.url);
 });

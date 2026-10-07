@@ -1,15 +1,12 @@
-import sharp from "sharp";
 import { getPostBySlug } from "@/lib/posts";
 import { siteConfig } from "@/lib/env";
-import { POST_SOCIAL_IMAGE_HEIGHT, POST_SOCIAL_IMAGE_WIDTH } from "@/lib/seo/post-image";
 
-export const runtime = "nodejs";
 export const revalidate = 86400;
 
 async function fetchImage(url: string) {
   const response = await fetch(url, { next: { revalidate: 86400 } });
   if (!response.ok) throw new Error(`Failed to fetch source image: ${response.status}`);
-  return Buffer.from(await response.arrayBuffer());
+  return response;
 }
 
 export async function GET(_request: Request, { params }: { params: Promise<{ slug: string }> }) {
@@ -28,23 +25,17 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
 
   try {
     const source = await fetchImage(sourceUrl);
-    const png = await sharp(source)
-      .rotate()
-      .resize(POST_SOCIAL_IMAGE_WIDTH, POST_SOCIAL_IMAGE_HEIGHT, {
-        fit: "cover",
-        position: "attention",
-      })
-      .png({ compressionLevel: 8 })
-      .toBuffer();
+    const bytes = await source.arrayBuffer();
+    const contentType = source.headers.get("content-type");
 
-    return new Response(new Uint8Array(png), {
+    return new Response(bytes, {
       headers: {
-        "Content-Type": "image/png",
+        "Content-Type": contentType?.startsWith("image/") ? contentType : "image/jpeg",
         "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800",
       },
     });
   } catch (error) {
     console.error("Failed to create post social image", { slug, sourceUrl, error });
-    return new Response("Image generation failed", { status: 502 });
+    return new Response("Image delivery failed", { status: 502 });
   }
 }
