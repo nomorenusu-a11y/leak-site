@@ -1,0 +1,28 @@
+name: Check production health
+
+on:
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-health
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Verify live site, sitemap, metadata, and social images
+        env:
+          SITE_URL: https://nomorenusu.com
+          MIN_SITEMAP_URLS: "300"
+        run: node scripts/verify-production.mjs

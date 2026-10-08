@@ -21,6 +21,9 @@ npm run dev                  # http://localhost:3000
 - `npm run lint` — ESLint
 - `npm run typecheck` — `tsc --noEmit`
 - `npm run format` / `npm run format:check` — Prettier
+- `npm run build:vinext` — Cloudflare Workers용 빌드
+- `npm run deploy:vinext` — Cloudflare Workers 운영 배포
+- `npm run verify:production` — 실제 운영 주소·사이트맵·검색 메타·대표 이미지 검사
 
 ---
 
@@ -175,7 +178,25 @@ supabase/
 
 ---
 
-## Vercel 배포
+## Cloudflare Workers 운영 배포
+
+운영 도메인 `nomorenusu.com`은 Cloudflare Workers에서 서비스합니다. Vercel은 과거 호스팅이며 운영 DNS를 다시 연결하지 않습니다.
+
+배포 전후에는 아래 순서를 반드시 지킵니다.
+
+```bash
+npm test
+npm run build:vinext
+npm run deploy:vinext
+npm run verify:production
+```
+
+`VINEXT_KV_CACHE`와 `kvDataAdapter()`는 게시글 ISR 캐시에 필요하므로 삭제하지 않습니다. 자세한 복구 절차와 금지 사항은 [`docs/PRODUCTION_RUNBOOK.md`](./docs/PRODUCTION_RUNBOOK.md)를 참고합니다.
+
+<!-- Historical Vercel setup below is retained for reference only. Do not use it for production. -->
+
+<details>
+<summary>과거 Vercel 배포 기록</summary>
 
 ### 1. 프로젝트 연결
 
@@ -231,6 +252,8 @@ supabase/
 - 두 곳 모두 `https://본도메인/sitemap.xml` 제출
 
 > 검증 메타 태그는 `NEXT_PUBLIC_*_VERIFICATION` 이름도 fallback으로 동작합니다.
+
+</details>
 
 ---
 
