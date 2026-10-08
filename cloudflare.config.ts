@@ -11,6 +11,7 @@ export default defineConfig({
     domains: ["nomorenusu.com", "www.nomorenusu.com"],
     env: {
       ASSETS: bindings.assets(),
+      VINEXT_KV_CACHE: bindings.kv({ id: "c6c86a1377104ab38c35a5c6a84c3522" }),
     },
   }),
 });
