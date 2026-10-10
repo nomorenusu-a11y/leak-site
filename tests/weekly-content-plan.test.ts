@@ -8,10 +8,13 @@ import {
   DAILY_PUBLISH_COUNTS,
   DAILY_PUBLISH_TIMES,
   getPublishSlot,
+  getOctoberExtensionPublishSlot,
   getOctoberPilotPublishSlot,
   getScheduledContentType,
   OCTOBER_PILOT_DAILY_TIMES,
   OCTOBER_PILOT_GUIDES,
+  OCTOBER_EXTENSION_DAILY_TIMES,
+  OCTOBER_EXTENSION_GUIDES,
   SCHEDULED_CONTENT_TYPE_LABELS,
   validateGuideDraft,
 } from "../src/lib/weekly-content-plan";
@@ -129,6 +132,47 @@ test("October 1–15 campaign schedules 10–12 distinct guides per day", () => 
   });
 
   for (const [dayIndex, times] of OCTOBER_PILOT_DAILY_TIMES.entries()) {
+    const scheduled = slots.filter((slot) => slot.dayIndex === dayIndex).map((slot) => slot.time);
+    assert.equal(scheduled.length, times.length);
+    assert.equal(new Set(scheduled).size, times.length);
+  }
+});
+
+test("October 16–31 campaign schedules 175 improved and non-duplicated guides", () => {
+  assert.equal(OCTOBER_EXTENSION_GUIDES.length, 175);
+  assert.deepEqual(
+    OCTOBER_EXTENSION_DAILY_TIMES.map((times) => times.length),
+    [10, 11, 12, 10, 11, 12, 10, 11, 12, 10, 11, 12, 10, 11, 12, 10],
+  );
+  const earlierKeys = new Set(
+    [...CAMPAIGN_GUIDES, ...OCTOBER_PILOT_GUIDES].map(
+      (guide) => `${guide.district}|${guide.dong}|${guide.leak}|${guide.symptom}`,
+    ),
+  );
+  const extensionKeys = OCTOBER_EXTENSION_GUIDES.map(
+    (guide) => `${guide.district}|${guide.dong}|${guide.leak}|${guide.symptom}`,
+  );
+  assert.equal(new Set(extensionKeys).size, 175);
+  assert.ok(extensionKeys.every((key) => !earlierKeys.has(key)));
+
+  const slots = OCTOBER_EXTENSION_GUIDES.map((guide, index) => {
+    const type = getScheduledContentType(
+      index + CAMPAIGN_GUIDES.length + OCTOBER_PILOT_GUIDES.length,
+    );
+    const title = buildGuideTitle(guide, type);
+    const excerpt = buildGuideExcerpt(guide, type);
+    const content = buildGuideContent(guide, type);
+    assertKoreanSearchBreadcrumb(guide, title);
+    assert.deepEqual(
+      validateGuideDraft({ guide, type, title, excerpt, content }),
+      [],
+      `${guide.slugKey} failed quality validation`,
+    );
+    assert.match(content, /판단에 도움이 되는 내용|먼저 살필 부분|우선 확인할 범위/);
+    assert.ok((content.match(/\]\(\/(?!\/)/g) ?? []).length >= 3);
+    return getOctoberExtensionPublishSlot(index);
+  });
+  for (const [dayIndex, times] of OCTOBER_EXTENSION_DAILY_TIMES.entries()) {
     const scheduled = slots.filter((slot) => slot.dayIndex === dayIndex).map((slot) => slot.time);
     assert.equal(scheduled.length, times.length);
     assert.equal(new Set(scheduled).size, times.length);

@@ -920,9 +920,17 @@ export const DAILY_PUBLISH_COUNTS = DAILY_PUBLISH_TIMES.map((times, dayIndex) =>
 );
 
 function internalLinkBlock(guide: ScheduledGuide) {
+  const intentLink = /계량기|직수관|급수/.test(guide.leak)
+    ? "- [계량기와 급수배관 점검 글 더 보기](/posts?query=%EC%88%98%EB%8F%84%EA%B3%84%EB%9F%89%EA%B8%B0)"
+    : /난방|온수|보일러|분배기/.test(guide.leak)
+      ? "- [난방·온수배관 점검 글 더 보기](/posts?query=%EC%98%A8%EC%88%98%EB%B0%B0%EA%B4%80)"
+      : /변기|욕실|세면대|배수/.test(guide.leak)
+        ? "- [욕실·배수 누수 점검 글 더 보기](/posts?query=%EC%9A%95%EC%8B%A4%20%EB%88%84%EC%88%98)"
+        : "- [천장·외벽·옥상 누수 점검 글 더 보기](/posts?query=%EC%B2%9C%EC%9E%A5%20%EB%88%84%EC%88%98)";
   return `## 이어서 확인할 노모어누수 안내
 
-- [${guide.district} 누수 관련 글 모아보기](/posts)
+- [${guide.district} ${guide.dong} 누수 관련 글 모아보기](/posts?query=${encodeURIComponent(`${guide.dong} 누수`)})
+${intentLink}
 - [증상별 누수 자주 묻는 질문](/faq)
 - [사진과 증상으로 상담 신청하기](/#quote-form)`;
 }
@@ -967,6 +975,58 @@ function evidencePrompt(guide: ScheduledGuide) {
   if (/천장|아래층|아랫집/.test(text))
     return "천장 전체 위치와 가장 짙은 물자국을 각각 촬영하고, 가능하면 위층의 같은 위치도 확인해 주세요.";
   return "젖은 부위 전체와 가장 심한 부분을 각각 촬영하고, 어떤 물을 사용할 때 증상이 나타나는지도 알려주세요.";
+}
+
+function diagnosisEvidenceBlock(guide: ScheduledGuide) {
+  const place = `${guide.district} ${guide.dong}`;
+  const text = `${guide.leak} ${guide.symptom} ${guide.location}`;
+  if (/계량기|직수관|급수/.test(text))
+    return `## 계량기 반응으로 확인할 수 있는 범위
+
+${place}에서 모든 수전을 잠갔는데도 별침이 움직인다면 계량기 이후 급수 계통을 먼저 의심할 수 있습니다. 다만 변기 물탱크, 정수기, 보일러 보충수처럼 눈에 잘 띄지 않는 사용처도 있으므로 하나씩 차단해 반응을 비교해야 합니다.
+
+| 확인 자료 | 판단에 도움이 되는 내용 |
+| --- | --- |
+| 사용 중단 직후 계량기 사진 | 별침과 숫자의 시작 상태 |
+| 5분 뒤 같은 각도 사진 | 미세한 사용량 변화 여부 |
+| 밸브 차단 전후 반응 | 실내·실외 또는 설비별 구간 구분 |
+
+계량기만 보고 손상 위치를 확정할 수는 없습니다. **${guide.check}**한 결과를 압력 검사와 수분 분포에 함께 대조해야 합니다.`;
+  if (/난방|온수|보일러|분배기/.test(text))
+    return `## 압력·온도·수분을 함께 비교합니다
+
+${place}의 ${guide.leak} 점검에서는 보일러 압력 하나만 보지 않습니다. 압력 저하 속도, 난방을 켰을 때의 바닥 온도 차이, 마감재 수분이 겹치는 구간을 비교해야 정상적인 열 전달과 누수를 구분할 수 있습니다.
+
+| 확인 자료 | 판단에 도움이 되는 내용 |
+| --- | --- |
+| 운전 전·후 압력계 사진 | 압력이 떨어지는 시간과 폭 |
+| 유난히 따뜻한 바닥 위치 | 온수·난방관 경로 추정 |
+| 분배기 밸브 주변 물기 | 노출 연결부 이상 여부 |
+
+압력을 계속 보충하면 변화 양상이 흐려질 수 있습니다. **${guide.check}**하기 전에는 압력계와 젖은 범위를 먼저 기록해 두세요.`;
+  if (/변기|욕실|세면대|싱크대|배수|하수/.test(text))
+    return `## 급수·배수·방수를 나눠 재현합니다
+
+${place}의 ${guide.leak}는 물이 보이는 위치가 같아도 원인이 다를 수 있습니다. 사용하지 않을 때, 수전만 틀 때, 물을 흘려보낼 때를 나눠야 급수 연결부·배수 접합부·방수층 중 어디를 먼저 확인할지 정할 수 있습니다.
+
+| 재현 조건 | 먼저 살필 부분 |
+| --- | --- |
+| 사용하지 않아도 젖음 | 급수호스·밸브·매립 급수관 |
+| 배수할 때만 젖음 | 트랩·정심·배수관 이음부 |
+| 오래 사용한 뒤 젖음 | 바닥 방수와 벽체 경계 |
+
+피해를 키우는 반복 시험은 피하고, 한 번의 안전한 확인에서 발생 시각과 물 사용량을 기록해 **${guide.check}**할 자료로 전달해 주세요.`;
+  return `## 날씨와 물 사용 시간을 분리해 기록합니다
+
+${place}의 ${guide.leak}는 외부 빗물 유입과 내부 배관 누수가 비슷한 흔적을 만들 수 있습니다. 비가 오기 전후, 바람 방향, 실내 물 사용 시간과 얼룩의 변화를 나눠 기록하면 점검 범위를 줄이는 데 도움이 됩니다.
+
+| 발생 조건 | 우선 확인할 범위 |
+| --- | --- |
+| 비 온 뒤에만 번짐 | 옥상·외벽·창호 접합부 |
+| 맑은 날에도 계속 젖음 | 급수·온수·난방 배관 |
+| 윗층 사용 뒤 커짐 | 배수관·욕실 방수 경계 |
+
+표면이 마르기 전에 가장 위쪽 젖은 경계와 전체 위치를 촬영하고, **${guide.check}**할 때 강우 기록과 함께 비교하세요.`;
 }
 
 function buildSymptomGuideContent(guide: ScheduledGuide) {
@@ -1076,6 +1136,8 @@ export function buildGuideContent(
 ${intentOpening(guide, type)}
 
 ${buildSymptomGuideContent(guide)}
+
+${diagnosisEvidenceBlock(guide)}
 
 ${internalLinkBlock(guide)}`;
 }
@@ -1307,4 +1369,93 @@ export function getOctoberPilotPublishSlot(index: number) {
     remaining -= times.length;
   }
   throw new RangeError(`No October publishing slot for guide index ${index}`);
+}
+
+// October 16–31 campaign. Search-visible queries responded most clearly to
+// an exact neighbourhood + leak type + concrete symptom, so this extension
+// rotates those intents without reusing an earlier campaign combination.
+export const OCTOBER_EXTENSION_START_DATE = "2026-10-16";
+export const OCTOBER_EXTENSION_END_DATE = "2026-10-31";
+export const OCTOBER_EXTENSION_DAILY_TIMES = Array.from({ length: 16 }, (_, dayIndex) => {
+  const templates = [
+    ["07:47", "09:13", "10:39", "12:07", "13:43", "15:17", "16:51", "18:29", "20:07", "22:13"],
+    [
+      "08:03",
+      "09:27",
+      "10:53",
+      "12:23",
+      "13:57",
+      "15:31",
+      "17:05",
+      "18:43",
+      "20:19",
+      "21:37",
+      "22:47",
+    ],
+    [
+      "07:39",
+      "08:57",
+      "10:13",
+      "11:31",
+      "12:49",
+      "14:11",
+      "15:29",
+      "16:49",
+      "18:03",
+      "19:27",
+      "20:41",
+      "22:09",
+    ],
+  ] as const;
+  return [...templates[dayIndex % templates.length]];
+});
+
+const OCTOBER_EXTENSION_LOCATIONS = [...BOOST_LOCATIONS, ...EXTRA_LOCATIONS] as const;
+const earlierCampaignKeys = new Set(
+  [...CAMPAIGN_GUIDES, ...OCTOBER_PILOT_GUIDES].map(
+    (guide) => `${guide.district}|${guide.dong}|${guide.leak}|${guide.symptom}`,
+  ),
+);
+const extensionUsedKeys = new Set<string>();
+const OCTOBER_EXTENSION_COUNT = OCTOBER_EXTENSION_DAILY_TIMES.reduce(
+  (sum, times) => sum + times.length,
+  0,
+);
+
+export const OCTOBER_EXTENSION_GUIDES: ScheduledGuide[] = Array.from(
+  { length: OCTOBER_EXTENSION_COUNT },
+  (_, index) => {
+    const [district, dong] =
+      OCTOBER_EXTENSION_LOCATIONS[index % OCTOBER_EXTENSION_LOCATIONS.length];
+    let profileIndex = (index * 7 + 3) % EXTRA_PROFILES.length;
+    let attempts = 0;
+    while (attempts < EXTRA_PROFILES.length) {
+      const candidate = EXTRA_PROFILES[profileIndex];
+      const key = `${district}|${dong}|${candidate.leak}|${candidate.symptom}`;
+      if (!earlierCampaignKeys.has(key) && !extensionUsedKeys.has(key)) break;
+      profileIndex = (profileIndex + 1) % EXTRA_PROFILES.length;
+      attempts += 1;
+    }
+    if (attempts === EXTRA_PROFILES.length)
+      throw new RangeError(`No unused October extension profile for ${district} ${dong}`);
+    const profile = EXTRA_PROFILES[profileIndex];
+    extensionUsedKeys.add(`${district}|${dong}|${profile.leak}|${profile.symptom}`);
+    return {
+      district,
+      dong,
+      building: BUILDINGS[(index * 5 + 1) % BUILDINGS.length],
+      ...profile,
+      slugKey: `october-extension-${String(index + 1).padStart(3, "0")}`,
+      keywords: [...profile.keywords],
+    };
+  },
+);
+
+export function getOctoberExtensionPublishSlot(index: number) {
+  let remaining = index;
+  for (const [dayIndex, times] of OCTOBER_EXTENSION_DAILY_TIMES.entries()) {
+    if (remaining < times.length) return { dayIndex, time: times[remaining] };
+    remaining -= times.length;
+  }
+  throw new RangeError(`No October extension publishing slot for guide index ${index}`);
 }

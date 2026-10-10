@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarPlus } from "lucide-react";
 
-type Campaign = "september" | "october-pilot";
+type Campaign = "september" | "october-pilot" | "october-extension";
 
 export function ScheduleWeekButton() {
   const router = useRouter();
@@ -66,6 +66,17 @@ export function ScheduleWeekButton() {
           {pendingCampaign === "october-pilot"
             ? "10월 1~15일 예약 생성 중..."
             : "10월 1~15일 하루 10~12개 예약"}
+        </button>
+        <button
+          type="button"
+          onClick={() => schedule("october-extension")}
+          disabled={pending}
+          className="inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-4 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-cyan-950/30 hover:bg-cyan-400 disabled:cursor-wait disabled:bg-slate-600"
+        >
+          <CalendarPlus size={17} />
+          {pendingCampaign === "october-extension"
+            ? "10월 16~31일 예약 생성 중..."
+            : "10월 16~31일 하루 10~12개 예약"}
         </button>
       </div>
       {message && (

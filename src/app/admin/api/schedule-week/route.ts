@@ -9,11 +9,15 @@ import {
   CAMPAIGN_GUIDES,
   CAMPAIGN_START_DATE,
   getPublishSlot,
+  getOctoberExtensionPublishSlot,
   getOctoberPilotPublishSlot,
   getScheduledContentType,
   OCTOBER_PILOT_END_DATE,
   OCTOBER_PILOT_GUIDES,
   OCTOBER_PILOT_START_DATE,
+  OCTOBER_EXTENSION_END_DATE,
+  OCTOBER_EXTENSION_GUIDES,
+  OCTOBER_EXTENSION_START_DATE,
   type ScheduledGuide,
   validateGuideDraft,
 } from "@/lib/weekly-content-plan";
@@ -68,17 +72,39 @@ export async function POST(request: Request) {
   let requestedCampaign = "september";
   try {
     const body = (await request.json()) as { campaign?: string };
-    if (body.campaign === "october-pilot") requestedCampaign = body.campaign;
+    if (body.campaign === "october-pilot" || body.campaign === "october-extension")
+      requestedCampaign = body.campaign;
   } catch {
     // Existing September button sends no body.
   }
   const isOctoberPilot = requestedCampaign === "october-pilot";
-  const guides = isOctoberPilot ? OCTOBER_PILOT_GUIDES : CAMPAIGN_GUIDES;
-  const campaignStartDate = isOctoberPilot ? OCTOBER_PILOT_START_DATE : CAMPAIGN_START_DATE;
-  const campaignEndDate = isOctoberPilot ? OCTOBER_PILOT_END_DATE : "2026-09-30";
-  const campaignPrefix = isOctoberPilot ? "202610%" : "202609%";
-  const contentTypeOffset = isOctoberPilot ? CAMPAIGN_GUIDES.length : 0;
-  const publishSlot = isOctoberPilot ? getOctoberPilotPublishSlot : getPublishSlot;
+  const isOctoberExtension = requestedCampaign === "october-extension";
+  const guides = isOctoberExtension
+    ? OCTOBER_EXTENSION_GUIDES
+    : isOctoberPilot
+      ? OCTOBER_PILOT_GUIDES
+      : CAMPAIGN_GUIDES;
+  const campaignStartDate = isOctoberExtension
+    ? OCTOBER_EXTENSION_START_DATE
+    : isOctoberPilot
+      ? OCTOBER_PILOT_START_DATE
+      : CAMPAIGN_START_DATE;
+  const campaignEndDate = isOctoberExtension
+    ? OCTOBER_EXTENSION_END_DATE
+    : isOctoberPilot
+      ? OCTOBER_PILOT_END_DATE
+      : "2026-09-30";
+  const campaignPrefix = isOctoberPilot || isOctoberExtension ? "202610%" : "202609%";
+  const contentTypeOffset = isOctoberExtension
+    ? CAMPAIGN_GUIDES.length + OCTOBER_PILOT_GUIDES.length
+    : isOctoberPilot
+      ? CAMPAIGN_GUIDES.length
+      : 0;
+  const publishSlot = isOctoberExtension
+    ? getOctoberExtensionPublishSlot
+    : isOctoberPilot
+      ? getOctoberPilotPublishSlot
+      : getPublishSlot;
 
   const db = createSupabaseAdminClient();
   const [{ data: assets }, { data: analyses }] = await Promise.all([
