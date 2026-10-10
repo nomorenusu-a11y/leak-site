@@ -183,6 +183,24 @@ export type SiteContentInsert = {
   value: unknown;
 };
 
+export type AnalyticsEvent = {
+  id: string;
+  created_at: string;
+  session_id: string;
+  event_name: string;
+  path: string;
+  source: string;
+  referrer_host: string | null;
+  search_query: string | null;
+  utm_source: string | null;
+  utm_campaign: string | null;
+  is_search: boolean;
+  device_category: "mobile" | "tablet" | "desktop";
+  metadata: Record<string, unknown>;
+};
+
+export type AnalyticsEventInsert = Omit<AnalyticsEvent, "id" | "created_at">;
+
 // ============================================================
 // 사이트 콘텐츠 JSON 타입
 // ============================================================
@@ -335,7 +353,8 @@ export type Database = {
       };
       media_asset_analysis: {
         Row: MediaAssetAnalysis;
-        Insert: Pick<MediaAssetAnalysis, "asset_id"> & Partial<Omit<MediaAssetAnalysis, "asset_id" | "created_at" | "updated_at">>;
+        Insert: Pick<MediaAssetAnalysis, "asset_id"> &
+          Partial<Omit<MediaAssetAnalysis, "asset_id" | "created_at" | "updated_at">>;
         Update: Partial<Omit<MediaAssetAnalysis, "asset_id" | "created_at">>;
         Relationships: [
           {
@@ -356,6 +375,12 @@ export type Database = {
         Row: SiteContent;
         Insert: SiteContentInsert;
         Update: Partial<SiteContentInsert>;
+        Relationships: [];
+      };
+      analytics_events: {
+        Row: AnalyticsEvent;
+        Insert: AnalyticsEventInsert;
+        Update: never;
         Relationships: [];
       };
     };

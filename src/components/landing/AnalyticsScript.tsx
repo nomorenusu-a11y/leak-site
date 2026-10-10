@@ -4,6 +4,7 @@ import Script from "next/script";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { captureUtmFromUrl } from "@/lib/utm";
+import { recordPageView } from "@/lib/traffic-analytics";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
@@ -16,6 +17,7 @@ export function AnalyticsScript() {
 
   useEffect(() => {
     captureUtmFromUrl();
+    recordPageView();
   }, [pathname]);
 
   if (!GA_ID) return null;

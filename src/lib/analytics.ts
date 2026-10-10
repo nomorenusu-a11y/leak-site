@@ -1,8 +1,8 @@
 /**
  * GA4 이벤트 추적 통합 헬퍼.
  *
- * - `NEXT_PUBLIC_GA_ID`가 없거나 `/admin/*` 경로에서는 silent no-op
- * - 모든 GA 호출은 `trackEvent`만 사용해 한 곳에서 관리
+ * - 자체 통계는 GA 설정과 무관하게 수집
+ * - GA가 연결된 경우 같은 이벤트를 GA에도 전달
  */
 
 export const EVENTS = {
@@ -34,7 +34,9 @@ function isAdminPath(): boolean {
 export function trackEvent(name: EventName | string, params?: Record<string, unknown>): void {
   if (typeof window === "undefined") return;
   if (isAdminPath()) return;
+  void import("@/lib/traffic-analytics").then(({ recordTrafficEvent }) =>
+    recordTrafficEvent(name, params ?? {}),
+  );
   const w = window as Window & { gtag?: (...args: unknown[]) => void };
-  if (typeof w.gtag !== "function") return;
-  w.gtag("event", name, params ?? {});
+  if (typeof w.gtag === "function") w.gtag("event", name, params ?? {});
 }

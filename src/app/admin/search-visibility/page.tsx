@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ExternalLink, Search, TrendingUp } from "lucide-react";
+import type { ReactNode } from "react";
+import { ExternalLink, Eye, MousePointerClick, Route, Search, TrendingUp } from "lucide-react";
 import { SearchVisibilityRefresh } from "@/components/admin/SearchVisibilityRefresh";
 import { assertAdmin } from "@/lib/auth";
 import {
@@ -9,6 +10,7 @@ import {
   type NaverSearchVisibilityState,
 } from "@/lib/naver-search-visibility";
 import { getSiteContent } from "@/lib/site-content";
+import { loadTrafficAnalytics } from "@/lib/admin-traffic";
 
 export const dynamic = "force-dynamic";
 
@@ -26,10 +28,10 @@ function formatCheckedAt(value: string | null) {
 
 export default async function SearchVisibilityPage() {
   await assertAdmin();
-  const saved = await getSiteContent<NaverSearchVisibilityState | null>(
-    NAVER_SEARCH_VISIBILITY_KEY,
-    null,
-  );
+  const [saved, traffic] = await Promise.all([
+    getSiteContent<NaverSearchVisibilityState | null>(NAVER_SEARCH_VISIBILITY_KEY, null),
+    loadTrafficAnalytics(30),
+  ]);
   const state = mergeNaverSearchVisibility(saved);
   const { officialReport, publicSearch } = state;
   const visibleCount = publicSearch.checks.filter((item) => item.visible).length;
@@ -48,22 +50,88 @@ export default async function SearchVisibilityPage() {
       <header className="flex flex-wrap items-end justify-between gap-5">
         <div>
           <p className="text-xs font-bold tracking-[0.18em] text-emerald-300 uppercase">
-            Naver search performance
+            Traffic &amp; search performance
           </p>
           <h1 className="mt-2 text-3xl font-black tracking-tight text-white sm:text-4xl">
-            네이버 검색 노출
+            유입·검색 통계
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
-            실제 유입 검색어와 주요 지역·증상 키워드의 현재 검색 노출 여부를 함께 확인합니다.
+            어떤 경로와 검색어로 방문했는지, 어떤 페이지를 봤는지, 네이버에서 상단 노출되는 키워드는
+            무엇인지 함께 확인합니다.
           </p>
         </div>
         <SearchVisibilityRefresh />
       </header>
 
       <section className="mt-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Metric label="최근 30일 노출" value={officialReport.impressions} suffix="회" tone="blue" />
-        <Metric label="최근 30일 클릭" value={officialReport.clicks} suffix="회" tone="emerald" />
-        <Metric label="평균 클릭률" value={officialReport.ctr} suffix="%" tone="violet" />
+        <Metric label="최근 30일 방문" value={traffic.sessions} suffix="회" tone="blue" />
+        <Metric label="페이지 조회" value={traffic.pageViews} suffix="회" tone="emerald" />
+        <Metric label="검색 유입 방문" value={traffic.searchSessions} suffix="회" tone="violet" />
+        <Metric
+          label="전화·카카오·견적 행동"
+          value={traffic.contactClicks}
+          suffix="회"
+          tone="amber"
+        />
+      </section>
+
+      <section className="mt-7 grid gap-4 xl:grid-cols-2">
+        <TrafficCard
+          icon={<Route size={18} />}
+          eyebrow="Acquisition source"
+          title="유입 경로"
+          description={`최근 ${traffic.days}일 동안 처음 들어온 경로입니다.`}
+          headers={["경로", "방문", "조회"]}
+          rows={traffic.sources.map((item) => [item.label, item.sessions, item.views])}
+          empty="배포 이후 방문 데이터가 쌓이면 네이버·구글·직접 방문이 표시됩니다."
+        />
+        <TrafficCard
+          icon={<Search size={18} />}
+          eyebrow="Search queries"
+          title="검색 유입 키워드"
+          description="검색 사이트가 전달한 검색어만 표시합니다. 숨겨진 검색어는 ‘검색어 비공개’로 집계됩니다."
+          headers={["검색어", "방문", "조회"]}
+          rows={traffic.queries.map((item) => [item.label, item.sessions, item.views])}
+          empty="아직 검색 유입이 기록되지 않았습니다."
+        />
+        <TrafficCard
+          icon={<Eye size={18} />}
+          eyebrow="Landing pages"
+          title="인기 방문 페이지"
+          description="방문자가 실제로 열어 본 홈페이지와 게시글 순위입니다."
+          headers={["페이지", "방문", "조회"]}
+          rows={traffic.pages.map((item) => [item.label, item.sessions, item.views])}
+          empty="방문 데이터가 수집되면 인기 페이지가 표시됩니다."
+        />
+        <TrafficCard
+          icon={<MousePointerClick size={18} />}
+          eyebrow="Actions"
+          title="문의 전환 행동"
+          description="전화·카카오·견적 신청 버튼을 누른 횟수입니다."
+          headers={["행동", "횟수", ""]}
+          rows={traffic.conversions.map((item) => [
+            conversionLabel(item.eventName),
+            item.count,
+            "",
+          ])}
+          empty="아직 문의 전환 행동이 없습니다."
+        />
+      </section>
+
+      <section className="mt-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <Metric
+          label="네이버 공식 30일 노출"
+          value={officialReport.impressions}
+          suffix="회"
+          tone="blue"
+        />
+        <Metric
+          label="네이버 공식 30일 클릭"
+          value={officialReport.clicks}
+          suffix="회"
+          tone="emerald"
+        />
+        <Metric label="네이버 공식 클릭률" value={officialReport.ctr} suffix="%" tone="violet" />
         <Metric
           label="현재 확인된 키워드"
           value={visibleCount}
@@ -71,6 +139,11 @@ export default async function SearchVisibilityPage() {
           tone="amber"
         />
       </section>
+
+      <div className="mt-3 rounded-xl border border-blue-400/15 bg-blue-400/[0.05] px-4 py-3 text-xs leading-5 text-slate-400">
+        위 방문 통계는 오늘 배포 이후 자동 누적됩니다. 네이버 공식 노출·클릭·CTR은 네이버가 외부
+        API를 제공하지 않아 아래의 마지막 공식 확인값과 현재 공개 검색 점검을 분리해 표시합니다.
+      </div>
 
       <section className="mt-7 overflow-hidden rounded-2xl border border-white/[0.09] bg-[#0d121d]">
         <div className="flex flex-wrap items-start justify-between gap-4 border-b border-white/[0.08] px-5 py-5 sm:px-6">
@@ -150,7 +223,7 @@ export default async function SearchVisibilityPage() {
               <TrendingUp size={18} />
               <p className="text-xs font-bold tracking-[0.14em] uppercase">Official report</p>
             </div>
-            <h2 className="mt-2 text-xl font-black text-white">실제 유입 검색어</h2>
+            <h2 className="mt-2 text-xl font-black text-white">네이버 공식 검색어</h2>
             <p className="mt-2 text-sm leading-6 text-slate-400">
               네이버 서치어드바이저 {officialReport.updatedAt} 집계값입니다. 네이버 공식 리포트는 약
               1주 전 검색 데이터를 보여줍니다.
@@ -203,6 +276,73 @@ export default async function SearchVisibilityPage() {
         확인은 관리자 요청 시에만 실행됩니다.
       </p>
     </div>
+  );
+}
+
+function conversionLabel(eventName: string) {
+  const labels: Record<string, string> = {
+    click_call: "전화 버튼",
+    click_kakao: "카카오 상담 버튼",
+    submit_quote: "견적 신청 완료",
+    click_post_cta: "게시글 상담 버튼",
+  };
+  return labels[eventName] ?? eventName;
+}
+
+function TrafficCard({
+  icon,
+  eyebrow,
+  title,
+  description,
+  headers,
+  rows,
+  empty,
+}: {
+  icon: ReactNode;
+  eyebrow: string;
+  title: string;
+  description: string;
+  headers: [string, string, string];
+  rows: Array<[string, string | number, string | number]>;
+  empty: string;
+}) {
+  return (
+    <article className="overflow-hidden rounded-2xl border border-white/[0.09] bg-[#0d121d]">
+      <div className="border-b border-white/[0.08] px-5 py-5 sm:px-6">
+        <div className="flex items-center gap-2 text-blue-300">
+          {icon}
+          <p className="text-xs font-bold tracking-[0.14em] uppercase">{eyebrow}</p>
+        </div>
+        <h2 className="mt-2 text-xl font-black text-white">{title}</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-400">{description}</p>
+      </div>
+      {rows.length ? (
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-left text-sm">
+            <thead className="bg-white/[0.025] text-xs font-bold text-slate-500">
+              <tr>
+                <th className="px-5 py-3 sm:px-6">{headers[0]}</th>
+                <th className="px-5 py-3 text-right">{headers[1]}</th>
+                <th className="px-5 py-3 text-right">{headers[2]}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/[0.07]">
+              {rows.map((row) => (
+                <tr key={`${row[0]}-${row[1]}`}>
+                  <td className="max-w-xs px-5 py-3 font-semibold break-all text-slate-200 sm:px-6">
+                    {row[0]}
+                  </td>
+                  <td className="px-5 py-3 text-right font-bold text-white">{row[1]}</td>
+                  <td className="px-5 py-3 text-right text-slate-400">{row[2]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="px-5 py-8 text-sm leading-6 text-slate-500 sm:px-6">{empty}</p>
+      )}
+    </article>
   );
 }
 
