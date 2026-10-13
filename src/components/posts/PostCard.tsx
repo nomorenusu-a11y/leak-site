@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CategoryBadge } from "@/components/ui/CategoryBadge";
-import type { Post } from "@/types/database";
+import type { PostCardData } from "@/types/database";
 import { formatDateYMD } from "@/lib/time";
 
 const PLACEHOLDER = "/placeholder-post.svg";
@@ -14,12 +14,12 @@ function resolveCover(url: string | null | undefined): { src: string; isPlacehol
   return { src: url, isPlaceholder: false };
 }
 
-export function PostCard({ post }: { post: Post }) {
+export function PostCard({ post }: { post: PostCardData }) {
   const cover = resolveCover(post.cover_image_url);
   return (
     <Link
       href={`/posts/${post.slug}`}
-      className="group block overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md focus-visible:-translate-y-1 focus-visible:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+      className="group focus-visible:ring-brand-500 block overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md focus-visible:-translate-y-1 focus-visible:shadow-md focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
     >
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
         <Image
@@ -37,13 +37,13 @@ export function PostCard({ post }: { post: Post }) {
           {post.region_tags.slice(0, 3).map((tag) => (
             <span
               key={tag}
-              className="rounded-md bg-brand-50 px-2 py-0.5 text-xs font-semibold text-brand-700"
+              className="bg-brand-50 text-brand-700 rounded-md px-2 py-0.5 text-xs font-semibold"
             >
               {tag}
             </span>
           ))}
         </div>
-        <h3 className="mt-2 line-clamp-2 text-base font-extrabold text-slate-900 group-hover:text-brand-700 sm:text-lg">
+        <h3 className="group-hover:text-brand-700 mt-2 line-clamp-2 text-base font-extrabold text-slate-900 sm:text-lg">
           {post.title}
         </h3>
         {post.excerpt && (

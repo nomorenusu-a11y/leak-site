@@ -33,6 +33,8 @@ import { getCaseStudyDraft } from "@/data/case-drafts";
 
 // 예약 발행은 관리자 작업에서 해당 글 경로를 직접 무효화한다.
 // 공개 글 전체를 60초마다 재생성하면 Vercel Data Cache 쓰기가 급증하므로 하루 단위로 유지한다.
+// Cloudflare Worker에서 검색 로봇의 반복 요청이 매번 SSR을 실행하지 않도록 정적 라우트로 고정한다.
+export const dynamic = "force-static";
 export const revalidate = 86400;
 
 function compactSearchTitle(value: string) {
@@ -101,12 +103,12 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
   if (!post) notFound();
   const caseDraft = getCaseStudyDraft(slug);
 
-  const [images, related, adjacent] = await Promise.all([
+  const [images, related, adjacent, location] = await Promise.all([
     getPostImages(post.id),
     getRelatedPosts(post, 5),
-    getAdjacentPosts(post.slug),
+    getAdjacentPosts(post),
+    getPostLocation(post.id),
   ]);
-  const location = await getPostLocation(post.id);
   const candidate = location ? regionById(location.region_id) : resolvePostBreadcrumbRegion(post);
   const region = candidate && (await getPublicRegionContent(candidate)) ? candidate : undefined;
   const shareUrl = `${siteConfig.url}/posts/${post.slug}`;

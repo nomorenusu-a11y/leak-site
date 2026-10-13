@@ -1,7 +1,7 @@
-import type { Post } from "@/types/database";
+import type { PostCardData } from "@/types/database";
 import { PostCard } from "./PostCard";
 
-export function RelatedPosts({ posts }: { posts: Post[] }) {
+export function RelatedPosts({ posts }: { posts: PostCardData[] }) {
   if (posts.length === 0) return null;
   return (
     <section className="mt-14 border-t border-slate-200 pt-10">

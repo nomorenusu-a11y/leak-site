@@ -87,6 +87,18 @@ export type Post = {
   published_at: string;
 };
 
+export type PostCardData = Pick<
+  Post,
+  | "id"
+  | "title"
+  | "slug"
+  | "excerpt"
+  | "cover_image_url"
+  | "region_tags"
+  | "category"
+  | "published_at"
+>;
+
 export type PostInsert = {
   title: string;
   slug: string;

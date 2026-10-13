@@ -8,7 +8,14 @@
 import { categoryValues } from "./post-categories";
 import { collectPages } from "./collect-pages";
 import { createSupabaseAnonClient } from "@/lib/supabase/anon";
-import type { LeakRequestBoardItem, Post, PostImage, RequestStatus } from "@/types/database";
+import { cache } from "react";
+import type {
+  LeakRequestBoardItem,
+  Post,
+  PostCardData,
+  PostImage,
+  RequestStatus,
+} from "@/types/database";
 
 export const POSTS_PER_PAGE = 12;
 export const BOARD_LIMIT = 10;
@@ -62,7 +69,7 @@ export async function getPublishedPosts({
  * 외부 broken placeholder(예: placehold.co) URL을 null로 정규화.
  * 시드·캐시에 외부 도메인이 남아있어도 OG·메타·Schema에서 자동 제거.
  */
-function sanitizePost(p: Post | null): Post | null {
+function sanitizePost<T extends { cover_image_url: string | null }>(p: T | null): T | null {
   if (!p) return p;
   if (p.cover_image_url && /placehold\.co/i.test(p.cover_image_url)) {
     return { ...p, cover_image_url: null };
@@ -70,21 +77,26 @@ function sanitizePost(p: Post | null): Post | null {
   return p;
 }
 
-export async function getPostBySlug(slug: string): Promise<Post | null> {
+export const getPostBySlug = cache(async (slug: string): Promise<Post | null> => {
   const supabase = createSupabaseAnonClient();
-  const { data, error } = await supabase
-    .from("posts")
-    .select("*")
-    .eq("slug", slug)
-    .eq("published", true)
-    .lte("published_at", new Date().toISOString())
-    .maybeSingle();
-  if (error) {
-    console.warn("[posts] getPostBySlug:", error.message);
-    return null;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8_000);
+    const { data, error } = await supabase
+      .from("posts")
+      .select("*")
+      .eq("slug", slug)
+      .eq("published", true)
+      .lte("published_at", new Date().toISOString())
+      .abortSignal(controller.signal)
+      .maybeSingle();
+    clearTimeout(timer);
+    if (!error) return sanitizePost(data);
+    console.warn(`[posts] getPostBySlug attempt ${attempt}:`, error.message);
+    if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, attempt * 150));
   }
-  return sanitizePost(data);
-}
+  throw new Error(`Published post temporarily unavailable: ${slug}`);
+});
 
 export async function getPostImages(postId: string): Promise<PostImage[]> {
   const supabase = createSupabaseAnonClient();
@@ -152,16 +164,12 @@ function relatedTerms(title: string) {
     .filter((term) => term.length >= 2 && !RELATED_STOP_WORDS.has(term));
 }
 
-function postContentType(content: string) {
-  return content.match(/<!-- content-type:([a-z_]+) -->/)?.[1] ?? "legacy";
-}
-
-export async function getRelatedPosts(post: Post, limit = 5): Promise<Post[]> {
+export async function getRelatedPosts(post: Post, limit = 5): Promise<PostCardData[]> {
   if (post.region_tags.length === 0) return [];
   const supabase = createSupabaseAnonClient();
   const { data, error } = await supabase
     .from("posts")
-    .select("*")
+    .select("id,title,slug,excerpt,cover_image_url,region_tags,category,published_at")
     .eq("published", true)
     .lte("published_at", new Date().toISOString())
     .neq("id", post.id)
@@ -173,7 +181,6 @@ export async function getRelatedPosts(post: Post, limit = 5): Promise<Post[]> {
     return [];
   }
   const currentTerms = new Set(relatedTerms(post.title));
-  const currentType = postContentType(post.content);
   return (data ?? [])
     .map((candidate) => {
       const candidateTerms = relatedTerms(candidate.title);
@@ -181,10 +188,9 @@ export async function getRelatedPosts(post: Post, limit = 5): Promise<Post[]> {
       const sameDong = candidateTerms.some((term) =>
         [...currentTerms].some((current) => current.endsWith("동") && current === term),
       );
-      const differentIntent = postContentType(candidate.content) !== currentType;
       return {
-        post: sanitizePost(candidate) as Post,
-        score: overlap * 4 + (sameDong ? 10 : 0) + (differentIntent ? 3 : 0),
+        post: sanitizePost(candidate) as PostCardData,
+        score: overlap * 4 + (sameDong ? 10 : 0),
       };
     })
     .sort(
@@ -200,24 +206,34 @@ export async function getRelatedPosts(post: Post, limit = 5): Promise<Post[]> {
  * 발행일 기준 인접한 글 prev/next.
  * published_at desc 순서에서 현재 글 위치 기준.
  */
-export async function getAdjacentPosts(currentSlug: string): Promise<{
+export async function getAdjacentPosts(currentPost: Post): Promise<{
   prev: Pick<Post, "slug" | "title"> | null;
   next: Pick<Post, "slug" | "title"> | null;
 }> {
   const supabase = createSupabaseAnonClient();
-  const { data, error } = await supabase
-    .from("posts")
-    .select("slug, title, published_at")
-    .eq("published", true)
-    .lte("published_at", new Date().toISOString())
-    .order("published_at", { ascending: false });
-  if (error || !data) return { prev: null, next: null };
-  const idx = data.findIndex((p) => p.slug === currentSlug);
-  if (idx < 0) return { prev: null, next: null };
+  const now = new Date().toISOString();
+  const [newer, older] = await Promise.all([
+    supabase
+      .from("posts")
+      .select("slug,title")
+      .eq("published", true)
+      .lte("published_at", now)
+      .gt("published_at", currentPost.published_at)
+      .order("published_at", { ascending: true })
+      .limit(1)
+      .maybeSingle(),
+    supabase
+      .from("posts")
+      .select("slug,title")
+      .eq("published", true)
+      .lt("published_at", currentPost.published_at)
+      .order("published_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+  ]);
   return {
-    // 시각적 prev/next 의미: 시간순으로 더 최근 글이 prev, 더 오래된 글이 next
-    prev: idx > 0 ? { slug: data[idx - 1].slug, title: data[idx - 1].title } : null,
-    next: idx < data.length - 1 ? { slug: data[idx + 1].slug, title: data[idx + 1].title } : null,
+    prev: newer.error || !newer.data ? null : newer.data,
+    next: older.error || !older.data ? null : older.data,
   };
 }
 
