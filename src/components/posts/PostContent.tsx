@@ -27,6 +27,9 @@ export function PostContent({
     imageIndex += 1;
     const stage = image.work_stage?.trim() || "현장 확인";
     const explanation = image.caption?.trim() || image.alt_text?.trim();
+    const isReference = /참고/.test(
+      `${image.caption || ""} ${image.alt_text || ""} ${image.work_stage || ""}`,
+    );
     const showCta = Boolean(inlineCta && !ctaInserted && imageIndex >= ctaAfterImage);
     ctaInserted ||= showCta;
     return (
@@ -34,7 +37,7 @@ export function PostContent({
         key={image.id}
         id={`field-photo-${imageIndex}`}
         className="my-9 scroll-mt-24"
-        aria-label={`현장 진행 ${imageIndex}: ${stage}`}
+        aria-label={`${isReference ? "점검 참고" : "현장 진행"} ${imageIndex}: ${stage}`}
       >
         <figure className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-3">
@@ -43,7 +46,9 @@ export function PostContent({
                 {imageIndex}
               </span>
               <div>
-                <p className="text-brand-700 text-[11px] font-bold tracking-[0.08em]">현장 진행</p>
+                <p className="text-brand-700 text-[11px] font-bold tracking-[0.08em]">
+                  {isReference ? "점검 참고 자료" : "현장 진행"}
+                </p>
                 <p className="text-sm font-extrabold text-slate-900">{stage}</p>
               </div>
             </div>

@@ -8,7 +8,7 @@ export function SearchVisibilityRefresh() {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState(
-    "방문 통계를 새로 불러오고 주요 키워드의 현재 네이버 검색 결과를 확인합니다.",
+    "방문 통계를 새로 불러오고 공개 글을 순서대로 점검합니다. 예약 글은 열지 않습니다.",
   );
 
   function refresh() {
@@ -21,13 +21,16 @@ export function SearchVisibilityRefresh() {
           visibleCount?: number;
           errorCount?: number;
           error?: string;
+          pagesChecked?: number;
+          searchChecked?: number;
+          cooldownUntil?: string;
         };
         if (!response.ok || !result.ok) {
           throw new Error(result.error || "네이버 검색 결과를 확인하지 못했습니다.");
         }
         const suffix = result.errorCount ? ` · 오류 ${result.errorCount}개` : "";
         setMessage(
-          `주요 검색어 중 ${result.visibleCount ?? 0}개에서 노출을 확인했습니다${suffix}.`,
+          `공개 글 ${result.pagesChecked ?? 0}개 접속 확인 · 검색 ${result.searchChecked ?? 0}개 확인${suffix}.${result.cooldownUntil && Date.parse(result.cooldownUntil) > Date.now() ? " 네이버 요청 제한으로 검색 검사를 잠시 쉽니다. 접속·방문 통계는 계속 확인합니다." : ""}`,
         );
         router.refresh();
       } catch (error) {

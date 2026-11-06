@@ -1,7 +1,7 @@
 import { siteConfig } from "@/lib/env";
 import { getContactInfo } from "@/lib/contact";
 import { ALL_CITY_CODES, CITY_REGION_TAGS } from "@/lib/city";
-import type { Post, PostImage } from "@/types/database";
+import type { Post, PostImage, PostCardData } from "@/types/database";
 import { postSocialImageUrl } from "@/lib/seo/post-image";
 
 function distinctOriginalImages(images: PostImage[]) {
@@ -133,7 +133,7 @@ export function articleJsonLd(post: Post, verifiedLocation?: string, postImages:
 export function postImageCarouselJsonLd(
   post: Post,
   postImages: PostImage[],
-  relatedPosts: Post[] = [],
+  relatedPosts: PostCardData[] = [],
 ) {
   const url = `${siteConfig.url}/posts/${post.slug}`;
   const items: Array<{ name: string; imageUrl: string; caption?: string; url: string }> =

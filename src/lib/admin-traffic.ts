@@ -1,5 +1,6 @@
 import "server-only";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { aggregatePostTraffic, contactAction, isExcludedTraffic } from "@/lib/post-tracking";
 
 type Row = {
   created_at: string;
@@ -10,6 +11,7 @@ type Row = {
   search_query: string | null;
   is_search: boolean;
   device_category: string;
+  metadata: Record<string, unknown>;
 };
 
 type Bucket = { sessions: Set<string>; views: number };
@@ -69,7 +71,9 @@ export async function loadTrafficAnalytics(days = 30) {
   for (let from = 0; ; from += 1000) {
     const { data, error } = await db
       .from("analytics_events")
-      .select("created_at,session_id,event_name,path,source,search_query,is_search,device_category")
+      .select(
+        "created_at,session_id,event_name,path,source,search_query,is_search,device_category,metadata",
+      )
       .gte("created_at", previousSince)
       .order("created_at", { ascending: false })
       .range(from, from + 999);
@@ -77,7 +81,18 @@ export async function loadTrafficAnalytics(days = 30) {
       if (error.code === "42P01") return emptyTraffic(days);
       throw error;
     }
-    rows.push(...((data ?? []) as Row[]));
+    rows.push(
+      ...((data ?? []) as Row[])
+        .filter((row) => !isExcludedTraffic(row))
+        .map((row) => {
+          const action = contactAction(row);
+          return action === "phone"
+            ? { ...row, event_name: "click_call" }
+            : action === "kakao"
+              ? { ...row, event_name: "click_kakao" }
+              : row;
+        }),
+    );
     if (!data || data.length < 1000 || rows.length >= 20_000) break;
   }
 
@@ -171,6 +186,7 @@ export async function loadTrafficAnalytics(days = 30) {
   };
   return {
     available: true,
+    postMetrics: aggregatePostTraffic(currentRows),
     days,
     since,
     sessions: sessions.size,
@@ -202,6 +218,7 @@ export async function loadTrafficAnalytics(days = 30) {
 function emptyTraffic(days: number) {
   return {
     available: false,
+    postMetrics: {} as ReturnType<typeof aggregatePostTraffic>,
     days,
     since: new Date().toISOString(),
     sessions: 0,

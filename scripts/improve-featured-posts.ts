@@ -1,0 +1,246 @@
+import fs from "node:fs";
+import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import { createClient } from "@supabase/supabase-js";
+import { FEATURED_POSTS } from "../src/lib/featured-posts";
+
+const keys = JSON.parse(
+  execFileSync(
+    "npx",
+    [
+      "supabase",
+      "projects",
+      "api-keys",
+      "--project-ref",
+      fs.readFileSync("supabase/.temp/project-ref", "utf8").trim(),
+      "--output",
+      "json",
+    ],
+    { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+  ),
+);
+const db = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  keys.find((k: { name: string }) => k.name === "service_role").api_key,
+  { auth: { persistSession: false } },
+);
+const slugs = Object.keys(FEATURED_POSTS);
+const res = await db.from("posts").select("*").in("slug", slugs);
+if (res.error) throw res.error;
+if (res.data.length !== 5) throw new Error("Five source posts required");
+const ir = await db
+  .from("post_images")
+  .select("*")
+  .in(
+    "post_id",
+    res.data.map((x) => x.id),
+  )
+  .order("sort_order");
+if (ir.error) throw ir.error;
+const related = await db
+  .from("posts")
+  .select("slug,title,published_at")
+  .eq("published", true)
+  .lte("published_at", new Date().toISOString())
+  .order("published_at", { ascending: false })
+  .limit(1000);
+if (related.error) throw related.error;
+const before = { posts: res.data, images: ir.data };
+const apply = process.argv.includes("--apply");
+const backup = "/tmp/nomorenusu-featured-posts-before-apply.json";
+if (!apply) fs.writeFileSync(backup, JSON.stringify(before, null, 2));
+if (apply && !fs.existsSync(backup)) throw new Error("Review the dry-run first");
+const templates: Record<
+  string,
+  { title: string; excerpt: string; body: (images: any[]) => string; tags: string[] }
+> = {
+  "munjeong-apartment-hot-water-pipe-leak-guide": {
+    title: "문정동 온수배관 누수, 아랫집 천장 물자국 원인",
+    excerpt:
+      "문정동에서 온수를 쓸 때 천장이 젖는 경우와 사용하지 않아도 젖는 경우를 구분합니다. 확인 순서, 배관·방수·배수 비교, 견적 범위와 상담 준비사항을 안내합니다.",
+    tags: ["온수배관", "천장"],
+    body: (im) =>
+      `## 온수를 쓸 때만 젖나요, 사용하지 않아도 젖나요?\n\n천장 물자국만으로 바로 온수배관 누수를 확정할 수는 없습니다. **온수 사용, 샤워·배수, 난방 운전, 비가 온 시각**을 구분하면 어떤 계통을 먼저 확인할지 정하는 데 도움이 됩니다. 이 글의 사진은 점검을 설명하는 참고 자료이며 문정동의 특정 시공 결과를 뜻하지 않습니다.\n\n| 관찰한 조건 | 먼저 비교할 범위 |\n| --- | --- |\n| 온수 사용 뒤 물기가 커짐 | 온수관과 수전 연결부, 같은 시간 사용한 배수 |\n| 샤워·바닥 물 사용 뒤 커짐 | 배수구 연결부, 배수관과 욕실 방수 경계 |\n| 물을 쓰지 않아도 계속 젖음 | 급수관·난방 회로·공용관의 연관성 |\n| 비가 온 뒤에만 번짐 | 외벽·창호·옥상 등 외부 유입 |\n\n보일러 압력 저하는 생활 온수관과 별개인 난방 계통에서도 생깁니다. 압력이 떨어진다는 이유만으로 온수관 공사를 결정하지 않습니다.\n\n[[post-image:${im[0].id}]]\n\n## 물자국을 기록하는 순서\n\n1. 천장 전체에서 얼룩 위치가 보이도록 촬영합니다.\n2. 가장 짙은 부분과 젖은 경계를 가까이 남깁니다.\n3. 처음 발견한 시각과 직전에 사용한 설비를 메모합니다.\n4. 이미 생긴 변화만 비교합니다. 피해를 재현하려고 일부러 물을 오래 쓰지 않습니다.\n\n천장에 보이는 위치와 손상 배관이 있는 위치는 다를 수 있습니다. 물은 구조체와 배관 주변을 따라 이동하므로 얼룩 바로 위만 뜯는 방식은 피해야 합니다.\n\n[[post-image:${im[1].id}]]\n\n## 방문 점검에서는 무엇을 확인하나요?\n\n현장 조건에 따라 급수·온수·난방·배수를 나눠 확인하고, 계량기 변화와 압력 반응, 수분 분포를 서로 대조합니다. 열화상이나 청음 결과 한 가지만으로 보수 지점을 확정하지 않습니다.\n\n위층과 아래층의 접근이 필요한지, 물 사용 중단 협조가 필요한지도 먼저 협의합니다. 천장 조명이나 콘센트가 젖었다면 해당 공간을 사용하지 말고 전기 안전 확인을 함께 요청하세요.\n\n[[post-image:${im[2].id}]]\n\n## 견적에서 나눠 확인할 세 가지\n\n- **점검·탐지:** 어떤 계통과 구간까지 확인하는지\n- **배관·접합부 보수:** 확인된 손상 위치와 자재, 접근·철거 범위\n- **건조·마감 복구:** 천장·벽지·바닥 중 어디까지 포함되는지\n\n보험을 이용하려면 작업 전에 가입 보험사에 필요한 자료를 확인하고 실제 사진과 작업 내역을 보관하세요. 보장 여부나 지급액은 이 안내로 확정할 수 없습니다.\n\n## 자주 묻는 질문\n\n### 물자국이 보이면 바로 바닥을 열어야 하나요?\n먼저 발생 조건과 원인 계통을 확인합니다. 필요한 경우에만 보수 위치와 개방 범위를 협의합니다.\n\n### 보수했는데 얼룩이 남으면 재누수인가요?\n잔류 수분과 새 유입을 구분해야 합니다. 보수 전후 사진과 젖은 경계, 관련 물 사용 뒤의 변화를 비교하세요.`,
+  },
+  "ssangmun-villa-toilet-leak-guide": {
+    title: "쌍문동 변기 누수, 바닥이 젖는 시점으로 원인 구분",
+    excerpt:
+      "쌍문동 변기 주변 물기를 급수호스·물탱크·배수 접합부·결로로 나눠 확인합니다. 사용 전후 관찰 순서와 재설치 여부를 판단할 기준을 정리했습니다.",
+    tags: ["변기"],
+    body: (im) =>
+      `## 가만히 있어도 젖나요, 물을 내린 뒤에만 젖나요?\n\n변기 주변 바닥이 젖었다고 해서 변기를 통째로 교체해야 하는 것은 아닙니다. **급수, 물탱크, 물내림과 배수 접합부** 가운데 언제 물기가 생기는지부터 구분합니다. 아래 사진은 점검 참고 자료로, 쌍문동의 특정 현장 작업 결과를 의미하지 않습니다.\n\n| 물기가 생기는 시점 | 확인할 부분 |\n| --- | --- |\n| 사용하지 않아도 계속 젖음 | 급수밸브, 급수호스, 물탱크 연결부 |\n| 물을 내린 직후 바닥 틈에서 나옴 | 배수 접합부와 설치 상태 |\n| 물탱크가 채워질 때 뒤쪽이 젖음 | 급수 연결부와 탱크 고정부 |\n| 차가운 표면 전체에 고르게 맺힘 | 표면 결로와 주변 습도 조건 |\n\n청소한 물이 남아 있는 경우도 있으므로 처음 상태를 기록하고 물기의 시작점을 확인합니다.\n\n[[post-image:${im[0].id}]]\n\n## 집에서 확인할 수 있는 범위\n\n1. 바닥의 기존 물기를 닦고 시각을 기록합니다.\n2. 사용하지 않을 때 새 물기가 생기는지 관찰합니다.\n3. 이미 물을 내렸을 때 나타난 반응을 기록합니다. 반복 시험으로 아래층 피해를 키우지 않습니다.\n4. 변기 뒤 호스·밸브와 바닥 경계를 각각 촬영합니다.\n\n도기를 분리하거나 고정 볼트를 과도하게 조이지 마세요. 바닥 틈을 실리콘으로 덮으면 원인은 남은 채 물이 다른 방향으로 이동할 수 있습니다.\n\n[[post-image:${im[1].id}]]\n\n## 부품 교체와 변기 재설치는 어떻게 나누나요?\n\n급수호스나 밸브에서 원인이 확인되면 해당 부품의 상태와 호환 규격을 확인합니다. 배수 접합부가 문제라면 도기 분리 후 접합 상태·고정·손상 여부를 점검할 수 있습니다. 외관 사진만으로 정심 불량이나 도기 균열을 확정하지 않습니다.\n\n견적에는 부품, 분리·재설치, 바닥 마감, 폐기물 처리와 재확인 범위가 어디까지 포함되는지 적어 두는 것이 좋습니다.\n\n[[post-image:${im[2].id}]]\n\n## 아래층에도 물자국이 생겼다면\n\n우리 집 물내림 시각과 아래층 변화를 함께 기록하고 관리 주체와 점검 접근을 협의하세요. 변기 주변에서 물이 보인다는 이유만으로 아래층 피해의 원인과 책임을 단정하지 않습니다.\n\n## 자주 묻는 질문\n\n### 변기 아래 실리콘만 새로 하면 해결되나요?\n실리콘은 보이는 물길을 가릴 수 있습니다. 급수와 배수 중 어디서 새는지 확인한 뒤 필요한 보수 방법을 정해야 합니다.\n\n### 바닥은 마른데 물 흐르는 소리가 나요.\n물탱크 내부로 물이 계속 흐르는지 확인하세요. 바닥에 흔적이 없어도 사용량이 늘 수 있습니다.`,
+  },
+  "bulgwang-house-water-meter-leak-guide": {
+    title: "불광동 수도계량기 누수, 계량기가 계속 도는 원인",
+    excerpt:
+      "불광동에서 물을 쓰지 않아도 계량기가 움직일 때, 자동 급수와 직수관 누수를 나누는 순서를 안내합니다. 계량기 사진·검침 자료·밸브 반응을 함께 확인합니다.",
+    tags: ["수도계량기", "직수관"],
+    body: (im) =>
+      `## 모든 물 사용을 멈췄는데도 계량기가 움직이나요?\n\n수전을 잠갔다는 사실과 집 안의 모든 물 사용이 중단됐다는 것은 다릅니다. 변기 충수, 정수기, 세탁기, 보일러 보충수 같은 사용처를 먼저 확인합니다. 아래 사진은 계량기 관찰을 설명하는 참고 자료이며 특정 주택의 누수 위치를 증명하지 않습니다.\n\n| 확인 반응 | 해석할 때 주의할 점 |\n| --- | --- |\n| 기기를 멈추자 계량기도 멈춤 | 해당 설비의 정상 사용인지 내부 누수인지 확인 |\n| 사용이 없는데 일정 방향으로 계속 움직임 | 계량기 이후 급수 계통의 누수 가능성 점검 |\n| 잠깐 흔들렸다가 돌아옴 | 압력 변동도 있어 순간 움직임만으로 확정 금지 |\n| 고지서만 갑자기 증가 | 검침 기간·사용량·계량기 번호부터 비교 |\n\n[[post-image:${im[0].id}]]\n\n## 계량기를 비교할 때 남길 자료\n\n1. 우리 세대의 계량기가 맞는지 번호와 관리 자료를 대조합니다.\n2. 물 사용을 멈춘 시각, 계량기 숫자와 별침을 촬영합니다.\n3. 5분 뒤 같은 각도에서 다시 촬영해 반응을 비교합니다.\n4. 변기·가전의 자동 급수가 있었는지 함께 메모합니다.\n\n계량기함 공용 밸브와 봉인은 조작하지 않습니다. 오래돼 잘 돌아가지 않는 밸브도 억지로 돌리지 마세요.\n\n[[post-image:${im[1].id}]]\n\n## 계량기함 물기와 지중관 손상은 다른 문제입니다\n\n계량기함이 젖어 있어도 빗물·결로·밸브 접합부를 나눠 확인해야 합니다. 반대로 계량기함이 말라 있어도 매립 급수관이나 눈에 보이지 않는 설비의 물 사용은 남아 있을 수 있습니다.\n\n현장에서는 차단 가능한 구간과 설비를 나눠 반응을 확인하고 필요하면 압력 검사와 수분 분포를 함께 비교합니다. 물이 젖은 위치만 보고 곧바로 마당이나 바닥을 굴착하지 않습니다.\n\n[[post-image:${im[2].id}]]\n\n## 점검·보수·복구 비용을 나눠 물어보세요\n\n계량기함 연결부 보수와 지중·매립관 보수는 작업 범위가 다릅니다. 탐지 검사, 굴착·배관 자재, 마감 복구가 견적에 어디까지 포함되는지 확인하세요.\n\n수도요금 감면이나 보험 관련 절차는 관할 수도사업소·가입 보험사에 확인하고 실제 검침 자료와 수리 내역을 준비합니다. 이 글은 감면이나 보상을 보장하지 않습니다.\n\n## 자주 묻는 질문\n\n### 계량기가 멈추면 누수가 전혀 없나요?\n그 시점의 급수 사용이 없다는 단서입니다. 간헐적인 사용이나 배수·방수 문제까지 모두 배제하는 검사는 아닙니다.\n\n### 누수 위치를 사진만 보고 알 수 있나요?\n사진은 점검 순서를 정하는 자료입니다. 손상 위치와 보수 범위는 현장 반응을 함께 확인해야 합니다.`,
+  },
+  "gwangjin-heating-case-2026": {
+    title: "광진구 난방배관청소, 방마다 온도가 다를 때 점검 순서",
+    excerpt:
+      "광진구에서 난방이 고르지 않을 때 밸브·공기·순환·배관 내부 상태를 구분합니다. 청소가 필요한지, 누수 점검이 먼저인지 판단할 자료와 작업 범위를 안내합니다.",
+    tags: ["난방배관", "분배기", "보일러"],
+    body: (im) =>
+      `## 방마다 온도가 다르면 바로 배관 청소를 해야 하나요?\n\n난방이 약한 원인은 밸브 상태, 회로 안 공기, 순환 문제, 기기 이상, 배관 내부 상태 등으로 나뉩니다. **압력 저하와 물기까지 있다면 청소보다 누수 원인 확인이 먼저**일 수 있습니다. 이 안내는 기존 게시글을 점검 가이드로 보완한 것이며 공개되지 않은 측정 수치나 절감률을 새로 제시하지 않습니다.\n\n| 증상 | 먼저 확인할 방향 |\n| --- | --- |\n| 한 방만 유난히 차가움 | 해당 회로 밸브·공기·유량의 차이 |\n| 전체 난방이 약함 | 보일러 운전 조건과 순환 계통 |\n| 압력이 계속 떨어지고 물기도 있음 | 보일러 연결부와 난방 회로 누수 |\n| 배출수가 탁함 | 배관 상태를 살필 자료이지만 색만으로 청소 범위 확정 금지 |\n\n[[post-image:${im[0].id}]]\n\n## 상담 전에 준비할 기록\n\n- 같은 운전 조건에서 어느 방이 따뜻하고 차가운지\n- 보일러 모델과 오류 코드, 운전 전후 압력 변화\n- 분배기 밸브 위치와 연결부 물기\n- 최근 보충수·수리·청소 시점\n\n가스 부품이나 뜨거운 연결부를 직접 분해하지 마세요. 밸브를 표시 없이 바꾸면 원래 조건을 비교하기 어려워집니다.\n\n[[post-image:${im[1].id}]]\n\n## 청소와 연결부 보수는 구분합니다\n\n점검 결과에 따라 청소가 필요한 회로와 접근 방법을 협의합니다. 노후 연결부가 새거나 부식돼 있다면 청소와 별도로 부품·배관 보수 필요성을 확인해야 합니다. 높은 압력을 임의로 가해 청소 범위를 넓히는 방식은 피합니다.\n\n[[post-image:${im[2].id}]]\n\n## 작업 전후 무엇을 비교해야 하나요?\n\n같은 난방 설정에서 방별 반응, 분배기 연결부의 물기, 기종별 운전 상태를 비교합니다. 배출수 색만으로 모든 회로가 정상화됐다고 판단하지 않습니다. 건물 단열과 기온, 사용 습관이 다르므로 난방비 절감액을 일률적으로 약속할 수 없습니다.\n\n[[post-image:${im[3].id}]]\n\n## 견적에서 확인할 항목\n\n점검 범위, 청소할 회로, 연결부 교체 여부, 작업 후 재확인과 A/S 조건을 구분해 안내받으세요. 기존의 모든 부품을 바꾸는지, 손상 부품만 보수하는지도 확인합니다.\n\n## 자주 묻는 질문\n\n### 압력이 떨어지는데 청소부터 해도 되나요?\n누수나 보일러 내부 문제를 먼저 구분해야 합니다. 물을 보충하기만 하거나 청소만으로 해결된다고 단정하지 않습니다.\n\n### 청소 후 물이 맑으면 작업이 끝난 건가요?\n배출수 외에 회로 흐름과 연결부, 운전 상태를 함께 확인하고 실제 완료 기준을 설명받아야 합니다.`,
+  },
+  "20260925-september-078": {
+    title: "심곡본동 누수탐지, 배수 중 물샘과 역류 구분",
+    excerpt:
+      "심곡본동에서 물을 흘려보낼 때 바닥이나 아래층이 젖는다면 막힘·배수 접합부·매립관을 구분해야 합니다. 관찰 순서와 공용·전용 구간, 보수 범위를 안내합니다.",
+    tags: ["배수관", "싱크대", "세탁실"],
+    body: (im) =>
+      `## 배수할 때만 물이 새나요, 배수구에서 역류하나요?\n\n배수 중 물이 보이는 현상은 막혀서 넘친 물과 관 접합부에서 새는 물을 구분해야 합니다. 막힘을 해결한 뒤에도 아래층이 계속 젖는다면 관 손상이나 잔류 수분이 남아 있는지 다시 확인합니다. 사진은 점검 참고 자료이며 심곡본동의 특정 현장 기록을 뜻하지 않습니다.\n\n| 관찰한 반응 | 우선 확인할 범위 |\n| --- | --- |\n| 배수구 위로 물이 올라옴 | 막힘과 통수 상태 |\n| 싱크대·세면대 아래 이음부가 젖음 | 트랩·호스·벽체 배수 연결부 |\n| 바닥은 마른데 아래층 천장이 젖음 | 매립 배수관과 바닥 방수 경계 |\n| 여러 세대 사용 때 공용 벽이 젖음 | 공용 수직관과 세대 분기점 |\n\n[[post-image:${im[1].id}]]\n\n## 점검을 위해 무리하게 물을 더 붓지 마세요\n\n1. 어느 설비를 사용할 때 발생했는지 기록합니다.\n2. 물이 처음 나온 지점과 전체 위치를 촬영합니다.\n3. 같은 시간 다른 배수구도 느렸는지 메모합니다.\n4. 아래층이나 공용 공간 피해가 있다면 관리 주체에 알립니다.\n\n배수 약품을 섞거나 물을 반복해 흘려 재현하면 피해가 커질 수 있습니다. 전기 설비가 젖었다면 해당 공간 사용을 멈추고 안전 확인을 요청하세요.\n\n[[post-image:${im[2].id}]]\n\n## 전용 배관과 공용 배관을 어떻게 구분하나요?\n\n싱크대·세면대에서 수직관으로 이어지는 가지관과 여러 세대가 함께 쓰는 수직관은 접근 방법이 다릅니다. 도면과 점검구, 상하층 사용 시간을 대조해 원인 범위를 좁힙니다. 관이 보이는 위치만으로 관리 책임과 비용 부담을 확정하지 않습니다.\n\n## 철거 전에 확인할 판단 근거\n\n막힘 해소가 필요한지, 접합부 보수인지, 관 자체 손상인지 설명을 먼저 듣습니다. 점검구로 접근 가능한 구간과 벽·바닥 개방이 필요한 구간을 나누고 추가 작업이 생기면 사전에 협의합니다.\n\n[[post-image:${im[3].id}]]\n\n## 견적과 완료 확인\n\n통수·세척, 파손 구간 보수, 철거·폐기물, 건조·마감 복구를 구분해 범위를 확인하세요. 작업 후 배수 흐름이 회복됐는지와 연결부 물샘이 남는지는 따로 검사해야 합니다.\n\n## 자주 묻는 질문\n\n### 배수가 느리면 반드시 관이 깨진 건가요?\n이물질과 연결 상태 등 다른 원인도 있습니다. 막힘 위치와 관 상태를 확인한 뒤 필요한 작업을 정합니다.\n\n### 아래층 얼룩만 보고 우리 집을 뜯어야 하나요?\n위층 사용 조건과 배관 경로를 먼저 비교합니다. 아래층의 젖은 위치와 실제 손상 지점이 다를 수 있습니다.`,
+  },
+};
+
+const photoDescriptions = [
+  [
+    "바닥 마감이 개방된 상태",
+    "개방 작업은 점검 결과에 따라 필요한 범위만 협의합니다. 이 사진만으로 배관 손상 위치를 확정할 수 없습니다.",
+  ],
+  [
+    "싱크대 하부를 살피는 장면",
+    "하부장 안의 급수와 배수 경로를 나눠 살핍니다. 사진만으로 어느 연결부에서 물이 샜는지 확정하지 않습니다.",
+  ],
+  [
+    "노출된 배관과 바닥 주변 상태",
+    "접합부·배관 경로와 바닥 흔적을 함께 살필 때 참고하는 사진입니다.",
+  ],
+  [
+    "바닥 아래 배관 주변의 개방 상태",
+    "관 접근이 필요한 경우 철거 범위와 복구 항목을 작업 전에 안내받아야 합니다.",
+  ],
+  [
+    "계량기함 안의 수도계량기",
+    "계량기 번호와 별침 위치를 같은 각도에서 기록하는 방법을 참고하세요. 정지 사진 한 장은 누수 판정 자료가 아닙니다.",
+  ],
+  [
+    "밸브와 연결된 수도계량기",
+    "계량기 전후 연결부와 밸브를 구분하는 참고 사진입니다. 공용 밸브나 봉인을 임의로 조작하지 않습니다.",
+  ],
+  [
+    "수도계량기 표시부",
+    "현재 지침과 관찰 시간을 함께 남기고 일정 시간 뒤 같은 각도로 비교합니다. 이 사진의 숫자를 현장 측정값으로 제시하지 않습니다.",
+  ],
+  [
+    "용기에 담긴 배관 배출수",
+    "색과 이물질은 참고 자료입니다. 배출수 색만으로 세척 범위와 난방 개선 정도를 확정하지 않습니다.",
+  ],
+  [
+    "난방 배관과 연결 장비",
+    "작업 접근과 연결 상태를 설명하는 자료입니다. 실제 회로와 자재 상태에 따라 방법이 달라집니다.",
+  ],
+  [
+    "호스가 연결된 배관 주변",
+    "청소와 접합부 보수는 목적이 다릅니다. 연결부의 손상 여부는 따로 확인해야 합니다.",
+  ],
+  [
+    "여러 회로가 연결된 난방 분배기",
+    "방별 회로와 밸브를 구분할 때 참고합니다. 압력 수치나 회로별 개선 결과를 이 사진만으로 판단하지 않습니다.",
+  ],
+  [
+    "천장 점검구 안의 배관 연결부",
+    "배관 경로를 확인하는 참고 사진입니다. 연결부가 보인다는 사실만으로 그곳이 누수 원인인 것은 아닙니다.",
+  ],
+  [
+    "점검구 주변 천장 내부 상태",
+    "표면과 내부 흔적을 함께 확인할 때 참고합니다. 실제 유입 지점은 별도 점검으로 구분합니다.",
+  ],
+  [
+    "천장과 벽 경계의 물자국",
+    "전체 위치와 가장 짙은 젖은 경계를 함께 기록하세요. 물자국과 손상 배관의 위치는 다를 수 있습니다.",
+  ],
+  [
+    "변기 배수 연결용 부품",
+    "배수 접합부를 설명하는 참고 사진입니다. 이 부품 사진이 해당 세대의 손상 원인을 증명하지는 않습니다.",
+  ],
+  [
+    "변기와 뒤쪽 급수 공간",
+    "급수호스·밸브와 바닥 경계를 따로 확인하는 데 참고합니다. 외관만으로 도기 교체 필요성을 판단하지 않습니다.",
+  ],
+  [
+    "욕실 출입구와 인접 바닥",
+    "물의 이동 범위와 바닥 경계를 기록하는 참고 사진입니다. 욕실 밖 물기가 곧 변기 누수를 뜻하지는 않습니다.",
+  ],
+];
+const indices = JSON.parse(fs.readFileSync("/tmp/nomorenusu-photo-indices.json", "utf8")) as {
+  index: number;
+  id: string;
+  slug: string;
+}[];
+const plans = res.data.map((p) => {
+  const template = templates[p.slug];
+  const images = ir.data.filter((x) => x.post_id === p.id);
+  const links = related.data
+    .filter((x) => !slugs.includes(x.slug) && template.tags.some((tag) => x.title.includes(tag)))
+    .slice(0, 3);
+  if (links.length < 2) throw new Error("Related public articles required");
+  const content = `<!-- content-type:symptom_solution -->\n<!-- improvement:featured-20261106 -->\n\n${template.body(images)}\n\n## 관련된 최신 공개 점검 글\n\n${links.map((x, i) => `- [${template.tags.find((tag) => x.title.includes(tag))} 관련 점검 안내 ${i + 1}](/posts/${x.slug})`).join("\n")}\n\n## 사진과 증상으로 상담하기\n\n${FEATURED_POSTS[p.slug].region}의 건물 형태, 처음 발견한 시각, 물기 전체·가까운 사진을 알려주세요. 노모어누수는 **서울·경기·인천 전 지역 출장 상담**이 가능합니다.\n\n- [전화 010-5700-4026](tel:01057004026)\n- [사진과 증상으로 온라인 상담 신청](/#quote-form)\n- [누수 상담 전 자주 묻는 질문](/faq)`;
+  if (/젖음이|누수으로|벽체과|나타남이|유레카|최태환/.test(content))
+    throw new Error("Editorial validation failed");
+  return { id: p.id, slug: p.slug, title: template.title, excerpt: template.excerpt, content };
+});
+const imagePlans = ir.data.map((im) => {
+  const index = indices.find((x) => x.id === im.id)?.index;
+  if (index === undefined) throw new Error("Unreviewed image");
+  const [alt_text, explanation] = photoDescriptions[index];
+  return {
+    id: im.id,
+    post_id: im.post_id,
+    alt_text,
+    caption: `점검 설명을 위한 참고 사진입니다. ${explanation}`,
+    work_stage: "점검 참고",
+  };
+});
+const manifest = { posts: plans, images: imagePlans };
+const checksum = createHash("sha256").update(JSON.stringify(manifest)).digest("hex");
+console.log(
+  JSON.stringify(
+    {
+      mode: apply ? "apply" : "dry-run",
+      checksum,
+      posts: plans.map((x) => ({ slug: x.slug, title: x.title, characters: x.content.length })),
+      images: imagePlans.length,
+    },
+    null,
+    2,
+  ),
+);
+if (!apply) {
+  fs.writeFileSync(
+    "/tmp/nomorenusu-featured-posts-improvements.json",
+    JSON.stringify(manifest, null, 2),
+  );
+} else {
+  const reviewed = JSON.parse(
+    fs.readFileSync("/tmp/nomorenusu-featured-posts-improvements.json", "utf8"),
+  );
+  if (
+    createHash("sha256").update(JSON.stringify(reviewed)).digest("hex") !==
+    process.env.FEATURED_MANIFEST_SHA256
+  )
+    throw new Error("Reviewed manifest hash mismatch");
+  for (const p of reviewed.posts) {
+    const { id, slug, ...patch } = p;
+    const r = await db
+      .from("posts")
+      .update(patch)
+      .eq("id", id)
+      .eq("slug", slug)
+      .eq("published", true)
+      .lte("published_at", new Date().toISOString())
+      .select("id");
+    if (r.error || r.data?.length !== 1) throw new Error("Post save failed: " + slug);
+  }
+  for (const im of reviewed.images) {
+    const { id, post_id, ...patch } = im;
+    const r = await db.from("post_images").update(patch).eq("id", id).eq("post_id", post_id);
+    if (r.error) throw r.error;
+  }
+  console.log(
+    "Updated five published posts and 17 reviewed photo descriptions. Publication dates and URLs preserved.",
+  );
+}

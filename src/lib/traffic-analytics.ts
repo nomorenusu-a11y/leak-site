@@ -10,6 +10,7 @@ export type Acquisition = {
 const SESSION_KEY = "nomorenusu_analytics_session";
 const ACQUISITION_KEY = "nomorenusu_analytics_acquisition";
 const LAST_PAGE_KEY = "nomorenusu_analytics_last_page";
+const LAST_POST_KEY = "nomorenusu_analytics_last_post";
 
 function clean(value: string | null, limit: number) {
   const result = value?.trim().slice(0, limit);
@@ -106,6 +107,10 @@ function cleanMetadata(metadata: Record<string, unknown>) {
 
 export function recordTrafficEvent(eventName: string, metadata: Record<string, unknown> = {}) {
   if (typeof window === "undefined" || window.location.pathname.startsWith("/admin")) return;
+  const currentPost = window.location.pathname.match(/^\/posts\/([^/]+)$/)?.[1];
+  if (currentPost) sessionStorage.setItem(LAST_POST_KEY, currentPost);
+  const slug = currentPost || sessionStorage.getItem(LAST_POST_KEY);
+  const test = new URLSearchParams(window.location.search).get("analytics_test") === "1";
   const acquisition = getAcquisition();
   void fetch("/api/analytics/event", {
     method: "POST",
@@ -117,7 +122,11 @@ export function recordTrafficEvent(eventName: string, metadata: Record<string, u
       path: `${window.location.pathname}${window.location.search}`.slice(0, 500),
       acquisition,
       deviceCategory: deviceCategory(),
-      metadata: cleanMetadata(metadata),
+      metadata: cleanMetadata({
+        ...(slug ? { slug } : {}),
+        ...metadata,
+        ...(test ? { test: true } : {}),
+      }),
     }),
   }).catch(() => undefined);
 }

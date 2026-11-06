@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-11-06T13:06:39.971Z",
+  "pages": [
+    {
+      "path": "/admin/search-visibility",
+      "status": 200,
+      "tracking": true,
+      "staleLabel": true,
+      "containsOldBrand": false
+    },
+    {
+      "path": "/admin/search-visibility?postMode=scheduled",
+      "status": 200,
+      "tracking": true,
+      "staleLabel": true,
+      "containsOldBrand": false
+    }
+  ],
+  "refresh": {
+    "status": 200,
+    "ok": true,
+    "cached": false,
+    "checkedAt": "2026-11-06T13:06:39.170Z",
+    "visibleCount": 6,
+    "errorCount": 0,
+    "pagesChecked": 6,
+    "searchChecked": 3
+  }
+}

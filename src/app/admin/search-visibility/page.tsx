@@ -21,6 +21,8 @@ import {
   type NaverSearchVisibilityState,
 } from "@/lib/naver-search-visibility";
 import { getSiteContent } from "@/lib/site-content";
+import { loadTrackedPosts, loadPostTracking } from "@/lib/admin-post-tracking";
+import { PostTrackingTable } from "@/components/admin/PostTrackingTable";
 
 export const dynamic = "force-dynamic";
 
@@ -36,14 +38,23 @@ function formatCheckedAt(value: string | null) {
   }).format(new Date(value));
 }
 
-export default async function SearchVisibilityPage() {
+export default async function SearchVisibilityPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ postPage?: string; postMode?: string }>;
+}) {
   await assertAdmin();
-  const [saved, traffic] = await Promise.all([
+  const [saved, traffic, posts, tracking, searchParamsValue] = await Promise.all([
     getSiteContent<NaverSearchVisibilityState | null>(NAVER_SEARCH_VISIBILITY_KEY, null),
     loadTrafficAnalytics(30),
+    loadTrackedPosts(),
+    loadPostTracking(),
+    searchParams,
   ]);
   const state = mergeNaverSearchVisibility(saved);
   const { officialReport, publicSearch } = state;
+  const officialStale =
+    !officialReport.updatedAt || Date.now() - Date.parse(officialReport.updatedAt) > 14 * 86400000;
   const visibleCount = publicSearch.checks.filter((item) => item.visible).length;
   const errorCount = publicSearch.checks.filter((item) => item.error).length;
   const rows = publicSearch.checks.length
@@ -216,6 +227,14 @@ export default async function SearchVisibilityPage() {
         />
       </section>
 
+      <PostTrackingTable
+        posts={posts}
+        state={tracking}
+        metrics={traffic.postMetrics}
+        page={Number(searchParamsValue.postPage || 1)}
+        mode={searchParamsValue.postMode === "scheduled" ? "scheduled" : "public"}
+      />
+
       <section className="mt-7 overflow-hidden rounded-3xl border border-blue-300/15 bg-gradient-to-br from-blue-400/[0.1] via-[#0d121d] to-[#0d121d]">
         <div className="flex flex-wrap items-start justify-between gap-4 border-b border-white/[0.08] px-5 py-5 sm:px-7">
           <div>
@@ -223,7 +242,16 @@ export default async function SearchVisibilityPage() {
               <TrendingUp size={18} />
               <p className="text-xs font-bold tracking-[0.14em] uppercase">Naver official report</p>
             </div>
-            <h2 className="mt-2 text-2xl font-black text-white">네이버 공식 검색 성과</h2>
+            <h2 className="mt-2 text-2xl font-black text-white">
+              {officialStale ? "네이버 공식 검색 성과 · 과거 보관자료" : "네이버 공식 검색 성과"}
+            </h2>
+            {officialStale ? (
+              <p className="mt-3 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm leading-6 font-bold text-amber-200">
+                최신 공식 자료가 아닙니다. 아래 숫자로 현재 실적을 판단하지 마세요. 위 업데이트
+                버튼은 방문 통계와 공개 글 검사를 갱신하며, 네이버 공식 노출·클릭 자료를 가져오지는
+                않습니다.
+              </p>
+            ) : null}
             <p className="mt-2 text-sm leading-6 text-slate-400">
               서치어드바이저에서 마지막으로 확인한 {officialReport.updatedAt} 집계입니다.
             </p>
@@ -279,9 +307,9 @@ export default async function SearchVisibilityPage() {
       <details className="group mt-7 overflow-hidden rounded-2xl border border-white/[0.09] bg-[#0d121d]">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-5 sm:px-7">
           <div>
-            <h2 className="font-black text-white">현재 네이버 검색 결과 상세 확인</h2>
+            <h2 className="font-black text-white">기존 검색어 표본 기록</h2>
             <p className="mt-1 text-xs leading-5 text-slate-500">
-              마지막 확인 {formatCheckedAt(publicSearch.checkedAt)} · 첫 화면 {visibleCount}개 ·
+              마지막 확인 {formatCheckedAt(publicSearch.checkedAt)} · 링크 확인 {visibleCount}개 ·
               오류 {errorCount}개
             </p>
           </div>
@@ -336,9 +364,33 @@ export default async function SearchVisibilityPage() {
         </div>
       </details>
 
+      <section className="mt-7 rounded-2xl border border-white/10 bg-[#0d121d] p-5">
+        <h2 className="font-black text-white">최근 게시글 점검 이력</h2>
+        <p className="mt-2 text-xs leading-5 text-slate-500">
+          검색 결과 확인과 공식 수집·색인은 별개입니다. 오류가 나면 미노출로 바꾸지 않습니다. 예약
+          글은 공개 이후부터 점검합니다.
+        </p>
+        <ul className="mt-3 space-y-2 text-xs text-slate-400">
+          {tracking.history
+            .slice(-10)
+            .reverse()
+            .map((item, index) => (
+              <li
+                key={`${item.at}-${item.slug}-${index}`}
+                className="flex flex-wrap gap-x-3 gap-y-1 border-t border-white/5 pt-2"
+              >
+                <span>{formatCheckedAt(item.at)}</span>
+                <span className="text-slate-200">
+                  {posts.find((post) => post.slug === item.slug)?.title || item.slug}
+                </span>
+                <span>{item.result}</span>
+              </li>
+            ))}
+        </ul>
+      </section>
       <p className="mt-5 text-xs leading-5 text-slate-600">
-        방문 통계는 홈페이지에서 자동 누적됩니다. 네이버 공식 노출·클릭은 외부 API가 없어 마지막
-        공식 확인값과 공개 검색 점검을 구분해 표시합니다. 최초 기준 데이터:{" "}
+        방문 통계는 홈페이지에서 자동 누적됩니다. 네이버 공식 노출·클릭은 마지막으로 별도 확인한
+        자료이며, 공개 검색 점검과 구분해 표시합니다. 최초 기준 데이터:{" "}
         {DEFAULT_NAVER_SEARCH_VISIBILITY.officialReport.updatedAt}
       </p>
     </div>

@@ -30,6 +30,7 @@ import { siteConfig } from "@/lib/env";
 import { formatDateYMD } from "@/lib/time";
 import { splitPostContentByImages } from "@/lib/post-inline-images";
 import { getCaseStudyDraft } from "@/data/case-drafts";
+import { FEATURED_POSTS } from "@/lib/featured-posts";
 
 // 예약 발행은 관리자 작업에서 해당 글 경로를 직접 무효화한다.
 // 공개 글 전체를 60초마다 재생성하면 Vercel Data Cache 쓰기가 급증하므로 하루 단위로 유지한다.
@@ -185,6 +186,20 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
               <h1 className="mt-3 text-3xl leading-tight font-extrabold text-slate-900 sm:text-4xl">
                 {displayPost.title}
               </h1>
+              {FEATURED_POSTS[slug] ? (
+                <div className="mt-5 max-w-3xl rounded-2xl border border-cyan-200 bg-white p-5 sm:p-6">
+                  <p className="text-lg leading-8 font-black text-slate-950 sm:text-xl">
+                    {FEATURED_POSTS[slug].prompt}
+                  </p>
+                  <p className="mt-2 text-base leading-7 text-slate-600">{displayPost.excerpt}</p>
+                  <a
+                    href="#post-consultation"
+                    className="mt-4 inline-flex min-h-12 items-center rounded-xl bg-[#071d39] px-5 text-base font-bold text-white"
+                  >
+                    사진·증상으로 {FEATURED_POSTS[slug].region} 상담하기 →
+                  </a>
+                </div>
+              ) : null}
               <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
                 <p className="text-sm text-slate-600">
                   {formatDateYMD(post.published_at)}
@@ -196,6 +211,11 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
             </Container>
           </header>
           <Container className="max-w-3xl py-10">
+            <div id="post-consultation" className="scroll-mt-24">
+              {FEATURED_POSTS[slug] ? (
+                <PostCTABlock slug={post.slug} region={FEATURED_POSTS[slug].region} />
+              ) : null}
+            </div>
             {caseDraft && isStructuredCaseStudy ? (
               <>
                 <CaseStudyArticle

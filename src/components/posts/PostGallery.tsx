@@ -11,7 +11,7 @@ export function PostGallery({
   if (images.length === 0) return null;
   return (
     <section className="mt-10">
-      <h2 className="text-lg font-extrabold text-slate-900">현장 사진</h2>
+      <h2 className="text-lg font-extrabold text-slate-900">점검 사진 자료</h2>
       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {images.map((img, index) => (
           <figure
@@ -28,8 +28,10 @@ export function PostGallery({
                 className="object-cover"
               />
             </div>
-            {img.alt_text && (
-              <figcaption className="px-3 py-2 text-xs text-slate-600">{img.alt_text}</figcaption>
+            {(img.caption || img.alt_text) && (
+              <figcaption className="px-3 py-2 text-sm leading-6 text-slate-600">
+                {img.caption || img.alt_text}
+              </figcaption>
             )}
           </figure>
         ))}

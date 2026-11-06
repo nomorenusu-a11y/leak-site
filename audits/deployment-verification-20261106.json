@@ -1,0 +1,16 @@
+{
+  "version": "0a98830d-3bc1-4cdd-9a76-1ea05119004e",
+  "productionVerification": "\n> leak-site@0.1.0 verify:production\n> node scripts/verify-production.mjs\n\nProduction verification passed for https://nomorenusu.com.\n- sitemap URLs: at least 300\n- priority pages: 2\n- homepage, robots, sitemap, metadata, canonical URLs, and social images: OK\n",
+  "tests": {
+    "passed": 31,
+    "failed": 0
+  },
+  "typecheck": "passed",
+  "build": "passed",
+  "pageCacheReuse": {
+    "status": 200,
+    "cfCacheStatus": "HIT"
+  },
+  "issueObserved": "KV put() limit exceeded for the day",
+  "mitigation": "Workers Cache CDN adapter for page responses; KV data adapter and binding retained; CLI checks capped at20 by default"
+}

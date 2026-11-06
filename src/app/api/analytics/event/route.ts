@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { hit } from "@/lib/rate-limit";
+import { COOKIE_NAME, readAdminSession } from "@/lib/auth";
 
 const eventNames = [
   "page_view",
@@ -35,6 +36,14 @@ const eventSchema = z.object({
 
 export async function POST(request: Request) {
   try {
+    if (request.headers.get("cookie")?.includes(`${COOKIE_NAME}=`) && (await readAdminSession()).ok)
+      return NextResponse.json({ ok: true, ignored: "admin" }, { status: 202 });
+    if (
+      /bot|crawler|spider|Nomorenusu-Public-Page-Check/i.test(
+        request.headers.get("user-agent") || "",
+      )
+    )
+      return NextResponse.json({ ok: true, ignored: "crawler" }, { status: 202 });
     const ip =
       request.headers.get("cf-connecting-ip") ??
       request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??

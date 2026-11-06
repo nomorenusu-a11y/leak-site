@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Keep canonical/title metadata in the initial head for all crawlers and clients.
+  // Collection routes otherwise stream their metadata after </head>.
+  htmlLimitedBots: /.*/,
   // 관리자 사진 업로드의 개별 파일 제한은 5MB다. Server Action 기본 본문 한도(1MB)를
   // 그대로 두면 사진을 선택한 자동 초안 저장이 중간에 끊긴다.
   experimental: {

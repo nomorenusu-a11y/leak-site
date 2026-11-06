@@ -1,0 +1,431 @@
+{
+  "view": "actions",
+  "report": {
+    "id": "report",
+    "workflow": "report",
+    "site": "https://nomorenusu.com",
+    "generatedAt": "2026-11-06T04:20:06.243Z",
+    "summary": "Found 14 high, 0 medium, and 265 low technical issues across 100 crawled pages. Search Console and Google Analytics are not connected; provider-backed sections were skipped."
+  },
+  "findings": {
+    "schemaVersion": 1,
+    "scope": "returned-report",
+    "coverage": {
+      "state": "complete",
+      "detail": "Every finding in the declared report scope is represented."
+    },
+    "counts": {
+      "total": 6,
+      "returned": 6,
+      "fixes": 2,
+      "reviews": 4,
+      "open": 6
+    },
+    "completion": {
+      "state": "pending",
+      "instruction": "Before finishing, return one allowed outcome and reason for every open item; the outcome count must equal counts.returned. A review is a decision task, not an instruction to change the site. Do not silently drop findings."
+    },
+    "verification": {
+      "requiredAfterChanges": true,
+      "instruction": "After edits, run each changed item's verification and rerun the originating report. A code change alone does not close a finding.",
+      "reportCheck": "Rerun seo report with the same inputs and confirm the finding is absent or its evidence now matches the intended state."
+    },
+    "sourcePaths": [
+      "actions"
+    ],
+    "items": [
+      {
+        "id": "crawl:server_error",
+        "status": "open",
+        "title": "server_error: Server error (9 URLs)",
+        "confidence": "high",
+        "severity": "high",
+        "affectedCount": 9,
+        "affectedUrls": {
+          "total": 9,
+          "returned": 9,
+          "complete": true,
+          "items": [
+            "https://nomorenusu.com/posts/20261015-october-pilot-160",
+            "https://nomorenusu.com/posts/20261018-october-extension-027",
+            "https://nomorenusu.com/posts/20261025-october-extension-109",
+            "https://nomorenusu.com/posts/20261026-october-extension-115",
+            "https://nomorenusu.com/posts/20261027-october-extension-132",
+            "https://nomorenusu.com/posts/bupyeong-toilet-case-2026",
+            "https://nomorenusu.com/posts/region/dongjak",
+            "https://nomorenusu.com/posts/region/guro",
+            "https://nomorenusu.com/posts/region/mapo"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_756e5a3ba8f8440ebe15bc8da0fa5aff",
+              "ruleId": "server_error"
+            }
+          }
+        },
+        "sourcePath": "actions[0]",
+        "evidence": {
+          "ruleId": "server_error",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 5000; 9 URLs are affected; estimated effort is medium.",
+          "sampleUrls": [
+            "https://nomorenusu.com/posts/20261015-october-pilot-160",
+            "https://nomorenusu.com/posts/20261018-october-extension-027",
+            "https://nomorenusu.com/posts/20261025-october-extension-109",
+            "https://nomorenusu.com/posts/20261026-october-extension-115",
+            "https://nomorenusu.com/posts/20261027-october-extension-132",
+            "https://nomorenusu.com/posts/bupyeong-toilet-case-2026",
+            "https://nomorenusu.com/posts/region/dongjak",
+            "https://nomorenusu.com/posts/region/guro",
+            "https://nomorenusu.com/posts/region/mapo"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity high --max-pages 100",
+          "expected": "Re-run the crawl and confirm the affected URL no longer returns a 5xx status."
+        },
+        "type": "fix",
+        "fix": {
+          "instruction": "Check application logs, hosting health, upstream services, and cache/CDN rules. Return 200 when fixed, or 503 only for planned maintenance."
+        },
+        "allowedOutcomes": [
+          "fixed",
+          "deferred",
+          "not-needed"
+        ]
+      },
+      {
+        "id": "crawl:broken_internal_link",
+        "status": "open",
+        "title": "broken_internal_link: Broken internal link (5 URLs)",
+        "confidence": "high",
+        "severity": "high",
+        "affectedCount": 5,
+        "affectedUrls": {
+          "total": 5,
+          "returned": 5,
+          "complete": true,
+          "items": [
+            "https://nomorenusu.com/posts/20261015-october-pilot-160",
+            "https://nomorenusu.com/posts/20261025-october-extension-109",
+            "https://nomorenusu.com/posts/region/dongjak",
+            "https://nomorenusu.com/posts/region/guro",
+            "https://nomorenusu.com/posts/region/mapo"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_756e5a3ba8f8440ebe15bc8da0fa5aff",
+              "ruleId": "broken_internal_link"
+            }
+          }
+        },
+        "sourcePath": "actions[1]",
+        "evidence": {
+          "ruleId": "broken_internal_link",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 5000; 5 URLs are affected; estimated effort is medium.",
+          "sampleUrls": [
+            "https://nomorenusu.com/posts/20261015-october-pilot-160",
+            "https://nomorenusu.com/posts/20261025-october-extension-109",
+            "https://nomorenusu.com/posts/region/dongjak",
+            "https://nomorenusu.com/posts/region/guro",
+            "https://nomorenusu.com/posts/region/mapo"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity high --max-pages 100",
+          "expected": "Re-run the crawl and confirm the linked URL no longer returns a broken status."
+        },
+        "type": "fix",
+        "fix": {
+          "instruction": "Update every internal link to the working destination, restore the missing page, or add one direct 301 to the best replacement."
+        },
+        "allowedOutcomes": [
+          "fixed",
+          "deferred",
+          "not-needed"
+        ]
+      },
+      {
+        "id": "crawl:hsts_missing",
+        "status": "open",
+        "title": "hsts_missing: HSTS header missing (91 URLs)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 91,
+        "affectedUrls": {
+          "total": 91,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "https://nomorenusu.com/",
+            "https://nomorenusu.com/posts",
+            "https://nomorenusu.com/posts/20260914-gireum-ceiling-stain",
+            "https://nomorenusu.com/posts/20260914-munjeong-manifold-water",
+            "https://nomorenusu.com/posts/20260916-hannam-veranda-rain",
+            "https://nomorenusu.com/posts/20260918-baekseok-basin-mold",
+            "https://nomorenusu.com/posts/20260919-jeongneung-yard-water-pipe",
+            "https://nomorenusu.com/posts/20260920-september-boost-006",
+            "https://nomorenusu.com/posts/20260921-september-050",
+            "https://nomorenusu.com/posts/20260921-september-051"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_756e5a3ba8f8440ebe15bc8da0fa5aff",
+              "ruleId": "hsts_missing"
+            }
+          }
+        },
+        "sourcePath": "actions[2]",
+        "evidence": {
+          "ruleId": "hsts_missing",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://nomorenusu.com/",
+            "https://nomorenusu.com/posts",
+            "https://nomorenusu.com/posts/20260914-gireum-ceiling-stain",
+            "https://nomorenusu.com/posts/20260914-munjeong-manifold-water",
+            "https://nomorenusu.com/posts/20260916-hannam-veranda-rain",
+            "https://nomorenusu.com/posts/20260918-baekseok-basin-mold",
+            "https://nomorenusu.com/posts/20260919-jeongneung-yard-water-pipe",
+            "https://nomorenusu.com/posts/20260920-september-boost-006",
+            "https://nomorenusu.com/posts/20260921-september-050",
+            "https://nomorenusu.com/posts/20260921-september-051"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and confirm hasHsts is true for HTTPS pages."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"hsts_missing: HSTS header missing (91 URLs)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Send a Strict-Transport-Security header with a suitable max-age once the whole site is stable on HTTPS.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:slow_response",
+        "status": "open",
+        "title": "slow_response: Slow response in this crawl (90 URLs)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 90,
+        "affectedUrls": {
+          "total": 90,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "https://nomorenusu.com/",
+            "https://nomorenusu.com/posts",
+            "https://nomorenusu.com/posts/20260914-gireum-ceiling-stain",
+            "https://nomorenusu.com/posts/20260914-munjeong-manifold-water",
+            "https://nomorenusu.com/posts/20260916-hannam-veranda-rain",
+            "https://nomorenusu.com/posts/20260918-baekseok-basin-mold",
+            "https://nomorenusu.com/posts/20260919-jeongneung-yard-water-pipe",
+            "https://nomorenusu.com/posts/20260920-september-boost-006",
+            "https://nomorenusu.com/posts/20260921-september-050",
+            "https://nomorenusu.com/posts/20260921-september-051"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_756e5a3ba8f8440ebe15bc8da0fa5aff",
+              "ruleId": "slow_response"
+            }
+          }
+        },
+        "sourcePath": "actions[3]",
+        "evidence": {
+          "ruleId": "slow_response",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://nomorenusu.com/",
+            "https://nomorenusu.com/posts",
+            "https://nomorenusu.com/posts/20260914-gireum-ceiling-stain",
+            "https://nomorenusu.com/posts/20260914-munjeong-manifold-water",
+            "https://nomorenusu.com/posts/20260916-hannam-veranda-rain",
+            "https://nomorenusu.com/posts/20260918-baekseok-basin-mold",
+            "https://nomorenusu.com/posts/20260919-jeongneung-yard-water-pipe",
+            "https://nomorenusu.com/posts/20260920-september-boost-006",
+            "https://nomorenusu.com/posts/20260921-september-050",
+            "https://nomorenusu.com/posts/20260921-september-051"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and compare repeated response times. Use field data where available for a user-experience decision."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"slow_response: Slow response in this crawl (90 URLs)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Repeat the check and use the performance report before changing anything. If the delay persists, check server timing, cache headers, database queries, CDN caching, and origin health.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:image_oversized_candidate",
+        "status": "open",
+        "title": "image_oversized_candidate: Oversized image candidates (71 URLs)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 71,
+        "affectedUrls": {
+          "total": 71,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "https://nomorenusu.com/posts/20260914-gireum-ceiling-stain",
+            "https://nomorenusu.com/posts/20260914-munjeong-manifold-water",
+            "https://nomorenusu.com/posts/20260916-hannam-veranda-rain",
+            "https://nomorenusu.com/posts/20260918-baekseok-basin-mold",
+            "https://nomorenusu.com/posts/20260919-jeongneung-yard-water-pipe",
+            "https://nomorenusu.com/posts/20260920-september-boost-006",
+            "https://nomorenusu.com/posts/20260921-september-050",
+            "https://nomorenusu.com/posts/20260921-september-051",
+            "https://nomorenusu.com/posts/20260921-september-boost-010",
+            "https://nomorenusu.com/posts/20260923-september-060"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_756e5a3ba8f8440ebe15bc8da0fa5aff",
+              "ruleId": "image_oversized_candidate"
+            }
+          }
+        },
+        "sourcePath": "actions[4]",
+        "evidence": {
+          "ruleId": "image_oversized_candidate",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://nomorenusu.com/posts/20260914-gireum-ceiling-stain",
+            "https://nomorenusu.com/posts/20260914-munjeong-manifold-water",
+            "https://nomorenusu.com/posts/20260916-hannam-veranda-rain",
+            "https://nomorenusu.com/posts/20260918-baekseok-basin-mold",
+            "https://nomorenusu.com/posts/20260919-jeongneung-yard-water-pipe",
+            "https://nomorenusu.com/posts/20260920-september-boost-006",
+            "https://nomorenusu.com/posts/20260921-september-050",
+            "https://nomorenusu.com/posts/20260921-september-051",
+            "https://nomorenusu.com/posts/20260921-september-boost-010",
+            "https://nomorenusu.com/posts/20260923-september-060"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and confirm oversizedImageCandidates is empty, then spot-check the page in a browser performance trace if the image is important."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"image_oversized_candidate: Oversized image candidates (71 URLs)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Resize the source image, add responsive srcset sizes, and serve modern compressed formats such as WebP or AVIF where supported.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:orphan_page",
+        "status": "open",
+        "title": "orphan_page: No observed internal links (13 URLs)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 13,
+        "affectedUrls": {
+          "total": 13,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "https://nomorenusu.com/posts/20260914-munjeong-manifold-water",
+            "https://nomorenusu.com/posts/20260916-hannam-veranda-rain",
+            "https://nomorenusu.com/posts/20260920-september-boost-006",
+            "https://nomorenusu.com/posts/20260928-september-095",
+            "https://nomorenusu.com/posts/20261005-october-pilot-050",
+            "https://nomorenusu.com/posts/20261006-october-pilot-060",
+            "https://nomorenusu.com/posts/20261015-october-pilot-165",
+            "https://nomorenusu.com/posts/20261017-october-extension-020",
+            "https://nomorenusu.com/posts/20261019-october-extension-034",
+            "https://nomorenusu.com/posts/20261024-october-extension-098"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_756e5a3ba8f8440ebe15bc8da0fa5aff",
+              "ruleId": "orphan_page"
+            }
+          }
+        },
+        "sourcePath": "actions[5]",
+        "evidence": {
+          "ruleId": "orphan_page",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://nomorenusu.com/posts/20260914-munjeong-manifold-water",
+            "https://nomorenusu.com/posts/20260916-hannam-veranda-rain",
+            "https://nomorenusu.com/posts/20260920-september-boost-006",
+            "https://nomorenusu.com/posts/20260928-september-095",
+            "https://nomorenusu.com/posts/20261005-october-pilot-050",
+            "https://nomorenusu.com/posts/20261006-october-pilot-060",
+            "https://nomorenusu.com/posts/20261015-october-pilot-165",
+            "https://nomorenusu.com/posts/20261017-october-extension-020",
+            "https://nomorenusu.com/posts/20261019-october-extension-034",
+            "https://nomorenusu.com/posts/20261024-october-extension-098"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://nomorenusu.com/ --severity low --max-pages 100",
+          "expected": "Re-run a complete crawl from the same site entry point and confirm an observed internal link reaches the page."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"orphan_page: No observed internal links (13 URLs)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Check the page in a complete crawl and in the sitemap. If it is meant to be discovered, add a relevant link from a hub, navigation path, related page, or template.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      }
+    ]
+  },
+  "outputBudget": {
+    "schemaVersion": 1,
+    "maxBytes": 98304,
+    "originalBytes": 15510,
+    "returnedBytes": 15745,
+    "truncated": false,
+    "omissions": [],
+    "omissionsTruncated": false,
+    "detail": "The complete structured report fits within the agent output budget."
+  }
+}

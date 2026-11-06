@@ -1,0 +1,81 @@
+{
+  "recordedAt": "2026-11-06T04:11:53.813Z",
+  "periodStart": "2026-10-07T04:11:53.751Z",
+  "pages": [
+    {
+      "slug": "20260925-september-078",
+      "title": "심곡본동 누수탐지, 배수 중 물샘과 역류 구분",
+      "improvedAt": "2026-11-06T04:05:22.705191+00:00",
+      "metrics": {
+        "views": 0,
+        "searchViews": 0,
+        "naverViews": 0,
+        "sessions": 0,
+        "phone": 0,
+        "kakao": 0,
+        "quote": 0,
+        "other": 0
+      }
+    },
+    {
+      "slug": "bulgwang-house-water-meter-leak-guide",
+      "title": "불광동 수도계량기 누수, 계량기가 계속 도는 원인",
+      "improvedAt": "2026-11-06T04:05:22.836951+00:00",
+      "metrics": {
+        "views": 4,
+        "searchViews": 4,
+        "naverViews": 4,
+        "sessions": 4,
+        "phone": 0,
+        "kakao": 0,
+        "quote": 0,
+        "other": 0
+      }
+    },
+    {
+      "slug": "gwangjin-heating-case-2026",
+      "title": "광진구 난방배관청소, 방마다 온도가 다를 때 점검 순서",
+      "improvedAt": "2026-11-06T04:05:22.900175+00:00",
+      "metrics": {
+        "views": 0,
+        "searchViews": 0,
+        "naverViews": 0,
+        "sessions": 0,
+        "phone": 0,
+        "kakao": 0,
+        "quote": 0,
+        "other": 0
+      }
+    },
+    {
+      "slug": "munjeong-apartment-hot-water-pipe-leak-guide",
+      "title": "문정동 온수배관 누수, 아랫집 천장 물자국 원인",
+      "improvedAt": "2026-11-06T04:05:22.940155+00:00",
+      "metrics": {
+        "views": 0,
+        "searchViews": 0,
+        "naverViews": 0,
+        "sessions": 0,
+        "phone": 0,
+        "kakao": 0,
+        "quote": 0,
+        "other": 0
+      }
+    },
+    {
+      "slug": "ssangmun-villa-toilet-leak-guide",
+      "title": "쌍문동 변기 누수, 바닥이 젖는 시점으로 원인 구분",
+      "improvedAt": "2026-11-06T04:05:22.987311+00:00",
+      "metrics": {
+        "views": 1,
+        "searchViews": 0,
+        "naverViews": 0,
+        "sessions": 1,
+        "phone": 0,
+        "kakao": 0,
+        "quote": 0,
+        "other": 0
+      }
+    }
+  ]
+}
