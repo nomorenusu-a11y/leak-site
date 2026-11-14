@@ -1,6 +1,6 @@
 import { readFile, readdir } from "node:fs/promises";
 
-import { decodeXml, inspectPostHtml, recentFeedPosts, requestWithRetry } from "./indexnow-preflight.mjs";
+import { inspectPostHtml, recentFeedPosts, requestWithRetry, sitemapDates } from "./indexnow-preflight.mjs";
 
 const siteUrl = new URL(process.env.SITE_URL || "https://nomorenusu.com");
 const submitAll = /^(1|true)$/i.test(process.env.SUBMIT_ALL || "");
@@ -23,12 +23,7 @@ const [sitemapResponse, feedResponse] = await Promise.all([
 if (!sitemapResponse.ok) throw new Error(`사이트맵 응답 ${sitemapResponse.status}`);
 if (!feedResponse.ok) throw new Error(`RSS 응답 ${feedResponse.status}`);
 
-const sitemap = await sitemapResponse.text();
-const allUrls = new Set(
-  [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)]
-    .map((match) => decodeXml(match[1].trim()))
-    .filter((value) => URL.canParse(value) && new URL(value).origin === siteUrl.origin),
-);
+const allUrls = sitemapDates(await sitemapResponse.text(), siteUrl);
 if (!allUrls.size) throw new Error("사이트맵에서 공개 주소를 찾지 못했습니다.");
 const feedPosts = recentFeedPosts(await feedResponse.text(), siteUrl, {
   since: until - 72 * 3_600_000,
@@ -44,6 +39,7 @@ async function verifyPost(url) {
   const page = await requestWithRetry(url);
   const { problems, image } = inspectPostHtml(url, {
     status: page.status, headers: page.headers, body: await page.text(),
+    lastModified: allUrls.get(url),
   });
   if (problems.length) throw new Error(problems.join(", "));
   if (!images.has(image)) {
@@ -68,7 +64,7 @@ for (let offset = 0; offset < feedPosts.length; offset += 4) {
 }
 const failedUrls = new Set(failures.map(({ url }) => url));
 const urlList = submitAll && failures.length === 0
-  ? [...allUrls]
+  ? [...allUrls.keys()]
   : feedPosts.filter((url) => !failedUrls.has(url));
 
 function log(result) {

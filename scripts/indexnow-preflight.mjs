@@ -11,6 +11,17 @@ function element(xml, tag) {
   return value ? decodeXml(value.trim()) : "";
 }
 
+export function sitemapDates(xml, siteUrl) {
+  const entries = new Map();
+  for (const [, entry] of xml.matchAll(/<url>([\s\S]*?)<\/url>/gi)) {
+    const location = element(entry, "loc");
+    if (URL.canParse(location) && new URL(location).origin === siteUrl.origin) {
+      entries.set(location, Date.parse(element(entry, "lastmod")));
+    }
+  }
+  return entries;
+}
+
 export function recentFeedPosts(rss, siteUrl, { since, until }) {
   if (!/<rss\b/i.test(rss) || !/<\/rss>/i.test(rss)) throw new Error("RSS 형식 오류");
   const posts = new Set();
@@ -35,7 +46,7 @@ function attributes(tag) {
   );
 }
 
-export function inspectPostHtml(url, { status, headers, body }) {
+export function inspectPostHtml(url, { status, headers, body, lastModified }) {
   if (status !== 200) return { problems: [`HTTP ${status}`] };
   const head = body.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1] ?? "";
   const tags = [...head.matchAll(/<(?:meta|link)\b[^>]*>/gi)].map(([tag]) => attributes(tag));
@@ -47,6 +58,10 @@ export function inspectPostHtml(url, { status, headers, body }) {
   if ([headers.get("x-robots-tag"), ...robots.map((tag) => tag.content)]
       .some((value) => /\b(noindex|none)\b/i.test(value ?? ""))) problems.push("색인 차단 지시");
   if (!/<title>[^<]+<\/title>/i.test(head) || !/<h1\b/i.test(body)) problems.push("제목·본문 확인 실패");
+  const modified = Date.parse(meta("article:modified_time") ?? "");
+  if (Number.isFinite(lastModified) && !(modified >= lastModified)) {
+    problems.push("사이트맵보다 오래된 공개 페이지");
+  }
   let image;
   try {
     image = new URL(meta("og:image"));

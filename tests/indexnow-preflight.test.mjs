@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { inspectPostHtml, recentFeedPosts, requestWithRetry } from "../scripts/indexnow-preflight.mjs";
+import { inspectPostHtml, recentFeedPosts, requestWithRetry, sitemapDates } from "../scripts/indexnow-preflight.mjs";
 
 const site = new URL("https://example.com");
 const post = "https://example.com/posts/a-post";
@@ -44,4 +44,16 @@ test("retries a temporary upstream error once and preserves hard failures", asyn
     return new Response("", { status: 404 });
   })).status, 404);
   assert.equal(calls, 1);
+});
+
+test("blocks notification when the canonical HTML lags its sitemap revision", () => {
+  const stampText = new Date(stamp).toISOString();
+  const locations = sitemapDates(`<urlset><url><loc>${post}</loc><lastmod>${stampText}</lastmod></url></urlset>`, site);
+  assert.equal(locations.get(post), stamp);
+  const body = html.replace("</head>", `<meta property="article:modified_time" content="${stampText}"></head>`);
+  const inspectRevision = (lastModified) => inspectPostHtml(post, {
+    status: 200, headers: new Headers(), body, lastModified,
+  }).problems;
+  assert.deepEqual(inspectRevision(stamp + 1000), ["사이트맵보다 오래된 공개 페이지"]);
+  assert.deepEqual(inspectRevision(stamp), []);
 });
