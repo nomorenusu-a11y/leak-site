@@ -18,7 +18,6 @@ import { SharePost } from "@/components/posts/SharePost";
 import { PostNav } from "@/components/posts/PostNav";
 import {
   getAdjacentPosts,
-  getAllPublishedSlugs,
   getPostBySlug,
   getPostImages,
   getRelatedPosts,
@@ -31,9 +30,8 @@ import { formatDateYMD } from "@/lib/time";
 import { splitPostContentByImages } from "@/lib/post-inline-images";
 import { getCaseStudyDraft } from "@/data/case-drafts";
 
-// 예약 발행은 관리자 작업에서 해당 글 경로를 직접 무효화한다.
-// 공개 글 전체를 60초마다 재생성하면 Vercel Data Cache 쓰기가 급증하므로 하루 단위로 유지한다.
-export const revalidate = 86400;
+// Read the currently published article at its canonical URL after each edit.
+export const dynamic = "force-dynamic";
 
 function compactSearchTitle(value: string) {
   const firstClause = value
@@ -44,11 +42,6 @@ function compactSearchTitle(value: string) {
   const candidate = firstClause.slice(0, 28);
   const boundary = candidate.lastIndexOf(" ");
   return (boundary >= 18 ? candidate.slice(0, boundary) : candidate).trim();
-}
-
-export async function generateStaticParams() {
-  const rows = await getAllPublishedSlugs();
-  return rows.map((r) => ({ slug: r.slug }));
 }
 
 export async function generateMetadata({
