@@ -1,29 +1,10 @@
 import { readFile, readdir } from "node:fs/promises";
 
+import { decodeXml, inspectPostHtml, recentFeedPosts, requestWithRetry } from "./indexnow-preflight.mjs";
+
 const siteUrl = new URL(process.env.SITE_URL || "https://nomorenusu.com");
 const submitAll = /^(1|true)$/i.test(process.env.SUBMIT_ALL || "");
 const dryRun = /^(1|true)$/i.test(process.env.DRY_RUN || "");
-
-function kstDate(offsetDays = 0) {
-  const date = new Date(Date.now() + offsetDays * 86_400_000);
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Seoul",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  })
-    .format(date)
-    .replaceAll("-", "");
-}
-
-function decodeXml(value) {
-  return value
-    .replaceAll("&amp;", "&")
-    .replaceAll("&lt;", "<")
-    .replaceAll("&gt;", ">")
-    .replaceAll("&quot;", '"')
-    .replaceAll("&apos;", "'");
-}
 
 async function indexNowKey() {
   const files = await readdir(new URL("../public/", import.meta.url));
@@ -34,42 +15,75 @@ async function indexNowKey() {
   return value;
 }
 
-const sitemapResponse = await fetch(new URL("/sitemap.xml", siteUrl), {
-  headers: { "user-agent": "nomorenusu-indexnow/1.0" },
-  signal: AbortSignal.timeout(20_000),
-});
+const until = Date.now();
+const [sitemapResponse, feedResponse] = await Promise.all([
+  requestWithRetry(new URL("/sitemap.xml", siteUrl)),
+  requestWithRetry(new URL("/feed.xml", siteUrl)),
+]);
 if (!sitemapResponse.ok) throw new Error(`사이트맵 응답 ${sitemapResponse.status}`);
+if (!feedResponse.ok) throw new Error(`RSS 응답 ${feedResponse.status}`);
 
 const sitemap = await sitemapResponse.text();
-const allUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)]
-  .map((match) => decodeXml(match[1].trim()))
-  .filter((value) => {
-    try {
-      return new URL(value).host === siteUrl.host;
-    } catch {
-      return false;
-    }
-  });
-
-const datePrefixes = new Set([kstDate(), kstDate(-1)]);
-const recentUrls = allUrls.filter((value) => {
-  const slug = new URL(value).pathname.match(/^\/posts\/(\d{8})-/)?.[1];
-  return slug ? datePrefixes.has(slug) : false;
+const allUrls = new Set(
+  [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)]
+    .map((match) => decodeXml(match[1].trim()))
+    .filter((value) => URL.canParse(value) && new URL(value).origin === siteUrl.origin),
+);
+if (!allUrls.size) throw new Error("사이트맵에서 공개 주소를 찾지 못했습니다.");
+const feedPosts = recentFeedPosts(await feedResponse.text(), siteUrl, {
+  since: until - 72 * 3_600_000,
+  until,
 });
-const urlList = submitAll
-  ? allUrls
-  : [...new Set([new URL("/", siteUrl).href, new URL("/posts", siteUrl).href, ...recentUrls])];
+if (!feedPosts.length) throw new Error("RSS에서 최근 72시간 공개 글을 찾지 못했습니다.");
+const failures = [];
+const verified = [];
+const images = new Map();
+
+async function verifyPost(url) {
+  if (!allUrls.has(url)) throw new Error("사이트맵 누락");
+  const page = await requestWithRetry(url);
+  const { problems, image } = inspectPostHtml(url, {
+    status: page.status, headers: page.headers, body: await page.text(),
+  });
+  if (problems.length) throw new Error(problems.join(", "));
+  if (!images.has(image)) {
+    images.set(image, (async () => {
+      const response = await requestWithRetry(image);
+      await response.body?.cancel();
+      return response.status === 200 && /^image\//i.test(response.headers.get("content-type") ?? "");
+    })());
+  }
+  if (!(await images.get(image))) throw new Error("대표 이미지 응답 오류");
+}
+
+for (let offset = 0; offset < feedPosts.length; offset += 4) {
+  await Promise.all(feedPosts.slice(offset, offset + 4).map(async (url) => {
+    try {
+      await verifyPost(url);
+      verified.push(url);
+    } catch (error) {
+      failures.push({ url, reason: error.message });
+    }
+  }));
+}
+const failedUrls = new Set(failures.map(({ url }) => url));
+const urlList = submitAll && failures.length === 0
+  ? [...allUrls]
+  : feedPosts.filter((url) => !failedUrls.has(url));
+
+function log(result) {
+  console.log(JSON.stringify({ ...result, checked: feedPosts.length, verified: verified.length, failures, urlList }, null, 2));
+  if (failures.length) process.exitCode = 1;
+}
 
 if (urlList.length === 0) {
-  console.log("IndexNow에 보낼 공개 URL이 없습니다.");
-  process.exit(0);
+  log({ dryRun, submitted: 0 });
+  process.exit(process.exitCode ?? 0);
 }
 
 if (dryRun) {
-  console.log(
-    JSON.stringify({ dryRun: true, submitAll, dates: [...datePrefixes], urlList }, null, 2),
-  );
-  process.exit(0);
+  log({ dryRun: true, submitAll });
+  process.exit(process.exitCode ?? 0);
 }
 
 const key = await indexNowKey();
@@ -91,12 +105,9 @@ if (![200, 202].includes(response.status)) {
   );
 }
 
-console.log(
-  JSON.stringify({
-    ok: true,
-    status: response.status,
-    submitted: urlList.length,
-    mode: submitAll ? "all" : "recent",
-    dates: [...datePrefixes],
-  }),
-);
+log({
+  ok: failures.length === 0,
+  status: response.status,
+  submitted: urlList.length,
+  mode: submitAll && failures.length === 0 ? "all" : "recent",
+});
