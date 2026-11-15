@@ -8,6 +8,7 @@
  */
 
 import { NextResponse, type NextRequest } from "next/server";
+import { legacySearchPaths } from "@/lib/legacy-search-paths";
 import {
   adminSessionCookieOptions,
   COOKIE_NAME,
@@ -18,6 +19,9 @@ import {
 export const config = {
   matcher: [
     "/admin/:path*",
+    "/posts/:slug",
+    "/seoul/:slug",
+    "/seoul-서울",
     {
       source: "/:path*",
       has: [{ type: "host", value: "leak-site.vercel.app" }],
@@ -55,6 +59,21 @@ export async function proxy(request: NextRequest) {
   }
 
   const { pathname } = request.nextUrl;
+
+  if (pathname !== "/admin" && !pathname.startsWith("/admin/")) {
+    let decodedPath: string;
+    try {
+      decodedPath = decodeURIComponent(pathname);
+    } catch {
+      return NextResponse.next();
+    }
+    const destination = legacySearchPaths.get(decodedPath.replace(/\/$/, ""));
+    if (!destination) return NextResponse.next();
+    const target = new URL(destination, "https://nomorenusu.com");
+    target.search = request.nextUrl.search;
+    return NextResponse.redirect(target, 308);
+  }
+
 
   if (pathname === "/admin/login" || pathname === "/admin/api/login") {
     return NextResponse.next();
